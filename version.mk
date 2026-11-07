@@ -4,12 +4,6 @@ EDITION_NAME := CE
 VER_ROOT_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 BUILD_TAG    ?= $(shell git -C "$(VER_ROOT_DIR)" rev-parse --short=7 HEAD 2>/dev/null || date +"%Y%m%d")
 
-# Original Tracker (MK66)
-ORIGINAL_VER_MAJOR := 1
-ORIGINAL_VER_MINOR := 0
-ORIGINAL_VER_PATCH := 0
-ORIGINAL_VER_BETA  := 255
-
 # Tracker+ (IMX)
 PLUS_VER_MAJOR     := 1
 PLUS_VER_MINOR     := 0
@@ -27,16 +21,11 @@ ifeq ($(PRODUCT), MINI)
   FW_VER_2    := $(MINI_VER_MINOR)
   FW_VER_3    := $(MINI_VER_PATCH)
   FW_BETA     := $(MINI_VER_BETA)
-else ifeq ($(PRODUCT), PLUS)
+else
   FW_VER_1    := $(PLUS_VER_MAJOR)
   FW_VER_2    := $(PLUS_VER_MINOR)
   FW_VER_3    := $(PLUS_VER_PATCH)
   FW_BETA     := $(PLUS_VER_BETA)
-else
-  FW_VER_1    := $(ORIGINAL_VER_MAJOR)
-  FW_VER_2    := $(ORIGINAL_VER_MINOR)
-  FW_VER_3    := $(ORIGINAL_VER_PATCH)
-  FW_BETA     := $(ORIGINAL_VER_BETA)
 endif
 
 FW_VERSION_DEFINES := -DFW_EDITION_NAME=\"$(EDITION_NAME)\" \
