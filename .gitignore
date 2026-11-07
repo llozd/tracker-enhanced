@@ -4,7 +4,6 @@ agt/
 # Build outputs
 /build/
 core/build-*/
-platforms/mk66/build/
 platforms/imx/build-*/
 editor-fx-sdk/build/
 *.axf
