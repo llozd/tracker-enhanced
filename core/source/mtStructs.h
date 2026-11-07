@@ -40,7 +40,7 @@ const uint8_t PRODUCT_BETA = FW_VER_BETA;
 const char firmwareVersionLabelFormat[] = "%d.%d.%d " FW_EDITION_NAME;
 const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " beta %d";
 
-const uint8_t PROJECT_FILE_VERSION = 17;   // wersja struktury pliku projektu
+const uint8_t PROJECT_FILE_VERSION = 18;   // wersja struktury pliku projektu
 const uint8_t INSTRUMENT_FILE_VERSION = 9; // wersja struktury pliku instrumentu
 const uint8_t PATTERN_FILE_VERSION = 6;
 
@@ -104,6 +104,10 @@ static constexpr int kPerformanceTracks = kAllTracks;
 
 static constexpr uint8_t kSampleInstrumentsCount = 48;
 static constexpr uint8_t kMidiInstrumentsCount = 16;
+
+// Lines per beat: pattern rows per beat. Valid values are 1, 2, 4, 8 and 16.
+static constexpr uint8_t kDefaultLinesPerBeat = 4;
+static constexpr uint8_t kLinesPerBeatOptions[] = { 1, 2, 4, 8, 16 };
 static constexpr uint8_t kSynthInstrumentsCount = 3;
 static constexpr uint8_t kTotalInstrumentsCount =
 #ifdef FEATURE_SYNTH
@@ -966,6 +970,7 @@ struct strMtValues
     SynthPartSettings synthPart[kSynthInstrumentsCount];
 
     uint8_t recorderGainUsb;
+    uint8_t linesPerBeat = kDefaultLinesPerBeat;
     void setDefaultTrackName(int trackIdx);
 };
 

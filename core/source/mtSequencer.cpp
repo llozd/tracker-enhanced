@@ -112,8 +112,7 @@ AUDIO_CORE_RAM void Sequencer::tick(float intervalSeconds)
     else
     {
         midiSetClockSubBlockOffsetUs(0U);
-        static const int nanoTicksInClockPulse =
-          kStepsPerBeat * kuStepsInStep * kNanoStepsInUStep / kExternalClockPpqn;
+        const int nanoTicksPerPulse = nanoTicksInClockPulse();
 
         if (externalClockPulses > 0)
         {
@@ -124,7 +123,7 @@ AUDIO_CORE_RAM void Sequencer::tick(float intervalSeconds)
 
         while (externalClocksToPlay > 0)
         {
-            for (int tick = 0; tick < nanoTicksInClockPulse; tick++)
+            for (int tick = 0; tick < nanoTicksPerPulse; tick++)
             {
                 tick_uStep();
             }
@@ -345,8 +344,10 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
     if ((playerRow.uStep > 0) && player.isPlay && row == 0 &&
         (!player.selectionMode || player.selectionModeLooped))
     {
-        if (((playerRow.uStep - 1) % 8) == 0)
+        // 24 pulses per beat: one every 2 * LPB uSteps
+        if (clockUStepCounter % (2 * getLinesPerBeat()) == 0)
             sendMidiClock();
+        clockUStepCounter++;
     }
 
     // jeśli ostatni step, zażądaj ładowania kolejnego patternu
@@ -1327,6 +1328,7 @@ AUDIO_CORE_RAM void Sequencer::play(uint8_t fromPos)
     player.isStop = 0;
     player.isPlay = 1;
     timerTicks = 1;
+    clockUStepCounter = 0;
     internalTickAccumulatorUs = 0.0;
 
     player.uStep = 1;
@@ -1385,6 +1387,7 @@ void Sequencer::playSelection(bool looped) // potrzebuje aktualnego zaznaczenia
     player.selectionModeLastStep = player.loopSelection.lastStep;
 
     timerTicks = 1;
+    clockUStepCounter = 0;
 
     player.uStep = 1;
 
@@ -2268,6 +2271,25 @@ float Sequencer::getCurrentTempo()
     }
 }
 
+float Sequencer::getCurrentStepTempo()
+{
+    return getCurrentTempo() * getLinesPerBeat() / kStepsPerBeat;
+}
+
+uint8_t Sequencer::getLinesPerBeat() const
+{
+    uint8_t lpb = mtProject.values.linesPerBeat;
+    return std::find(std::begin(kLinesPerBeatOptions), std::end(kLinesPerBeatOptions), lpb) !=
+               std::end(kLinesPerBeatOptions)
+             ? lpb
+             : kDefaultLinesPerBeat;
+}
+
+int Sequencer::nanoTicksInClockPulse() const
+{
+    return kTicksInStep * getLinesPerBeat() / kExternalClockPpqn;
+}
+
 uint32_t Sequencer::getSeqTimer()
 {
     return timerTicks;
@@ -2284,7 +2306,7 @@ void Sequencer::attachToTimer(void) // make time abstract
 
 AUDIO_CORE_RAM float Sequencer::getStepPeriodMs(void)
 {
-    float timerPeriodUs = (312500.0f / getCurrentTempo()) / 12.0f;
+    float timerPeriodUs = (312500.0f / getCurrentStepTempo()) / 12.0f;
     float timerPeriodMs = timerPeriodUs / 1000.0f;
 
     float stepPeriodMs = 12 * 48 * timerPeriodMs;
@@ -2296,11 +2318,11 @@ AUDIO_CORE_RAM float Sequencer::getTimerPeriod_us(void)
 {
     if (player.swing.isActive)
     {
-        return ((3125.0 * player.swing.getTempoCorrection()) / getCurrentTempo()) / 12.0;
+        return ((3125.0 * player.swing.getTempoCorrection()) / getCurrentStepTempo()) / 12.0;
     }
     else
     {
-        return (312500.0 / getCurrentTempo()) / 12.0;
+        return (312500.0 / getCurrentStepTempo()) / 12.0;
     }
 }
 
@@ -3594,7 +3616,7 @@ void Sequencer::handleMidiInStart(bool continuePlay, bool songMode)
         if (hasPendingSongPosition)
         {
             uint8_t patLen = currentPattern->track[0].length + 1;
-            startStep = patLen > 0 ? static_cast<uint8_t>(pendingSongPositionBeats % patLen) : 0;
+            startStep = patLen > 0 ? static_cast<uint8_t>(pendingSongPositionBeats * getLinesPerBeat() / 4 % patLen) : 0;
             hasPendingSongPosition = false;
         }
         else
@@ -3644,8 +3666,7 @@ void Sequencer::handleMidiInStop()
         if (!isSetInternalClock() && !player.selectionMode)
         {
             midiSetClockSubBlockOffsetUs(0U);
-            static const int nanoTicksInClockPulse =
-              kStepsPerBeat * kuStepsInStep * kNanoStepsInUStep / kExternalClockPpqn;
+            const int nanoTicksPerPulse = nanoTicksInClockPulse();
 
             if (externalClockPulses > 0)
             {
@@ -3656,7 +3677,7 @@ void Sequencer::handleMidiInStop()
 
             while (externalClocksToPlay > 0)
             {
-                for (int tick = 0; tick < nanoTicksInClockPulse; tick++)
+                for (int tick = 0; tick < nanoTicksPerPulse; tick++)
                 {
                     tick_uStep();
                 }

@@ -297,6 +297,7 @@ void cFileManager::getDefaultValues(struct strMtValues* source)
 
     // song
     source->globalTempo = DEFAULT_TEMPO;
+    source->linesPerBeat = kDefaultLinesPerBeat;
     source->patternLength = 32;
 
     memset(source->instrumentsToSave, 0, kSampleInstrumentsCount);

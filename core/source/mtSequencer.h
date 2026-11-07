@@ -640,6 +640,9 @@ class Sequencer
     uint8_t isRenderMode(void);
 
     float getCurrentTempo();
+    // Tempo expressed in steps: BPM scaled so that tempo / 15 is the step rate in Hz.
+    float getCurrentStepTempo();
+    uint8_t getLinesPerBeat() const;
     float getExternalTempo() { return externalTempo; }
     uint32_t getSeqTimer();
 
@@ -966,6 +969,8 @@ class Sequencer
     uint8_t isCustomPlayMode(uint8_t row);
 
     uint32_t timerTicks = 0;
+    uint32_t clockUStepCounter = 0; // uSteps since playback start, drives MIDI clock out
+    int nanoTicksInClockPulse() const;
 
     void switchRowStep(uint8_t row);
     void reset_actual_pos(void);

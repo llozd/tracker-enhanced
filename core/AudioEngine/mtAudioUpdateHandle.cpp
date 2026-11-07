@@ -103,7 +103,7 @@ inline void playerEngine::handleUpdateEnvelope(uint8_t type, bool enableConditio
                 {
                     if (sequencer.getSeqState())
                     {
-                        currentSeqTempo = sequencer.getCurrentTempo();
+                        currentSeqTempo = sequencer.getCurrentStepTempo();
 
                         if (currentSeqTempo != lastSeqTempo)
                         {
@@ -163,7 +163,7 @@ inline void playerEngine::handleUpdateEnvelope(uint8_t type, bool enableConditio
                         if (sequencer.getSeqState())
                         {
                             envelopePtr[type]->syncTrackerSeq(sequencer.getSeqTimer(),
-                                                              sequencer.getCurrentTempo());
+                                                              sequencer.getCurrentStepTempo());
                             envelopePtr[type]->setSync(1);
                         }
                         else
