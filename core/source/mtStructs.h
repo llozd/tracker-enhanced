@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include "mtEnvelopeGenerator.h"
+#include <iterator>
 #include <stdint.h>
 
 //=====================================================================
@@ -105,9 +106,10 @@ static constexpr int kPerformanceTracks = kAllTracks;
 static constexpr uint8_t kSampleInstrumentsCount = 48;
 static constexpr uint8_t kMidiInstrumentsCount = 16;
 
-// Lines per beat: pattern rows per beat. Valid values are 1, 2, 4, 8 and 16.
-static constexpr uint8_t kDefaultLinesPerBeat = 4;
+// Lines per beat: pattern rows per beat. Stored as an index into this table.
 static constexpr uint8_t kLinesPerBeatOptions[] = { 1, 2, 4, 8, 16 };
+static constexpr uint8_t kLinesPerBeatOptionsCount = std::size(kLinesPerBeatOptions);
+static constexpr uint8_t kDefaultLinesPerBeatIndex = 2; // 4 LPB
 static constexpr uint8_t kSynthInstrumentsCount = 3;
 static constexpr uint8_t kTotalInstrumentsCount =
 #ifdef FEATURE_SYNTH
@@ -970,7 +972,7 @@ struct strMtValues
     SynthPartSettings synthPart[kSynthInstrumentsCount];
 
     uint8_t recorderGainUsb;
-    uint8_t linesPerBeat = kDefaultLinesPerBeat;
+    uint8_t linesPerBeatIndex = kDefaultLinesPerBeatIndex;
     void setDefaultTrackName(int trackIdx);
 };
 

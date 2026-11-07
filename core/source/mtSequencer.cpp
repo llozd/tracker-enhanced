@@ -2278,11 +2278,8 @@ float Sequencer::getCurrentStepTempo()
 
 uint8_t Sequencer::getLinesPerBeat() const
 {
-    uint8_t lpb = mtProject.values.linesPerBeat;
-    return std::find(std::begin(kLinesPerBeatOptions), std::end(kLinesPerBeatOptions), lpb) !=
-               std::end(kLinesPerBeatOptions)
-             ? lpb
-             : kDefaultLinesPerBeat;
+    uint8_t idx = mtProject.values.linesPerBeatIndex;
+    return kLinesPerBeatOptions[idx < kLinesPerBeatOptionsCount ? idx : kDefaultLinesPerBeatIndex];
 }
 
 int Sequencer::nanoTicksInClockPulse() const

@@ -384,7 +384,7 @@ void recoveryProjectVersion16()
 void recoveryProjectVersion17()
 {
     strMtProjectRemote* receivedProject = versionRecovery.getReadedProject();
-    receivedProject->values.linesPerBeat = kDefaultLinesPerBeat;
+    receivedProject->values.linesPerBeatIndex = kDefaultLinesPerBeatIndex;
 }
 
 //*************************************************************************INSTRUMENT
