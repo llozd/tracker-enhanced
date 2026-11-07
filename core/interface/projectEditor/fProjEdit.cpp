@@ -449,6 +449,8 @@ uint8_t cProjectEditor::loadProjectValues()
     // song pattern
     if (mtProject.values.globalTempo > 1000)
         mtProject.values.globalTempo = DEFAULT_TEMPO;
+    if (mtProject.values.linesPerBeatIndex >= kLinesPerBeatOptionsCount)
+        mtProject.values.linesPerBeatIndex = kDefaultLinesPerBeatIndex;
     if (mtProject.values.patternLength > 255)
         mtProject.values.patternLength = 32;
     //----------------------------------------------------------------------------------------------------

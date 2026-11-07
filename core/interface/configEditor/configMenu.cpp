@@ -19,15 +19,15 @@
 
 #ifdef TRACKER_MINI
 constexpr uint8_t baseMenuGroupCount = 8;
-constexpr uint8_t projectMenuGroupCount = 10;
+constexpr uint8_t projectMenuGroupCount = 11;
 constexpr uint8_t generalMenuGroupCount = 10;
 #elif defined(PLATFORM_IMX)
 constexpr uint8_t baseMenuGroupCount = 7;
-constexpr uint8_t projectMenuGroupCount = 10;
+constexpr uint8_t projectMenuGroupCount = 11;
 constexpr uint8_t generalMenuGroupCount = 13;
 #else
 constexpr uint8_t baseMenuGroupCount = 6;
-constexpr uint8_t projectMenuGroupCount = 10;
+constexpr uint8_t projectMenuGroupCount = 11;
 constexpr uint8_t generalMenuGroupCount = 13;
 #endif
 
@@ -62,6 +62,7 @@ cMenuGroup menuCredits(menuBase, "Info", 4);
 
 // project settings
 const strItemTypeListValues setupPatternDiv{ &mtProject.values.patternDiv, 0, 15, 1, 1 };
+const strItemTypeListTextWithAction setupLinesPerBeat{ &mtProject.values.linesPerBeatIndex, kLinesPerBeatOptionsCount, linesPerBeatTexts, setLinesPerBeat };
 const strItemTypeListText setupPerfSource{ &mtConfig.general.performanceSource, 2, performanceSourceTexts };
 const strItemTypeListTextWithAction setupPadsScale{ &mtProject.values.padBoardScale, 39, scaleNames, setPadBoardValues };
 const strItemTypeListTextWithAction setupPadsRootNote{ &mtProject.values.padBoardRootNote,  37,  &allNotes[12], setPadBoardValues };
@@ -73,6 +74,7 @@ const strItemTypeListTextWithAction setupHeadroomMode{ &mtProject.values.isHeadr
 const strItemTypeListTextWithAction setupSnapToZeroMode{ &mtProject.values.isSnapToZeroEnabled, 2, onOffStateTexts, setSnapToZeroMode };
 
 cMenuItem melPerformanceSource(menuProject, "Performance presets", perfPresDesc, menuTypeItemListText, &setupPerfSource);
+cMenuItem melLinesPerBeat(menuProject, "Lines per beat", lpbDesc, menuTypeItemListTextWithAction, &setupLinesPerBeat);
 cMenuItem melPatternDiv(menuProject, "Pattern divider", pattDivDesc, menuTypeItemListValues, &setupPatternDiv);
 cMenuItem melPadsScale(menuProject, "Notes scale", scaleDesc,  menuTypeItemListTextWithAction, &setupPadsScale);
 cMenuItem melPadsRootNote(menuProject,  "Root note", rootNoteDesc, menuTypeItemListTextWithAction,  &setupPadsRootNote);

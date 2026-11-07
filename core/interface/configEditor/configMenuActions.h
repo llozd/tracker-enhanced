@@ -16,6 +16,7 @@ void setPadBoardValues();
 void setAntialiasingEnable();
 void setLimiterMode();
 void setSendsMode();
+void setLinesPerBeat();
 void setHeadroomMode();
 void setSnapToZeroMode();
 

@@ -247,6 +247,10 @@ const char* const kUsbAudioList[4] = {
 //						OPISY PARAMETROW MENU CONFIG
 //############################################################################################
 
+const char lpbDesc[] = { "Lines per beat (LPB): how many pattern rows make up one beat. Higher values give "
+                         "finer steps per beat and shorten each row. Changing it also sets the pattern "
+                         "divider to one beat." };
+
 const char pattDivDesc[] = {
     "Highlights each chosen step, to give you better visual feedback in the pattern. "
 };
