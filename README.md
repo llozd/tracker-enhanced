@@ -1,82 +1,87 @@
-# Polyend Tracker Community Edition (CE)
+# Tracker Enhanced
 
-Welcome to the **Polyend Tracker Community Edition** repository!
+**Tracker Enhanced** is a community firmware for the **Polyend Tracker+** and **Polyend Tracker Mini**, built on top of the open-source [Polyend Tracker Community Edition](https://github.com/polyend/tracker-ce). It adds finer sequencing resolution, deeper MIDI CC control and more audio processing, taking some of the ideas that make [Renoise](https://www.renoise.com/) good for detailed tracking.
 
-Built directly from the original Polyend firmware source code, Tracker CE opens up the Polyend Tracker platform to musicians, sound designers, and developers around the world. Whether you are here to flash the latest Community Edition firmware, want to build your own idea on the Tracker, design custom themes and fonts, write Sample Editor plugins, or build new synthesizer engines, we are excited to have you here.
-
-### What's New:
-See [`CHANGELOG.md`](CHANGELOG.md) for the full list of new features and improvements in the stable releases.
-
-### Download Firmware:
-
-###### Stable Releases: 
-For the latest official downloads for all devices, see [Releases](https://github.com/polyend/tracker-ce/releases).
-
-###### Latest Beta Builds: 
-Automatically built from the latest changes (includes OG Tracker, Tracker+ and Tracker Mini):
-
-* [Download Latest Beta Firmware (`.zip`)](https://nightly.link/polyend/tracker-ce/workflows/build.yml/main/polyend-tracker-ce-firmware.zip)
-* [Download Latest Sample Editor Effects (`.zip`)](https://nightly.link/polyend/tracker-ce/workflows/build.yml/main/polyend-tracker-ce-effects.zip)
-
+> **Status: planning.** Nothing in the feature list below is implemented yet. This README describes the intended scope.
 
 ---
 
-## Notice: Official Support, Warranty & Hardware Disclaimer
+## Important: Read Before Flashing
 
-> **A Quick Note Before Flashing or Modifying Firmware**
->
-> Thanks to the Tracker's isolated bootloader and hardware emergency recovery button (see [Flashing on Hardware & Emergency Recovery](#4-flashing-on-hardware--emergency-recovery)), experimenting with Community Edition builds is very safe. Even if a custom build fails to boot, you can easily re-flash a stable `.ptf` image from your microSD card. That said, we still need to include the standard legal disclaimer just in case:
->
-> * **Provided "AS IS" Without Support Obligation**: While the foundation of this repository was originally developed and released by **Polyend**, the **Polyend Tracker Community Edition (CE)** firmware, source code, and any community-developed modifications or plugins are provided **"AS IS"**, without warranty of any kind, express or implied. **Polyend has no obligation to provide official technical support, maintenance, bug fixes, or customer service** for Community Edition firmware or custom builds.
-> * **Use at Your Own Risk**: Flashing, modifying, or running custom firmware is done at your own discretion and risk. Polyend is not liable for any data loss, project corruption, malfunction, or hardware damage (including "bricking" a device or issues caused by code modifications) arising from the use of this software.
-> * **Out-of-Warranty Repairs Available**: In the unlikely event that something ever goes wrong with your hardware while using custom firmware, it is **not covered under standard warranty**. However, **Polyend is always happy to help get your instrument back up and running through its official out-of-warranty repair service** (standard service, parts, and shipping fees apply. See [How to Contact Polyend Customer Support](https://backstage.polyend.com/t/how-to-contact-the-polyend-customer-support/15510)).
+> **Supported hardware: Tracker+ and Tracker Mini only.**
+> The Original Polyend Tracker (`MK66`) is **not supported** and its platform code has been removed from this repository. The planned effects need the CPU headroom of the i.MX RT (Cortex-M7 @ 600 MHz) devices.
+
+> **Project files are NOT backwards compatible.**
+> Tracker Enhanced changes the project and pattern file structures (for example to store lines per beat, extra MIDI CC assignments and new effect settings).
+> * Projects saved with Tracker Enhanced **will not open** on stock Polyend firmware or the upstream Community Edition.
+> * Existing projects made on other firmware may need to be converted, and a one-way conversion may be required.
+> * **Back up your microSD card before flashing.**
+
+---
+
+## Planned Features
+
+### 1. Lines Per Beat (LPB)
+Renoise-style control over how many pattern rows make up one beat. Today the grid is fixed at 4 steps per beat.
+* LPB selectable as **1, 2, 4, 8 or 16**.
+* Set as a **global default** in the config, which new projects inherit automatically. Each project then stores its own LPB.
+* Step-based FX (Roll, Micromove, Swing, Arp, LFOs, Slide and so on), MIDI clock output and sync, and the beat/bar row highlighting all follow the LPB.
+* Pattern length limits will be reviewed so that higher LPB values remain useful.
+
+### 2. Extended MIDI CC Control
+Today each MIDI instrument has 6 CC slots and each step has 2 FX slots.
+* More CC assignments per MIDI instrument.
+* More than 2 CC messages on a single row.
+
+### 3. New Effects (per track and master)
+New realtime effects, available on individual tracks and on the master channel:
+* **Parametric EQ**, inspired by large-format broadcast console EQs.
+* **Saturation**, **exciter** and **noise / colouring**.
+* **Console / sound desk** style processing, simulating audio passing through different pieces of studio equipment.
+* **More compressors**: vintage, FET and glue styles.
+
+CPU usage will be measured on hardware, and the number of simultaneous per-track effects may be limited accordingly.
+
+---
+
+## Based On
+
+Tracker Enhanced is derived from the source code released by **Polyend** as [Polyend Tracker Community Edition](https://github.com/polyend/tracker-ce), and stays under its licence (see [License](#license)).
+
+This is an independent community project. It is **not** made, endorsed or supported by Polyend. See the disclaimer below.
+
+> **Provided "AS IS" without warranty or support.** Flashing custom firmware is done at your own risk. Thanks to the isolated bootloader and hardware recovery button (see [Flashing on Hardware & Emergency Recovery](#4-flashing-on-hardware--emergency-recovery)), a build that fails to boot can be recovered by re-flashing a known-good `.ptf`. Issues with this firmware should be reported in this repository, not to Polyend support.
 
 ---
 
 ## Repository Structure
 
-This unified codebase powers all three hardware instruments in the Tracker family:
-* **Original Polyend Tracker** (`NXP Kinetis MK66FX1M0`, Cortex-M4F @ 180 MHz)
-* **Polyend Tracker+ & Tracker Mini** (`NXP i.MX RT1051/RT1064`, Cortex-M7 @ 600 MHz)
-
-
 ```text
 .
-├── Makefile                # Unified top-level build & version management
+├── Makefile                # Top-level build & version management
 ├── version.mk              # Centralized version & build number configuration
-├── CHANGELOG.md            # Release history & feature highlights
+├── CHANGELOG.md            # Release history
 ├── CONTRIBUTING.md         # Contribution rules & hardware testing workflow
 ├── LICENSE                 # MIT License (+ No Wholesale Commercial Clones & Precompiled Synth Terms)
 ├── NOTICE.md               # Third-party open-source attributions
 ├── core/                   # Shared Tracker application, audio engine, UI & open synth engines
 ├── platforms/
-│   ├── mk66/               # Original Tracker (Kinetis MK66) HAL, drivers & linker scripts
 │   └── imx/                # Tracker+ & Tracker Mini (i.MX RT1051) HAL, drivers & linker scripts
 ├── synth/
-│   ├── include/PolySynth/  # PolySynth public headers & Open Synth SDK (synth/include/PolySynth/sdk/)
+│   ├── include/PolySynth/  # PolySynth public headers & Open Synth SDK
 │   └── lib/                # Precompiled libPolySynth.a & libPolyDSP.a + LICENSE-PROPRIETARY.txt
-├── util/                   # Shared C++ utility headers & third-party header libraries (ETL, magic_enum)
+├── util/                   # Shared C++ utility headers & third-party header libraries
 ├── editor-fx-sdk/          # .ptfx Sample Editor plugin SDK, builder & effects/ sources
 └── docs/                   # User guides, SDK tutorials & architecture documentation
 ```
 
----
-
-## Guiding Principles of the Community Edition Firmware
-
-This repository prioritizes workflow continuity: our aim is to respect existing muscle memory, introduce features, optimizations and improvements that fit the original vision of the device, while fixing bugs along the way.
-
-If you have ideas for major workflow adjustments or structural changes, please open a [GitHub Discussion](https://github.com/polyend/tracker-ce/discussions) or a topic on the [Polyend Backstage Forum](https://backstage.polyend.com/) first, so we can align on direction together with the community.
-
-For radical experiments or reimagined interfaces, we actively encourage community forks!
+> `.ptfx` plugins are offline **Sample Editor** effects. The planned realtime track and master effects are separate and will be built into the firmware.
 
 ---
 
 ## Contributing
 
-We welcome community contributions! ❤️
-
-From bug fixes and workflow improvements to new open-source synth engines and `.ptfx` Sample Editor plugins. Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) for our project philosophy, pull request rules, hardware testing workflow, and technical checklist before opening a Pull Request.
+Bug reports and pull requests are welcome. Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) first. Note that it was inherited from upstream and will be updated for this project.
 
 ---
 
@@ -96,11 +101,10 @@ From bug fixes and workflow improvements to new open-source synth engines and `.
 From the repository root:
 
 ```bash
-# Build all three devices (Original Tracker, Tracker+, Tracker Mini)
+# Build both devices (Tracker+, Tracker Mini)
 make all
 
 # Or build a single target:
-make original   # -> build/PolyendTracker_CE_1.0.0.ptf
 make plus       # -> build/TrackerPlus_CE_1.0.0.ptf
 make mini       # -> build/TrackerMini_CE_1.0.0.ptf
 
@@ -119,26 +123,24 @@ All firmware version numbers are defined in [`version.mk`](version.mk). The **Bu
 make version
 
 # Increment patch version (e.g. 1.0.0 -> 1.0.1)
-make bump-patch TARGET=all        # or TARGET=original | TARGET=plus | TARGET=mini
+make bump-patch TARGET=all        # or TARGET=plus | TARGET=mini
 
 # Increment minor version (e.g. 1.0.x -> 1.1.0)
-make bump-minor TARGET=all        # or TARGET=original | TARGET=plus | TARGET=mini
+make bump-minor TARGET=all        # or TARGET=plus | TARGET=mini
 ```
 
 ### 4. Flashing on Hardware & Emergency Recovery
 
-1. Copy the generated `.ptf` file from `build/` (`PolyendTracker_*.ptf`, `TrackerPlus_*.ptf`, or `TrackerMini_*.ptf`) to the `/Firmware/` folder on your Tracker's microSD card.
-   * *Note*: Keep `.ptf` filenames at **31 characters or fewer** so the Original Tracker's 32-byte `/Firmware/_fwinfo` bootloader buffer remains null-terminated.
+1. Copy the generated `.ptf` file from `build/` (`TrackerPlus_*.ptf` or `TrackerMini_*.ptf`) to the `/Firmware/` folder on your Tracker's microSD card.
 2. On the device, open **Config > Firmware > Firmware update**, select the `.ptf` file, and confirm.
 
 > **Bootloader Resilience & Emergency Firmware Recovery**:
 > * The Polyend Tracker bootloader is isolated from the application firmware:
->   * On the **Original Tracker (`MK66`)**, the bootloader runs on a separate dedicated microcontroller (`kBootloaderTrig`).
 >   * On **Tracker+ and Tracker Mini (`IMX`)**, the bootloader resides in a protected region at the bottom of QSPI Flash (`0x60000000`–`0x6002FFFF`), while `.ptf` application builds are linked starting at `0x60030000` (do not modify the flash `ORIGIN` address in the linker scripts).
 > * **Emergency Recovery**: If a custom firmware build ever hangs or fails to boot into the UI, you can always recover your device:
 >   1. Place a known-good, stable `.ptf` firmware file for your device inside the `/Firmware/` folder on your microSD card (ideally as the only `.ptf` file in `/Firmware/`).
 >   2. Insert the microSD card into your Tracker and power it on.
->   3. Use a paperclip or SIM-eject pin to press the **recessed hardware Reset / Emergency Bootloader pinhole button** (located on the bottom of the Original Tracker / Tracker+, or next to the USB-C port on Tracker Mini). The hardware bootloader will automatically pick up the `.ptf` file from `/Firmware/` and flash it.
+>   3. Use a paperclip or SIM-eject pin to press the **recessed hardware Reset / Emergency Bootloader pinhole button** (located on the bottom of the Tracker+, or next to the USB-C port on Tracker Mini). The hardware bootloader will automatically pick up the `.ptf` file from `/Firmware/` and flash it.
 
 ---
 
@@ -157,14 +159,10 @@ Full user and developer documentation is available in [`docs/`](docs/Home.md) an
 
 ---
 
-## Polyend Tracker Open-Source Ecosystem
+## Related Projects
 
-This repository is part of a growing open-source ecosystem around the Polyend Tracker family:
-
-* **[`polyend/tracker-theme-editor`](https://github.com/polyend/tracker-theme-editor)** ([Live Web App](https://polyend.github.io/tracker-theme-editor/)): Browser-based visual **Theme & Font Editor** with a hardware screen simulator.
-* **[`polyend/tracker-lib`](https://github.com/polyend/tracker-lib)**: Open-source library and tools for reading, writing, and inspecting Polyend Tracker project (`.mt`), pattern (`.mtp`), and instrument (`.pti`) files.
-* **[Polyend Backstage Forum](https://backstage.polyend.com/)**: Community forum for sharing custom themes, fonts, `.ptfx` plugins, synth engines, and discussing workflows.
-* **[The Tracker Overflow (Discord)](https://discord.com/invite/uEPTnwckJV)**: Unofficial Polyend Tracker Discord where users and developers can join, chat, and find like-minded people.
+* **[Polyend Tracker Community Edition](https://github.com/polyend/tracker-ce)**: the upstream source this project is based on.
+* **[`polyend/tracker-lib`](https://github.com/polyend/tracker-lib)**: library and tools for reading, writing and inspecting Polyend Tracker project (`.mt`), pattern (`.mtp`) and instrument (`.pti`) files. Note that Tracker Enhanced project files will differ from the stock formats.
 
 ---
 
