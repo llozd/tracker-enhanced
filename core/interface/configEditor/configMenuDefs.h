@@ -168,6 +168,10 @@ const char* const numberingModeTexts[3] = {
     "Hexadecimal",
 };
 
+const char* const linesPerBeatTexts[kLinesPerBeatOptionsCount] = {
+    "1", "2", "4", "8", "16",
+};
+
 const char* const padPreviewInPatternEditTexts[3] = {
     "Off",
     "Track",
@@ -318,6 +322,10 @@ const char snapToZeroDesc[] = {
     "when they are set close to the zero amplitude points which are indicated with the green "
     "marker color."
 };
+
+const char defaultLpbDesc[] = { "Lines per beat (LPB) given to new projects: how many pattern rows make "
+                                "up one beat. Higher values give finer steps per beat. Existing projects "
+                                "keep their own LPB, change it in Project Settings." };
 
 const char hexModeDesc[] = { "Enable the throwback hex goodness: pattern step numbers start with "
                              "00 and use sixteen digits (A means 10, B means 11, and so "

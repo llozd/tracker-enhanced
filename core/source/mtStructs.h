@@ -1166,6 +1166,9 @@ struct strMtConfig
 
         uint8_t usbAudioMode = 0;
 
+        // index into kLinesPerBeatOptions, copied into new projects
+        uint8_t defaultLinesPerBeatIndex = kDefaultLinesPerBeatIndex;
+
     } common;
 
     // /\ dodawac nowe wartosci do podstruktur powyżej na końcach każdej ze struktur

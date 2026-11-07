@@ -20,15 +20,15 @@
 #ifdef TRACKER_MINI
 constexpr uint8_t baseMenuGroupCount = 8;
 constexpr uint8_t projectMenuGroupCount = 10;
-constexpr uint8_t generalMenuGroupCount = 9;
+constexpr uint8_t generalMenuGroupCount = 10;
 #elif defined(PLATFORM_IMX)
 constexpr uint8_t baseMenuGroupCount = 7;
 constexpr uint8_t projectMenuGroupCount = 10;
-constexpr uint8_t generalMenuGroupCount = 12;
+constexpr uint8_t generalMenuGroupCount = 13;
 #else
 constexpr uint8_t baseMenuGroupCount = 6;
 constexpr uint8_t projectMenuGroupCount = 10;
-constexpr uint8_t generalMenuGroupCount = 12;
+constexpr uint8_t generalMenuGroupCount = 13;
 #endif
 
 // baza baz
@@ -103,6 +103,7 @@ const strItemTypeListText setupRecThreshold{ &mtConfig.general.recThreshold, rec
 const strItemTypeListText setupHexMode{ &mtConfig.general.numberingMode, std::size(numberingModeTexts), numberingModeTexts };
 const strItemTypeListText setupPadPreviewInPatternEdit{ &mtConfig.general.padPreviewInPatternEdit, 3, padPreviewInPatternEditTexts };
 const strItemTypeListText setupPatternArrangement{ &mtConfig.general.patternArrangement, 3, patternArrangementTexts };
+const strItemTypeListText setupDefaultLpb{ &mtConfig.common.defaultLinesPerBeatIndex, kLinesPerBeatOptionsCount, linesPerBeatTexts };
 const strItemTypeListText setupPatternInfo{ &mtConfig.general.patternInfo, 3, patternInfoTexts };
 const strItemTypeListTextWithAction setupLineInOutType{ &mtConfig.general.lineInOutType, 3,  lineInOutType, setLineInOutType };
 
@@ -166,6 +167,11 @@ cMenuItem melPatternInfo(menuGeneral,
                          patternInfo,
                          menuTypeItemListText,
                          &setupPatternInfo);
+cMenuItem melDefaultLpb(menuGeneral,
+                       "Default LPB",
+                       defaultLpbDesc,
+                       menuTypeItemListText,
+                       &setupDefaultLpb);
 cMenuItem melLinInOutType(menuGeneral,
                           "Line in channel",
                           lineInChannelDesc,

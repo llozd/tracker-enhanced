@@ -474,6 +474,9 @@ void checkConfig()
     if (mtConfig.common.usbAudioMode >= 4)
         mtConfig.common.usbAudioMode = 0;
 
+    if (mtConfig.common.defaultLinesPerBeatIndex >= kLinesPerBeatOptionsCount)
+        mtConfig.common.defaultLinesPerBeatIndex = kDefaultLinesPerBeatIndex;
+
     // TODO dodac zapis spowrotem do configu jesli np przy sprawdzaniu wazne dane sie nie zgadzały
     // TODO
     // TODO
@@ -584,6 +587,7 @@ void resetConfig()
     // common ----------------------------------------
     mtConfig.common.equalSliceNumber = 8;
     mtConfig.common.usbAudioMode = 0;
+    mtConfig.common.defaultLinesPerBeatIndex = kDefaultLinesPerBeatIndex;
 }
 
 uint16_t sizes[10];
