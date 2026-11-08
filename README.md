@@ -2,7 +2,7 @@
 
 **Tracker Enhanced** is a community firmware for the **Polyend Tracker+** and **Polyend Tracker Mini**, built on top of the open-source [Polyend Tracker Community Edition](https://github.com/polyend/tracker-ce). It adds finer sequencing resolution, deeper MIDI CC control and more audio processing, taking some of the ideas that make [Renoise](https://www.renoise.com/) good for detailed tracking.
 
-> **Status: in development.** Lines per beat is implemented but has not been tested on hardware yet. Extended MIDI CC control and the new effects are still planned.
+> **Status: in development.** Lines per beat is implemented but has not been tested on hardware yet. Extended MIDI CC control and the new effects are still planned. Every change, finished or planned, is recorded in [`openspec/`](openspec/README.md).
 
 ---
 
@@ -19,9 +19,11 @@
 
 ---
 
-## Planned Features
+## Features and Roadmap
 
-### 1. Lines Per Beat (LPB) (implemented, untested on hardware)
+Each item has an OpenSpec record in [`openspec/changes/`](openspec/README.md).
+
+### 1. Lines Per Beat (LPB) -- complete, untested on hardware
 Renoise-style control over how many pattern rows make up one beat. Stock firmware is fixed at 4 steps per beat.
 * LPB selectable as **1, 2, 4, 8 or 16** per project (**Project Settings > Lines per beat**). Changing it also sets the pattern divider to one beat.
 * A **global default** (**General > Default LPB**) is given to new projects.
@@ -32,12 +34,12 @@ Renoise-style control over how many pattern rows make up one beat. Stock firmwar
 * Changing LPB stops playback and clears the undo history.
 * To make room for the larger pattern buffers (about 4.5 MB), the sample memory is reduced from 60 MB to 55 MB. Long samples are streamed from the SD card as before.
 
-### 2. Extended MIDI CC Control
+### 2. Extended MIDI CC Control (planned)
 Today each MIDI instrument has 6 CC slots and each step has 2 FX slots.
 * More CC assignments per MIDI instrument.
 * More than 2 CC messages on a single row.
 
-### 3. New Effects (per track and master)
+### 3. New Effects (per track and master) (planned)
 New realtime effects, available on individual tracks and on the master channel:
 * **Parametric EQ**, inspired by large-format broadcast console EQs.
 * **Saturation**, **exciter** and **noise / colouring**.
@@ -45,6 +47,11 @@ New realtime effects, available on individual tracks and on the master channel:
 * **More compressors**: vintage, FET and glue styles.
 
 CPU usage will be measured on hardware, and the number of simultaneous per-track effects may be limited accordingly.
+
+### 4. Playback and Interface Fixes (planned)
+* **Legato rolls**: Roll hits currently close the gate at half the period and send a note-off before each retrigger, which sounds gappy. The plan is full-length, click-free hits. See `legato-rolls`.
+* **Held button release**: a held button (such as FX1) sometimes acts as released while turning the knob. A suspected cause is the key driver clearing buttons after an I2C error. See `button-hold-release`.
+* **Position on slices**: the Position effect will scrub within the played slice instead of the whole sample. See `position-fx-slices`.
 
 ---
 
@@ -76,6 +83,7 @@ This is an independent community project. It is **not** made, endorsed or suppor
 │   └── lib/                # Precompiled libPolySynth.a & libPolyDSP.a + LICENSE-PROPRIETARY.txt
 ├── util/                   # Shared C++ utility headers & third-party header libraries
 ├── editor-fx-sdk/          # .ptfx Sample Editor plugin SDK, builder & effects/ sources
+├── openspec/               # Change records (proposals, designs, specs, tasks)
 └── docs/                   # User guides, SDK tutorials & architecture documentation
 ```
 
