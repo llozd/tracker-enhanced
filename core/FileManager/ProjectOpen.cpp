@@ -42,12 +42,15 @@ void ProjectOpen::update()
         }
         case ProjectOpenStep::copyPatternFiles:
         {
-            copyPaterns(currentPattern);
-            memoryToCopyDone += sizeof(Sequencer::strPattern);
-            currentPattern++;
-            if (currentPattern > PATTERN_INDEX_MAX)
+            // a 128 KB pattern copies in several chunks: only advance once it is done
+            if (copyPaterns(currentPattern))
             {
-                nextStep = ProjectOpenStep::copyInstrumentFiles;
+                memoryToCopyDone += sizeof(Sequencer::strPattern);
+                currentPattern++;
+                if (currentPattern > PATTERN_INDEX_MAX)
+                {
+                    nextStep = ProjectOpenStep::copyInstrumentFiles;
+                }
             }
             break;
         }

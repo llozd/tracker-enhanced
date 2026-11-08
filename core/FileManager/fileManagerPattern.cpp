@@ -146,10 +146,8 @@ void cFileManager::savePatternToWorkspace()
     snprintf(
       patternToSave, PATCH_SIZE, cWorkspacePatternFileFormat, mtProject.values.actualPattern);
 
-    uint8_t saveStatus = fileTransfer.saveMemoryToFile(
-      (uint8_t*)&fileManagerPatternBuffer, patternToSave, sizeof(Sequencer::strPattern));
-
-    if (saveStatus == fileTransferEnd)
+    // one blocking write: chunked saveMemoryToFile needs several calls for a 128 KB pattern
+    if (writePatternFile(patternToSave, &fileManagerPatternBuffer))
     {
         report(" no blocking pattern save - success ", mtProject.values.actualPattern);
         clearPatternChanged(mtProject.values.actualPattern);
