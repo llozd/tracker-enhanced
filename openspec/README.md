@@ -11,3 +11,4 @@ Change records for Tracker Enhanced, in [OpenSpec](https://github.com/Fission-AI
 | [button-hold-release](changes/button-hold-release/proposal.md) | Investigating |
 | [position-fx-slices](changes/position-fx-slices/proposal.md) | Planned |
 | [fx-only-row-instrument](changes/fx-only-row-instrument/proposal.md) | Planned |
+| [original-tracker-support](changes/original-tracker-support/proposal.md) | Planned |
