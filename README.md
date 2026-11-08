@@ -9,7 +9,7 @@
 ## Important: Read Before Flashing
 
 > **Supported hardware: Tracker+ and Tracker Mini only.**
-> The Original Polyend Tracker (`MK66`) is **not supported** and its platform code has been removed from this repository. The planned effects need the CPU headroom of the i.MX RT (Cortex-M7 @ 600 MHz) devices.
+> The Original Polyend Tracker (`MK66`) is **not supported yet**: its platform code is currently removed. Support with a reduced feature set is planned (sequencer improvements only, no realtime effects), see `original-tracker-support`. The planned effects need the CPU headroom of the i.MX RT (Cortex-M7 @ 600 MHz) devices.
 
 > **Project files are NOT backwards compatible.**
 > Tracker Enhanced changes the project and pattern file structures (for example to store lines per beat, extra MIDI CC assignments and new effect settings).
@@ -53,6 +53,9 @@ CPU usage will be measured on hardware, and the number of simultaneous per-track
 * **Held button release**: a held button (such as FX1) sometimes acts as released while turning the knob. A suspected cause is the key driver clearing buttons after an I2C error. See `button-hold-release`.
 * **Position on slices**: the Position effect will scrub within the played slice instead of the whole sample. See `position-fx-slices`.
 * **Effects on rows without a note**: Microtune and synth effects on an empty row currently do nothing on MIDI and synth tracks. They will target the track's last played instrument, so a note can be bent later, including on its release. See `fx-only-row-instrument`.
+
+### 5. Original Tracker Support (planned)
+The Original Tracker (`MK66`) build will come back with a reduced feature set. It will get lines per beat (up to 16), legato rolls and other sequencer improvements. Realtime effects and other features with significant CPU or memory overhead will be compiled out. Projects will stay portable between devices. See `original-tracker-support`.
 
 ---
 
