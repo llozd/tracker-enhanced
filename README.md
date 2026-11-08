@@ -9,7 +9,7 @@
 ## tl;dr
 Hopefully, the Tracker Enhanced becomes a mini Renoise, and just generally have more polished features.
 
-Use this firmware at your own risk and curiousity. Things may still be in development, so it is recommended to stick to [https://github.com/llozd/tracker-enhanced/releases](released) versions - building from source on `main` may contain partially complete or features that aren't fully tested. If you find any bugs, or have any general issues or suggestions, feel free to open an [https://github.com/llozd/tracker-enhanced/issues](issue)!
+Use this firmware at your own risk and curiousity. Things may still be in development, so it is recommended to stick to [released](https://github.com/llozd/tracker-enhanced/releases) versions - building from source on `main` may contain partially complete or features that aren't fully tested. If you find any bugs, or have any general issues or suggestions, feel free to open an [issue](https://github.com/llozd/tracker-enhanced/issues)!
 
 Some features will not make it to the OG Tracker unfortunately, due to hardware limitations. Below is a list of planned features for each device.
 
