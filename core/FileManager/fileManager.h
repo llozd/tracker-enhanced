@@ -323,6 +323,7 @@ class cFileManager
 
     // UNDO/REDO
     void storePatternUndoRevision();
+    void clearUndoHistory();
     void storeSongUndoRevision(uint8_t index);
     void undoSongPattern();
     void undoPattern();

@@ -47,6 +47,12 @@ struct strUndoSong
     uint8_t redoPossibility = 0; // ile razy zrzuciliśmy
 } static undoSong;
 
+void cFileManager::clearUndoHistory()
+{
+    undo = strUndo{};
+    undoSong = strUndoSong{};
+}
+
 void cFileManager::storePatternSelection(uint8_t index)
 {
     strUndoPatternBuffer_Selection* dest = &undoPatternBufferSelection[index];

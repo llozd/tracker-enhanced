@@ -361,41 +361,41 @@ void cFileManager::checkVersionAndTranslate(Sequencer::strPattern* pattern)
 {
     const uint8_t version = pattern->header.fileStructureVersion[0];
 
-    if (version >= PATTERN_FILE_VERSION)
+    if (version < PATTERN_FILE_VERSION)
     {
-        return;
+        // older files hold 128 rows per track: translate them in that layout, then widen
+        strPatternLegacy* legacy = reinterpret_cast<strPatternLegacy*>(pattern);
+
+        if (version <= 5)
+        {
+            translatePatternFromFileVersion5ToFileVersion6(legacy);
+        }
+
+        if (version <= 1)
+        {
+            translateVolumeFxInPatternFromFileVersion1ToFileVersion2(legacy);
+        }
+
+        if (version <= 2)
+        {
+            translateBeatSliceNoteInPatternFromFileVersionLessThan3(legacy);
+        }
+
+        if (version <= 3)
+        {
+            translateVolumeFxInPatternFromFileVersion3ToFileVersion4(legacy);
+        }
+
+        if (version <= 4)
+        {
+            translatePatternFromFileVersion4ToFileVersion5(legacy);
+        }
+
+        translatePatternWithDifferentTrackCount(legacy);
+        expandLegacyPattern(pattern);
     }
 
-    // older files hold 128 rows per track: translate them in that layout, then widen
-    strPatternLegacy* legacy = reinterpret_cast<strPatternLegacy*>(pattern);
-
-    if (version <= 5)
-    {
-        translatePatternFromFileVersion5ToFileVersion6(legacy);
-    }
-
-    if (version <= 1)
-    {
-        translateVolumeFxInPatternFromFileVersion1ToFileVersion2(legacy);
-    }
-
-    if (version <= 2)
-    {
-        translateBeatSliceNoteInPatternFromFileVersionLessThan3(legacy);
-    }
-
-    if (version <= 3)
-    {
-        translateVolumeFxInPatternFromFileVersion3ToFileVersion4(legacy);
-    }
-
-    if (version <= 4)
-    {
-        translatePatternFromFileVersion4ToFileVersion5(legacy);
-    }
-
-    translatePatternWithDifferentTrackCount(legacy);
-    expandLegacyPattern(pattern);
+    sequencer.fitPatternToLinesPerBeat(pattern);
 }
 
 // Moves the tracks of a strPatternLegacy stored at the start of the buffer into the
@@ -423,6 +423,7 @@ void cFileManager::expandLegacyPattern(Sequencer::strPattern* pattern)
         }
     }
 
+    pattern->linesPerBeatIndex = kDefaultLinesPerBeatIndex; // old files are always 4 LPB
     pattern->crc = 0;
     pattern->header.size = 0;
     for (uint8_t i = 0; i < 4; i++)

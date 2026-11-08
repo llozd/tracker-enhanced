@@ -1388,22 +1388,57 @@ void Sequencer::clearPattern(strPattern* patt)
 {
 
     patt->swingRez = 0.0;
-    patt->rezerwa1 = 0;
+    patt->linesPerBeatIndex = getLinesPerBeatIndex();
     patt->rezerwa2 = 0;
     patt->rezerwa3 = 0;
     patt->rezerwa4 = 0;
 
     setPatternHeader(patt);
 
+    const uint16_t defaultRows =
+      std::max<uint16_t>(1, DEFAULT_PATTERN_LENGTH * getLinesPerBeat() / kStepsPerBeat);
+
     for (strPattern::strTrack& track : patt->track)
     {
-        track.length = DEFAULT_PATTERN_LENGTH - 1;
+        track.length = defaultRows - 1;
 
         for (strPattern::strTrack::strStep& step : track.step)
         {
             clearStep(&step);
         }
     }
+}
+
+void Sequencer::fitPatternToLinesPerBeat(strPattern* patt)
+{
+    const uint8_t fromIdx = patt->linesPerBeatIndex < kLinesPerBeatOptionsCount
+                              ? patt->linesPerBeatIndex
+                              : kDefaultLinesPerBeatIndex;
+    const uint32_t fromLpb = kLinesPerBeatOptions[fromIdx];
+    const uint32_t toLpb = getLinesPerBeat();
+
+    if (fromLpb != toLpb)
+    {
+        for (strPattern::strTrack& track : patt->track)
+        {
+            const uint32_t rows = (track.length + 1) * toLpb + fromLpb / 2;
+            track.length = clamp<uint32_t>(rows / fromLpb, 1, MAXSTEP + 1) - 1;
+        }
+    }
+
+    patt->linesPerBeatIndex = getLinesPerBeatIndex();
+}
+
+void Sequencer::onLinesPerBeatChanged()
+{
+    if (isPlay())
+    {
+        stop();
+    }
+
+    fitPatternToLinesPerBeat(currentPattern);
+    fitPatternToLinesPerBeat(bufferPattern);
+    newFileManager.clearUndoHistory();
 }
 
 void Sequencer::clearSingleTrack(strPattern::strTrack* track)

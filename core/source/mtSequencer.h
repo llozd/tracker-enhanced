@@ -293,7 +293,7 @@ class Sequencer
         float tempoRezerwa; // = 100.0;
         float swingRez;     // = 50.0;
 
-        uint8_t rezerwa1; // = 0;
+        uint8_t linesPerBeatIndex; // LPB the track lengths are expressed in
         uint8_t rezerwa2; // = 0;
         uint8_t rezerwa3; // = 0;
         uint8_t rezerwa4; // = 0;
@@ -643,6 +643,7 @@ class Sequencer
     // Tempo expressed in steps: BPM scaled so that tempo / 15 is the step rate in Hz.
     float getCurrentStepTempo();
     uint8_t getLinesPerBeat() const;
+    uint8_t getLinesPerBeatIndex() const;
     float getExternalTempo() { return externalTempo; }
     uint32_t getSeqTimer();
 
@@ -809,6 +810,9 @@ class Sequencer
 
     void clearSingleTrack(strPattern::strTrack* track);
     void clearPattern(strPattern* patt);
+    // Rescales the track lengths of a pattern saved with another LPB. Content is not moved.
+    void fitPatternToLinesPerBeat(strPattern* patt);
+    void onLinesPerBeatChanged();
     void setPatternHeader(strPattern* patt);
     void clearStep(strPattern::strTrack::strStep*);
     void clearStep(strPattern::strTrack::strStep* step, uint8_t);

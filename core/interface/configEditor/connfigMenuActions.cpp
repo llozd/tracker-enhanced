@@ -123,6 +123,8 @@ void setLimiterMode()
 
 void setLinesPerBeat()
 {
+    sequencer.onLinesPerBeatChanged();
+
     // highlight rows once per beat, as far as the divider range allows
     uint8_t lpb = kLinesPerBeatOptions[mtProject.values.linesPerBeatIndex];
     mtProject.values.patternDiv = std::min<uint8_t>(lpb, 16) - 1;

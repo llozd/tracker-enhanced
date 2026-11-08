@@ -2276,10 +2276,15 @@ float Sequencer::getCurrentStepTempo()
     return getCurrentTempo() * getLinesPerBeat() / kStepsPerBeat;
 }
 
-uint8_t Sequencer::getLinesPerBeat() const
+uint8_t Sequencer::getLinesPerBeatIndex() const
 {
     uint8_t idx = mtProject.values.linesPerBeatIndex;
-    return kLinesPerBeatOptions[idx < kLinesPerBeatOptionsCount ? idx : kDefaultLinesPerBeatIndex];
+    return idx < kLinesPerBeatOptionsCount ? idx : kDefaultLinesPerBeatIndex;
+}
+
+uint8_t Sequencer::getLinesPerBeat() const
+{
+    return kLinesPerBeatOptions[getLinesPerBeatIndex()];
 }
 
 int Sequencer::nanoTicksInClockPulse() const

@@ -1263,9 +1263,14 @@ void cPatternEditor::setActualPattern(int16_t value)
     refreshPatternParams();
     refreshPattern();
 }
-const uint8_t changeLengthVals_elements = 17;
+const uint8_t changeLengthVals_elements = 13;
 const uint16_t changeLengthVals[changeLengthVals_elements] = { 1,  2,  4,  8,  16, 32,
-                                                              48, 64, 80, 96, 128, 192, 256, 384, 512, 768, 1024 };
+                                                              48, 64, 80, 96, 128, 192, 256 };
+// the preset lengths are defined at 4 LPB and scale with the current LPB
+static uint16_t scaledChangeLengthVal(uint8_t idx)
+{
+    return std::max<uint16_t>(1, changeLengthVals[idx] * sequencer.getLinesPerBeat() / 4);
+}
 const uint8_t changeStepVals_elements = 7;
 const uint8_t changeStepVals[changeLengthVals_elements] = { 0, 1, 2, 4, 8, 16, 32 };
 void cPatternEditor::changeActualPatternLength(int16_t value)
@@ -1301,9 +1306,9 @@ void cPatternEditor::changeActualPatternLengthByDefinedValues(int16_t dir)
     {
         for (int8_t a = 0; a < changeLengthVals_elements; a++)
         {
-            if (pattern->track[0].length < changeLengthVals[a] - 1)
+            if (pattern->track[0].length < scaledChangeLengthVal(a) - 1)
             {
-                pattern->track[0].length = changeLengthVals[a] - 1;
+                pattern->track[0].length = scaledChangeLengthVal(a) - 1;
                 break;
             }
         }
@@ -1312,9 +1317,9 @@ void cPatternEditor::changeActualPatternLengthByDefinedValues(int16_t dir)
     {
         for (int8_t a = changeLengthVals_elements - 1; a >= 0; a--)
         {
-            if (pattern->track[0].length > changeLengthVals[a] - 1)
+            if (pattern->track[0].length > scaledChangeLengthVal(a) - 1)
             {
-                pattern->track[0].length = changeLengthVals[a] - 1;
+                pattern->track[0].length = scaledChangeLengthVal(a) - 1;
                 break;
             }
         }
