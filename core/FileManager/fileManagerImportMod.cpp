@@ -488,10 +488,7 @@ void cFileManager::importModFile_Patterns()
     char patternToSave[PATCH_SIZE];
     sprintf(patternToSave, cWorkspacePatternFileFormat, mtProject.values.actualPattern);
 
-    uint8_t saveStatus = fileTransfer.saveMemoryToFile(
-      (uint8_t*)&fileManagerPatternBuffer, patternToSave, sizeof(Sequencer::strPattern));
-
-    if (saveStatus == fileTransferEnd)
+    if (writePatternFile(patternToSave, &fileManagerPatternBuffer))
     {
         sequencer.saveToFileDone();
         if (modFileData.patternsActualIndex >= modFileData.patternsMax)
