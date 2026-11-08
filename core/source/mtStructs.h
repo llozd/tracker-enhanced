@@ -43,7 +43,7 @@ const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " beta
 
 const uint8_t PROJECT_FILE_VERSION = 18;   // wersja struktury pliku projektu
 const uint8_t INSTRUMENT_FILE_VERSION = 9; // wersja struktury pliku instrumentu
-const uint8_t PATTERN_FILE_VERSION = 6;
+const uint8_t PATTERN_FILE_VERSION = 7;
 
 const uint8_t CONFIG_STRUCT_VER = 10;
 
@@ -68,7 +68,8 @@ const uint32_t SAMPLE_MEMORY_SIZE = (45 * 256 * 1024);     // 11,25 MB = 133.746
 // Tmini / Tplus
 const uint32_t EXTERAL_MEMORY_ADDRESS = 0x80000000;
 const uint32_t TOTAL_EXTERNAL_MEMORY = (64 * 1024 * 1024); // 64 MB
-const uint32_t SAMPLE_MEMORY_SIZE = ((60 * 1024 - 64) * 1024); // ~60 MB minus 64 KB for pattern buffers
+// 55 MB minus 64 KB: the rest of the external RAM holds the pattern buffers (36+ x 128 KB)
+const uint32_t SAMPLE_MEMORY_SIZE = ((55 * 1024 - 64) * 1024);
 #endif
 
 const uint32_t DELAY_MEMORY_SIZE = (3 * 512 * 1024);               // 1,5 MB
@@ -92,8 +93,11 @@ static constexpr int kAllTracks = kSampleTracks + kMidiTracks;
 
 static constexpr int k16TracksPatternSize_v5 = 12336;
 static constexpr int k12TracksPatternSize_v5 = 9260;
-static constexpr int k16TracksPatternSize = 16432;
-static constexpr int k12TracksPatternSize = 12332;
+// file versions 6: 128 rows per track
+static constexpr int k16TracksPatternSize_v6 = 16432;
+static constexpr int k12TracksPatternSize_v6 = 12332;
+// file version 7 and newer: 1024 rows per track, 16 tracks only
+static constexpr int kPatternSize = 131136;
 
 static constexpr int kMaxMidiTracksInTrackers =
   8; // taking into account all tracker types mini/+/OG

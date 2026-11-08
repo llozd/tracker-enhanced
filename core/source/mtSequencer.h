@@ -66,7 +66,7 @@ class Sequencer
     enum enMisc
     {
         MINSTEP = 0,
-        MAXSTEP = 127,
+        MAXSTEP = 1023, // rows per pattern - 1
         DEFAULT_PATTERN_LENGTH = 32,
 
     };
@@ -300,7 +300,7 @@ class Sequencer
 
         struct strTrack
         {
-            uint8_t length; // = DEFAULT_PATTERN_LENGTH - 1; // liczy od 0
+            uint16_t length; // = DEFAULT_PATTERN_LENGTH - 1; // liczy od 0
 
             struct strStep
             {
@@ -338,14 +338,14 @@ class Sequencer
 
     struct strSelection
     {
-        uint8_t firstStep;  // = 0;
+        uint16_t firstStep; // = 0;
         uint8_t firstTrack; // = 0;
-        uint8_t lastStep;   // = 0;
+        uint16_t lastStep;  // = 0;
         uint8_t lastTrack;  // = 0;
     };
 
     // 16 tracks
-    static_assert(sizeof(strPattern) == k16TracksPatternSize);
+    static_assert(sizeof(strPattern) == kPatternSize);
 
     struct strPlayer
     {
@@ -354,7 +354,7 @@ class Sequencer
         bool selectionMode = 0;
         bool selectionModeLooped = 0;
         strSelection loopSelection;
-        uint8_t selectionModeLastStep = 0;
+        uint16_t selectionModeLastStep = 0;
 
         uint16_t sequencialSwitch_pattern = 0;
         bool sequencialSwitch_isArmed = 0;
@@ -454,7 +454,7 @@ class Sequencer
             bool stepOpen = 0;
             bool noteOpen = 0;
             uint8_t recOpen = 0;
-            uint8_t recNoteOnStepIdx = 0;
+            uint16_t recNoteOnStepIdx = 0;
 
             int16_t noteSource = -1;
 
@@ -687,7 +687,7 @@ class Sequencer
         return SEQ_STATE_STOP;
     }
 
-    uint8_t getPatternLengthWithSel()
+    uint16_t getPatternLengthWithSel()
     {
         if (player.performanceMode)
         {
@@ -746,7 +746,7 @@ class Sequencer
     void switchPerformanceTrackNow(uint8_t trackToSwitch);
     void setTrackToLoadOnSwitch(uint8_t track, uint8_t sourcePattern);
     void setTrackToLoadNow(uint8_t track, uint8_t sourcePattern);
-    void setPerformanceTrackLength(uint8_t track, uint8_t length);
+    void setPerformanceTrackLength(uint8_t track, uint16_t length);
 
     void setSynthMute(MuteState muteState);
 
@@ -757,7 +757,7 @@ class Sequencer
     uint16_t sequencialSwitch_GetNext();
 
     void playPattern();
-    void playPattern(uint8_t fromPos);
+    void playPattern(uint16_t fromPos);
     void playSelection(bool looped = false);
     float getPlaySelectionProgress(void);
     void playSong(void);
@@ -801,10 +801,10 @@ class Sequencer
     bool isSelectionCorrect(strSelection* selection);
     bool isSingleSelection(strSelection* selection);
 
-    void setSelection(uint8_t stepFrom, uint8_t trackFrom, uint8_t stepTo, uint8_t trackTo);
-    void setCopySelection(uint8_t stepFrom, uint8_t trackFrom, uint8_t stepTo, uint8_t trackTo);
-    void setPasteSelection(uint8_t stepFrom, uint8_t trackFrom, uint8_t stepTo, uint8_t trackTo);
-    uint8_t getCopySelectionHeight();
+    void setSelection(uint16_t stepFrom, uint8_t trackFrom, uint16_t stepTo, uint8_t trackTo);
+    void setCopySelection(uint16_t stepFrom, uint8_t trackFrom, uint16_t stepTo, uint8_t trackTo);
+    void setPasteSelection(uint16_t stepFrom, uint8_t trackFrom, uint16_t stepTo, uint8_t trackTo);
+    uint16_t getCopySelectionHeight();
     int8_t getSelectionFirstNote();
 
     void clearSingleTrack(strPattern::strTrack* track);
@@ -860,19 +860,19 @@ class Sequencer
     void fillLinearVolume(int16_t fillStep, int16_t fromVal, int16_t toVal, int16_t density);
     void fillRandomVolume(int16_t fillStep, int16_t fromVal, int16_t toVal, int16_t density);
 
-    bool isEuclideanStep(uint8_t offset, int16_t density);
+    bool isEuclideanStep(uint16_t offset, int16_t density);
 
     bool isStepToFillNote(strPattern::strTrack::strStep* step,
-                          uint8_t offset,
+                          uint16_t offset,
                           int16_t fillStep,
                           int16_t density);
     bool isStepToFillFx(strPattern::strTrack::strStep* step,
-                        uint8_t offset,
+                        uint16_t offset,
                         uint8_t fxIndex,
                         int16_t fillStep,
                         int16_t density);
     bool isStepToFillProp(strPattern::strTrack::strStep* step,
-                          uint8_t offset,
+                          uint16_t offset,
                           bool isPropSet,
                           int16_t fillStep,
                           int16_t density);
@@ -912,9 +912,9 @@ class Sequencer
     int16_t getFxValueToView(uint8_t fxID, uint8_t track, uint8_t step);
     int16_t getFxValueCorrection(uint8_t type, uint8_t value);
     char getRollTypeChar(uint8_t val);
-    uint8_t calcStepLength(uint8_t track, uint8_t step);
+    uint16_t calcStepLength(uint8_t track, uint16_t step);
     int16_t rollValueToPeriod(int16_t value);
-    void makeFxValLabelForSeqStep(char* ptr, int len, uint8_t fxID, uint8_t track, uint8_t step);
+    void makeFxValLabelForSeqStep(char* ptr, int len, uint8_t fxID, uint8_t track, uint16_t step);
     enum enFxValLabelAlign
     {
         fxValLabelAlign_right = 0,
@@ -926,8 +926,8 @@ class Sequencer
                                  uint8_t value,
                                  enFxValLabelAlign align);
 
-    uint8_t getActualPos() { return player.track[0].actual_pos; }
-    uint8_t getPatternLength() { return getActualPattern()->track[0].length + 1; }
+    uint16_t getActualPos() { return player.track[0].actual_pos; }
+    uint16_t getPatternLength() { return getActualPattern()->track[0].length + 1; }
 
     void alignToGlobalPos(uint8_t);
 
@@ -960,7 +960,7 @@ class Sequencer
     static const float MAX_TEMPO_FX;
 
     void play(void);
-    void play(uint8_t fromPos);
+    void play(uint16_t fromPos);
 
     void tick_uStep(void);
 
@@ -974,7 +974,7 @@ class Sequencer
 
     void switchRowStep(uint8_t row);
     void reset_actual_pos(void);
-    void reset_actual_pos(uint8_t row, uint8_t delta = 0);
+    void reset_actual_pos(uint8_t row, uint16_t delta = 0);
     void resetChanceState(void);
     bool evaluateChanceFx(uint8_t row, uint8_t value);
 
@@ -1023,7 +1023,7 @@ class Sequencer
 
     uint8_t recMicrotiming();
     uint8_t recVelocity();
-    uint8_t getDestRecordingStep(uint8_t track, bool quantize, bool noteOff = false);
+    uint16_t getDestRecordingStep(uint8_t track, bool quantize, bool noteOff = false);
 
     uint8_t getNextArpNote(strPlayer::strPlayerTrack* playerRow);
 
@@ -1060,7 +1060,7 @@ class Sequencer
     bool externalClockIntervalValid = false;
     seqtimesec_t externalClockEventTime = 0;
 
-    uint8_t lastStoppedStepPos = 0;
+    uint16_t lastStoppedStepPos = 0;
     uint16_t pendingSongPositionBeats = 0;
     bool hasPendingSongPosition = false;
 

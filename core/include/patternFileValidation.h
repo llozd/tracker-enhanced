@@ -7,12 +7,15 @@
 namespace PatternFileValidation
 {
 constexpr uint8_t kLastLegacyPatternVersion = 5;
+constexpr uint8_t kLastNarrowPatternVersion = 6; // up to 128 rows per track
 constexpr uint16_t k8TracksPatternSizeV5 = 6184;
 constexpr uint16_t k12TracksPatternSizeV5 = 9260;
 constexpr uint16_t k16TracksPatternSizeV5 = 12336;
-constexpr uint16_t k8TracksPatternSize = 8232;
-constexpr uint16_t k12TracksPatternSize = 12332;
-constexpr uint16_t k16TracksPatternSize = 16432;
+constexpr uint16_t k8TracksPatternSizeV6 = 8232;
+constexpr uint16_t k12TracksPatternSizeV6 = 12332;
+constexpr uint16_t k16TracksPatternSizeV6 = 16432;
+// since version 7 the header size field is unused, only the file size is checked
+constexpr size_t kPatternSizeV7 = 131136;
 constexpr size_t kCrcSize = sizeof(uint32_t);
 
 struct Layout
@@ -23,14 +26,19 @@ struct Layout
 
 inline bool isKnownPatternSize(uint8_t version, uint16_t size)
 {
+    if (version > kLastNarrowPatternVersion)
+    {
+        return true;
+    }
+
     if (version <= kLastLegacyPatternVersion)
     {
         return size == k8TracksPatternSizeV5 || size == k12TracksPatternSizeV5 ||
                size == k16TracksPatternSizeV5;
     }
 
-    return size == k8TracksPatternSize || size == k12TracksPatternSize ||
-           size == k16TracksPatternSize;
+    return size == k8TracksPatternSizeV6 || size == k12TracksPatternSizeV6 ||
+           size == k16TracksPatternSizeV6;
 }
 
 inline bool resolveLayout(uint8_t version,
@@ -41,6 +49,17 @@ inline bool resolveLayout(uint8_t version,
     if (!isKnownPatternSize(version, declaredSize))
     {
         return false;
+    }
+
+    if (version > kLastNarrowPatternVersion)
+    {
+        if (fileSize != kPatternSizeV7)
+        {
+            return false;
+        }
+
+        layout = { fileSize - kCrcSize, true };
+        return true;
     }
 
     if (fileSize == declaredSize)

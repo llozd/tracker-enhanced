@@ -969,7 +969,7 @@ void cPatternEditor::moveCursorByStep()
     moveCursorByStep(0);
 }
 
-void cPatternEditor::moveCursorByStep(uint8_t val)
+void cPatternEditor::moveCursorByStep(uint16_t val)
 {
     if (mtProject.values.patternEditStep + val <= 0)
         return;
@@ -1263,9 +1263,9 @@ void cPatternEditor::setActualPattern(int16_t value)
     refreshPatternParams();
     refreshPattern();
 }
-const uint8_t changeLengthVals_elements = 11;
-const uint8_t changeLengthVals[changeLengthVals_elements] = { 1,  2,  4,  8,  16, 32,
-                                                              48, 64, 80, 96, 128 };
+const uint8_t changeLengthVals_elements = 17;
+const uint16_t changeLengthVals[changeLengthVals_elements] = { 1,  2,  4,  8,  16, 32,
+                                                              48, 64, 80, 96, 128, 192, 256, 384, 512, 768, 1024 };
 const uint8_t changeStepVals_elements = 7;
 const uint8_t changeStepVals[changeLengthVals_elements] = { 0, 1, 2, 4, 8, 16, 32 };
 void cPatternEditor::changeActualPatternLength(int16_t value)
@@ -2903,7 +2903,7 @@ static void functPlayAction()
             }
             else
             {
-                sequencer.playPattern((uint8_t)getActualStep());
+                sequencer.playPattern((uint16_t)getActualStep());
             }
         }
         else
@@ -4198,7 +4198,7 @@ void cPatternEditor::lightUpPadBoard()
             }
             case 1:
             {
-                uint8_t temp_length = sequencer.getPatternToUI()->track[0].length;
+                uint16_t temp_length = sequencer.getPatternToUI()->track[0].length;
                 if (temp_length < 3 || temp_length > 191)
                     break;
                 padsBacklight.setBackLayer(

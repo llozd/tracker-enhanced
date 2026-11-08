@@ -4,6 +4,7 @@
 
 #include "Platform.h"
 #include "mtSequencer.h"
+#include "patternLegacy.h"
 #include "mtStructs.h"
 #include "polyassert.h"
 
@@ -546,14 +547,15 @@ class cFileManager
     bool loadPattern(const char* path, uint8_t index);
 
     void translateVolumeFxInPatternFromFileVersion1ToFileVersion2(
-      Sequencer::strPattern* patternToTranslate);
+      strPatternLegacy* patternToTranslate);
     void translateBeatSliceNoteInPatternFromFileVersionLessThan3(
-      Sequencer::strPattern* patternToTranslate);
+      strPatternLegacy* patternToTranslate);
     void translateVolumeFxInPatternFromFileVersion3ToFileVersion4(
-      Sequencer::strPattern* patternToTranslate);
-    void translatePatternFromFileVersion4ToFileVersion5(Sequencer::strPattern* patternToTranslate);
-    void translatePatternFromFileVersion5ToFileVersion6(Sequencer::strPattern* patternToTranslate);
-    void translatePatternWithDifferentTrackCount(Sequencer::strPattern* pattern);
+      strPatternLegacy* patternToTranslate);
+    void translatePatternFromFileVersion4ToFileVersion5(strPatternLegacy* patternToTranslate);
+    void translatePatternFromFileVersion5ToFileVersion6(strPatternLegacy* patternToTranslate);
+    void translatePatternWithDifferentTrackCount(strPatternLegacy* pattern);
+    void expandLegacyPattern(Sequencer::strPattern* pattern);
 
     uint32_t calcProjectPatternsSize();
 

@@ -135,7 +135,7 @@ AUDIO_CORE_RAM void Sequencer::tick(float intervalSeconds)
 /* note: returns "false" if track only has one step */
 bool Sequencer::isFirstPatternStep(void)
 {
-    int8_t trackLength = getPatternLengthWithSel();
+    int16_t trackLength = getPatternLengthWithSel();
 
     if (trackLength == 0)
         return false;
@@ -147,8 +147,8 @@ bool Sequencer::isFirstPatternStep(void)
 
 bool Sequencer::isLastPatternStep(void)
 {
-    int8_t currentPos = 0;
-    int8_t trackLength = getPatternLengthWithSel();
+    int16_t currentPos = 0;
+    int16_t trackLength = getPatternLengthWithSel();
     if (player.selectionMode)
     {
         currentPos = player.globalPos;
@@ -1307,7 +1307,7 @@ void Sequencer::play(void)
 {
     play(0);
 }
-AUDIO_CORE_RAM void Sequencer::play(uint8_t fromPos)
+AUDIO_CORE_RAM void Sequencer::play(uint16_t fromPos)
 {
     fromPos = clamp<int>(fromPos, 0, MAXSTEP);
 
@@ -1422,7 +1422,7 @@ void Sequencer::playPattern()
     playPattern(0);
 }
 
-AUDIO_CORE_RAM void Sequencer::playPattern(uint8_t fromPos)
+AUDIO_CORE_RAM void Sequencer::playPattern(uint16_t fromPos)
 {
     player.songMode = 0;
     play(fromPos);
@@ -1734,7 +1734,7 @@ void Sequencer::switchRowStep(uint8_t row) // przełączamy stepy w zależności
 
     int8_t playMode = PLAYMODE_FORWARD;
     // length => lastStepIndex
-    uint8_t trackLength = currentPattern->track[0].length;
+    uint16_t trackLength = currentPattern->track[0].length;
 
     if (row == kAllTracks - 1) // operacje dla ostatniego
     {
@@ -2178,7 +2178,7 @@ AUDIO_CORE_RAM void Sequencer::reset_actual_pos(void)
     player.globalPos = 0;
 }
 
-AUDIO_CORE_RAM void Sequencer::reset_actual_pos(uint8_t row, uint8_t delta /* = 0 */)
+AUDIO_CORE_RAM void Sequencer::reset_actual_pos(uint8_t row, uint16_t delta /* = 0 */)
 {
 
     if (player.track[row].performancePlayMode == PLAYMODE_FORWARD)
@@ -2572,7 +2572,7 @@ AUDIO_CORE_RAM void Sequencer::loadNextPattern(uint8_t patternNumber)
     newFileManager.loadWorkspacePattern(patternNumber);
 }
 
-uint8_t Sequencer::getDestRecordingStep(uint8_t track, bool quantize, bool noteOff)
+uint16_t Sequencer::getDestRecordingStep(uint8_t track, bool quantize, bool noteOff)
 {
     int destPos = player.track[track].actual_pos;
 
@@ -2718,7 +2718,7 @@ AUDIO_CORE_FLASH void Sequencer::handleNoteOn(
 
         for (int tr = startTrack; tr < endTrack; tr++)
         {
-            uint8_t destinationStep = isAnticipatedBeat1 ? 0 : getDestRecordingStep(tr, !recMicrotiming());
+            uint16_t destinationStep = isAnticipatedBeat1 ? 0 : getDestRecordingStep(tr, !recMicrotiming());
 
             strPattern::strTrack::strStep* step = &currentPattern->track[tr].step[destinationStep];
 
@@ -3006,7 +3006,7 @@ void Sequencer::handleNoteOff(byte channel, // pochodzenie grida np. GRID_OUTSID
 
                     if (wasRecOpen && !padInstrumentEdit && !player.preRecMetronomeActive)
                     {
-                        uint8_t destinationStep = getDestRecordingStep(tr, !recMicrotiming(), true);
+                        uint16_t destinationStep = getDestRecordingStep(tr, !recMicrotiming(), true);
                         strPattern::strTrack::strStep* step =
                           &currentPattern->track[tr].step[destinationStep];
 
@@ -3033,7 +3033,7 @@ void Sequencer::handleNoteOff(byte channel, // pochodzenie grida np. GRID_OUTSID
             liveRecHeldNotesCount = 0;
             for (uint8_t tr = 0; tr < kAllTracks; tr++)
             {
-                uint8_t destinationStep = getDestRecordingStep(tr, !recMicrotiming(), true);
+                uint16_t destinationStep = getDestRecordingStep(tr, !recMicrotiming(), true);
                 bool shouldOff = (player.track[tr].recOpen || player.track[tr].noteOpen) &&
                                  player.track[tr].stepSent.note == note;
 
@@ -3259,7 +3259,7 @@ void Sequencer::setTrackToLoadNow(uint8_t track, uint8_t sourcePattern)
     switchPerformanceTrackNow(track);
 }
 
-void Sequencer::setPerformanceTrackLength(uint8_t track, uint8_t length)
+void Sequencer::setPerformanceTrackLength(uint8_t track, uint16_t length)
 {
     assert(track < kAllTracks);
 
@@ -3435,7 +3435,7 @@ void Sequencer::switchPerformanceTrackNow(uint8_t trackToSwitch)
     Sequencer::strPattern* patternFrom = &fileManagerPerformancePatternBuffer;
 
     patternTo->track[trackToSwitch] = patternFrom->track[trackToSwitch];
-    uint8_t track_len = patternFrom->track[trackToSwitch].length;
+    uint16_t track_len = patternFrom->track[trackToSwitch].length;
 
     setPerformanceTrackLength(trackToSwitch, track_len);
     player.track[trackToSwitch].performanceSourcePattern = -1;
@@ -3443,7 +3443,7 @@ void Sequencer::switchPerformanceTrackNow(uint8_t trackToSwitch)
 
     if (player.track[trackToSwitch].actual_pos_absolute > track_len)
     {
-        uint8_t delta = player.globalPos % (track_len + 1);
+        uint16_t delta = player.globalPos % (track_len + 1);
         player.track[trackToSwitch].actual_pos_absolute = delta;
         reset_actual_pos(trackToSwitch, delta);
     }
@@ -3607,13 +3607,13 @@ void Sequencer::handleMidiInStart(bool continuePlay, bool songMode)
 
     clockSignalsToCompensate = externalClockCompensation_clockSignals;
 
-    uint8_t startStep = 0;
+    uint16_t startStep = 0;
     if (continuePlay)
     {
         if (hasPendingSongPosition)
         {
-            uint8_t patLen = currentPattern->track[0].length + 1;
-            startStep = patLen > 0 ? static_cast<uint8_t>(pendingSongPositionBeats * getLinesPerBeat() / 4 % patLen) : 0;
+            uint16_t patLen = currentPattern->track[0].length + 1;
+            startStep = static_cast<uint16_t>(pendingSongPositionBeats * getLinesPerBeat() / 4 % patLen);
             hasPendingSongPosition = false;
         }
         else
