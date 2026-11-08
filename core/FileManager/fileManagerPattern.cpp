@@ -11,6 +11,7 @@
 
 #include "convertOldFileVersionVolume.h"
 
+#include <stddef.h>
 #include <string.h>
 #include <tuple>
 
@@ -19,9 +20,9 @@ __NOINIT(EXTERNAL_RAM) Sequencer::strPattern fileManagerPerformancePatternBuffer
 
 static_assert(PatternFileValidation::k12TracksPatternSizeV5 == k12TracksPatternSize_v5);
 static_assert(PatternFileValidation::k16TracksPatternSizeV5 == k16TracksPatternSize_v5);
-static_assert(PatternFileValidation::k12TracksPatternSize == k12TracksPatternSize);
-static_assert(PatternFileValidation::k16TracksPatternSize == k16TracksPatternSize);
-static_assert(PatternFileValidation::k16TracksPatternSize == sizeof(Sequencer::strPattern));
+static_assert(PatternFileValidation::k12TracksPatternSizeV6 == k12TracksPatternSize_v6);
+static_assert(PatternFileValidation::k16TracksPatternSizeV6 == k16TracksPatternSize_v6);
+static_assert(PatternFileValidation::kPatternSizeV7 == sizeof(Sequencer::strPattern));
 
 void cFileManager::updateLoadWorkspacePattern()
 {
@@ -145,10 +146,8 @@ void cFileManager::savePatternToWorkspace()
     snprintf(
       patternToSave, PATCH_SIZE, cWorkspacePatternFileFormat, mtProject.values.actualPattern);
 
-    uint8_t saveStatus = fileTransfer.saveMemoryToFile(
-      (uint8_t*)&fileManagerPatternBuffer, patternToSave, sizeof(Sequencer::strPattern));
-
-    if (saveStatus == fileTransferEnd)
+    // one blocking write: chunked saveMemoryToFile needs several calls for a 128 KB pattern
+    if (writePatternFile(patternToSave, &fileManagerPatternBuffer))
     {
         report(" no blocking pattern save - success ", mtProject.values.actualPattern);
         clearPatternChanged(mtProject.values.actualPattern);
@@ -358,45 +357,81 @@ bool cFileManager::readPatternFile(const char* filePath, Sequencer::strPattern* 
 
 void cFileManager::checkVersionAndTranslate(Sequencer::strPattern* pattern)
 {
+    const uint8_t version = pattern->header.fileStructureVersion[0];
 
-    if (pattern->header.fileStructureVersion[0] < PATTERN_FILE_VERSION)
+    if (version < PATTERN_FILE_VERSION)
     {
-        if (pattern->header.fileStructureVersion[0] <= 5)
+        // older files hold 128 rows per track: translate them in that layout, then widen
+        strPatternLegacy* legacy = reinterpret_cast<strPatternLegacy*>(pattern);
+
+        if (version <= 5)
         {
-            translatePatternFromFileVersion5ToFileVersion6(pattern);
+            translatePatternFromFileVersion5ToFileVersion6(legacy);
         }
 
-        if (pattern->header.fileStructureVersion[0] <= 1)
+        if (version <= 1)
         {
-            translateVolumeFxInPatternFromFileVersion1ToFileVersion2(pattern);
+            translateVolumeFxInPatternFromFileVersion1ToFileVersion2(legacy);
         }
 
-        if (pattern->header.fileStructureVersion[0] <= 2)
+        if (version <= 2)
         {
-            translateBeatSliceNoteInPatternFromFileVersionLessThan3(pattern);
+            translateBeatSliceNoteInPatternFromFileVersionLessThan3(legacy);
         }
 
-        if (pattern->header.fileStructureVersion[0] <= 3)
+        if (version <= 3)
         {
-            translateVolumeFxInPatternFromFileVersion3ToFileVersion4(pattern);
+            translateVolumeFxInPatternFromFileVersion3ToFileVersion4(legacy);
         }
 
-        if (pattern->header.fileStructureVersion[0] <= 4)
+        if (version <= 4)
         {
-            translatePatternFromFileVersion4ToFileVersion5(pattern);
+            translatePatternFromFileVersion4ToFileVersion5(legacy);
         }
 
-        for (uint8_t i = 0; i < 4; i++)
+        translatePatternWithDifferentTrackCount(legacy);
+        expandLegacyPattern(pattern);
+    }
+
+    sequencer.fitPatternToLinesPerBeat(pattern);
+}
+
+// Moves the tracks of a strPatternLegacy stored at the start of the buffer into the
+// strPattern layout, last track first so that nothing is overwritten before it is moved.
+void cFileManager::expandLegacyPattern(Sequencer::strPattern* pattern)
+{
+    uint8_t* const base = reinterpret_cast<uint8_t*>(pattern);
+    const strPatternLegacy* legacy = reinterpret_cast<const strPatternLegacy*>(pattern);
+    constexpr size_t kTracksOffset = offsetof(strPatternLegacy, track);
+    static_assert(kTracksOffset == offsetof(Sequencer::strPattern, track));
+
+    for (int trackIdx = kAllTracks - 1; trackIdx >= 0; --trackIdx)
+    {
+        const uint16_t length = legacy->track[trackIdx].length;
+        const uint8_t* src = base + kTracksOffset + trackIdx * sizeof(strPatternLegacy::strTrack) +
+                             offsetof(strPatternLegacy::strTrack, step);
+        Sequencer::strPattern::strTrack* dst = &pattern->track[trackIdx];
+
+        memmove(dst->step, src, sizeof(strPatternLegacy::strTrack::step));
+        dst->length = length;
+
+        for (int stepIdx = strPatternLegacy::kRows; stepIdx <= Sequencer::MAXSTEP; ++stepIdx)
         {
-            pattern->header.fileStructureVersion[i] = PATTERN_FILE_VERSION;
+            sequencer.clearStep(&dst->step[stepIdx]);
         }
     }
 
-    translatePatternWithDifferentTrackCount(pattern);
+    pattern->linesPerBeatIndex = kDefaultLinesPerBeatIndex; // old files are always 4 LPB
+    pattern->crc = 0;
+    pattern->header.size = 0;
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        pattern->header.fileStructureVersion[i] = PATTERN_FILE_VERSION;
+    }
 }
 
 void cFileManager::translateVolumeFxInPatternFromFileVersion1ToFileVersion2(
-  Sequencer::strPattern* patternToTranslate)
+  strPatternLegacy* patternToTranslate)
 {
     constexpr uint8_t FX_NUMBER = 2;
     ConvertOldFileVersionVolume volumeConverter;
@@ -429,7 +464,7 @@ void cFileManager::translateVolumeFxInPatternFromFileVersion1ToFileVersion2(
 }
 
 void cFileManager::translateBeatSliceNoteInPatternFromFileVersionLessThan3(
-  Sequencer::strPattern* patternToTranslate)
+  strPatternLegacy* patternToTranslate)
 {
 
     constexpr uint8_t ROOT_NOTE_OFFSET = 12;
@@ -477,7 +512,7 @@ void cFileManager::translateBeatSliceNoteInPatternFromFileVersionLessThan3(
     }
 }
 void cFileManager::translateVolumeFxInPatternFromFileVersion3ToFileVersion4(
-  Sequencer::strPattern* patternToTranslate)
+  strPatternLegacy* patternToTranslate)
 {
     constexpr uint8_t FX_NUMBER = 2;
     ConvertOldFileVersionVolume volumeConverter;
@@ -510,7 +545,7 @@ void cFileManager::translateVolumeFxInPatternFromFileVersion3ToFileVersion4(
 }
 
 void cFileManager::translatePatternFromFileVersion4ToFileVersion5(
-  Sequencer::strPattern* patternToTranslate)
+  strPatternLegacy* patternToTranslate)
 {
     for (int trackIdx = kMidiTrackFirstIdx; trackIdx < kAllTracks; trackIdx++)
     {
@@ -524,7 +559,7 @@ void cFileManager::translatePatternFromFileVersion4ToFileVersion5(
 }
 
 void cFileManager::translatePatternFromFileVersion5ToFileVersion6(
-  Sequencer::strPattern* patternToTranslate)
+  strPatternLegacy* patternToTranslate)
 {
     struct strTrack_v5
     {
@@ -534,7 +569,7 @@ void cFileManager::translatePatternFromFileVersion5ToFileVersion6(
             int8_t note;
             uint8_t instrument;
             Sequencer::strPattern::strTrack::strStep::strFx fx[Sequencer::kStepFxSlots];
-        } step[Sequencer::MAXSTEP + 1];
+        } step[strPatternLegacy::kRows];
     };
 
     const strTrack_v5* srcTracks = reinterpret_cast<const strTrack_v5*>(patternToTranslate->track);
@@ -544,7 +579,7 @@ void cFileManager::translatePatternFromFileVersion5ToFileVersion6(
         const strTrack_v5 srcTrack = srcTracks[trackIdx];
         patternToTranslate->track[trackIdx].length = srcTrack.length;
 
-        for (int stepIdx = 0; stepIdx <= Sequencer::MAXSTEP; ++stepIdx)
+        for (int stepIdx = 0; stepIdx < strPatternLegacy::kRows; ++stepIdx)
         {
             auto& dstStep = patternToTranslate->track[trackIdx].step[stepIdx];
             const auto& srcStep = srcTrack.step[stepIdx];
@@ -559,13 +594,13 @@ void cFileManager::translatePatternFromFileVersion5ToFileVersion6(
     }
 }
 
-void cFileManager::translatePatternWithDifferentTrackCount(Sequencer::strPattern* pattern)
+void cFileManager::translatePatternWithDifferentTrackCount(strPatternLegacy* pattern)
 {
-    if (pattern->header.size == sizeof(Sequencer::strPattern) ||
+    if (pattern->header.size == sizeof(strPatternLegacy) ||
         pattern->header.size == k16TracksPatternSize_v5 ||
-        pattern->header.size == k16TracksPatternSize)
+        pattern->header.size == k16TracksPatternSize_v6)
     {
-        pattern->header.size = sizeof(Sequencer::strPattern);
+        pattern->header.size = sizeof(strPatternLegacy);
         return;
     }
 
@@ -576,7 +611,7 @@ void cFileManager::translatePatternWithDifferentTrackCount(Sequencer::strPattern
         clearAllFromTrackIdx = 8;
     }
     else if (pattern->header.size == k12TracksPatternSize_v5 ||
-             pattern->header.size == k12TracksPatternSize)
+             pattern->header.size == k12TracksPatternSize_v6)
     {
         clearAllFromTrackIdx = 12;
     }
@@ -585,10 +620,13 @@ void cFileManager::translatePatternWithDifferentTrackCount(Sequencer::strPattern
     {
         pattern->track[trackIdx].length = pattern->track[0].length;
 
-        sequencer.clearSingleTrack(&pattern->track[trackIdx]);
+        for (auto& step : pattern->track[trackIdx].step)
+        {
+            sequencer.clearStep(&step);
+        }
     }
 
-    pattern->header.size = sizeof(Sequencer::strPattern);
+    pattern->header.size = sizeof(strPatternLegacy);
 }
 
 /// tu tylko ladujemy do bufora, podmieniamy w sequ

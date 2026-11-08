@@ -2552,7 +2552,7 @@ void playerEngine::calcLfoBasedEnvelope(envelopeGenerator::strEnv* env,
     if (rate > envelopeConstrain)
         rate = envelopeConstrain;
 
-    float lfoFrequency = (sequencer.getCurrentTempo() / 15.0);
+    float lfoFrequency = (sequencer.getCurrentStepTempo() / 15.0);
 
     float periodTime =
       (1000 / lfoFrequency) * (isAmp ? tempoSyncRatesAmp[rate] : tempoSyncRatesOthers[rate]);

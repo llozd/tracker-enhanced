@@ -40,7 +40,7 @@ void Sequencer::fillRandomNotes(int16_t fillStep,
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[t].step[s];
             if (isStepToFillNote(step, offset, fillStep, density))
@@ -75,7 +75,7 @@ void Sequencer::fillLinearNotes(int16_t fillStep,
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[t].step[s];
             if (isStepToFillNote(step, offset, fillStep, density))
@@ -114,7 +114,7 @@ void Sequencer::fillLinearInstruments(int16_t fillStep, int16_t from, int16_t to
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[t].step[s];
             if (isStepToFillNote(step, offset, fillStep, density))
@@ -156,7 +156,7 @@ void Sequencer::fillLinearFx(int16_t fxIndex,
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[t].step[s];
 
@@ -216,7 +216,7 @@ void Sequencer::fillRandomFx(int16_t fxIndex,
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[t].step[s];
 
@@ -233,7 +233,7 @@ void Sequencer::fillRandomFx(int16_t fxIndex,
     }
 }
 
-bool Sequencer::isEuclideanStep(uint8_t offset, int16_t density)
+bool Sequencer::isEuclideanStep(uint16_t offset, int16_t density)
 {
     int length = selection.lastStep - selection.firstStep + 1;
     float euclStepSize = (float)length / density;
@@ -243,7 +243,7 @@ bool Sequencer::isEuclideanStep(uint8_t offset, int16_t density)
 }
 
 bool Sequencer::isStepToFillFx(strPattern::strTrack::strStep* step,
-                               uint8_t offset,
+                               uint16_t offset,
                                uint8_t fxIndex,
                                int16_t fillStep,
                                int16_t density)
@@ -274,7 +274,7 @@ bool Sequencer::isStepToFillFx(strPattern::strTrack::strStep* step,
 }
 
 bool Sequencer::isStepToFillProp(strPattern::strTrack::strStep* step,
-                                 uint8_t offset,
+                                 uint16_t offset,
                                  bool isPropSet,
                                  int16_t fillStep,
                                  int16_t density)
@@ -308,7 +308,7 @@ void Sequencer::fillLinearMicromove(int16_t fillStep,
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             strPattern::strTrack::strStep* step = &currentPattern->track[t].step[s];
             if (isStepToFillProp(step, offset, step->micromove >= 0, fillStep, density))
@@ -341,7 +341,7 @@ void Sequencer::fillRandomMicromove(int16_t fillStep,
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             strPattern::strTrack::strStep* step = &currentPattern->track[t].step[s];
             if (isStepToFillProp(step, offset, step->micromove >= 0, fillStep, density))
@@ -363,7 +363,7 @@ void Sequencer::fillLinearVolume(int16_t fillStep,
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             strPattern::strTrack::strStep* step = &currentPattern->track[t].step[s];
             if (isStepToFillProp(step, offset, step->volume >= 0, fillStep, density))
@@ -396,7 +396,7 @@ void Sequencer::fillRandomVolume(int16_t fillStep,
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             strPattern::strTrack::strStep* step = &currentPattern->track[t].step[s];
             if (isStepToFillProp(step, offset, step->volume >= 0, fillStep, density))
@@ -408,7 +408,7 @@ void Sequencer::fillRandomVolume(int16_t fillStep,
 }
 
 bool Sequencer::isStepToFillNote(strPattern::strTrack::strStep* step,
-                                 uint8_t offset,
+                                 uint16_t offset,
                                  int16_t fillStep,
                                  int16_t density)
 {
@@ -448,7 +448,7 @@ void Sequencer::fillRandomInstruments(int16_t fillStep, int16_t from, int16_t to
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[t].step[s];
 
@@ -479,7 +479,7 @@ void Sequencer::invertSelectedSteps(uint8_t elements)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t a = sel->firstStep, b = sel->lastStep;
+        for (uint16_t a = sel->firstStep, b = sel->lastStep;
              a <= ((sel->lastStep - sel->firstStep) / 2) + sel->firstStep;
              a++, b--)
         {
@@ -616,9 +616,9 @@ bool Sequencer::shrinkPattern()
             currentPattern->track[trackIdx].step[s] = currentPattern->track[trackIdx].step[srcStep];
         }
 
-        uint8_t oldTrackLen = patternMaxStep + 1;
+        uint16_t oldTrackLen = patternMaxStep + 1;
 
-        for (uint8_t s = trackMaxStep; s < oldTrackLen; s++)
+        for (uint16_t s = trackMaxStep; s < oldTrackLen; s++)
         {
             clearStep(&currentPattern->track[trackIdx].step[s]);
         }
@@ -649,7 +649,7 @@ void Sequencer::changeSelectionNote(int16_t value, bool octaveShift)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[t].step[s];
 
@@ -723,7 +723,7 @@ void Sequencer::changeSelectionFxValue(uint8_t fxIndex, int16_t value)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
 
             _fx = &currentPattern->track[t].step[s].fx[fxIndex];
@@ -801,7 +801,7 @@ void Sequencer::setSelectionFxValueByPad(uint8_t fxIndex, int16_t pad)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             _fx = &currentPattern->track[t].step[s].fx[fxIndex];
 
@@ -840,7 +840,7 @@ void Sequencer::changeSelectionMicromove(int16_t value)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep; s <= sel->lastStep; s++)
+        for (uint16_t s = sel->firstStep; s <= sel->lastStep; s++)
         {
             strPattern::strTrack::strStep* step = &currentPattern->track[t].step[s];
 
@@ -878,7 +878,7 @@ void Sequencer::setSelectionMicromoveByPad(int16_t pad)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep; s <= sel->lastStep; s++)
+        for (uint16_t s = sel->firstStep; s <= sel->lastStep; s++)
         {
             strPattern::strTrack::strStep* step = &currentPattern->track[t].step[s];
             step->micromove = roundf(mapClamped<float>(pad, 0, 47, 0, 100));
@@ -907,7 +907,7 @@ void Sequencer::changeSelectionVolume(int16_t value)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep; s <= sel->lastStep; s++)
+        for (uint16_t s = sel->firstStep; s <= sel->lastStep; s++)
         {
             strPattern::strTrack::strStep* step = &currentPattern->track[t].step[s];
 
@@ -946,7 +946,7 @@ void Sequencer::setSelectionVolumeByPad(int16_t pad)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep; s <= sel->lastStep; s++)
+        for (uint16_t s = sel->firstStep; s <= sel->lastStep; s++)
         {
             strPattern::strTrack::strStep* step = &currentPattern->track[t].step[s];
             step->volume = roundf(mapClamped<float>(pad, 0, 47, 0, 100));
@@ -982,7 +982,7 @@ void Sequencer::changeSelectionFxType(uint8_t index, int16_t value)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             _fx = &currentPattern->track[t].step[s].fx[index];
 
@@ -1030,7 +1030,7 @@ void Sequencer::setSelectionFxType(uint8_t fxSlot, int16_t value)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[t].step[s];
 
@@ -1123,7 +1123,7 @@ void Sequencer::changeSelectionInstrument(int16_t value)
 
     for (uint8_t trackIdx = sel->firstTrack; trackIdx <= sel->lastTrack; trackIdx++)
     {
-        for (uint8_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
+        for (uint16_t s = sel->firstStep, offset = 0; s <= sel->lastStep; s++, offset++)
         {
             step = &currentPattern->track[trackIdx].step[s];
 
@@ -1263,7 +1263,7 @@ void Sequencer::setSelectionNote(int16_t value)
 
     for (uint8_t t = sel->firstTrack; t <= sel->lastTrack; t++)
     {
-        for (uint8_t s = sel->firstStep; s <= sel->lastStep; s++)
+        for (uint16_t s = sel->firstStep; s <= sel->lastStep; s++)
         {
             step = &currentPattern->track[t].step[s];
 
@@ -1357,7 +1357,7 @@ void Sequencer::clearSelected(strSelection* selection, uint8_t elements)
     {
         stopOpenNoteOnTrack(t);
 
-        for (uint8_t s = selection->firstStep; s <= selection->lastStep; s++)
+        for (uint16_t s = selection->firstStep; s <= selection->lastStep; s++)
         {
             clearStep(&currentPattern->track[t].step[s], elements);
         }
@@ -1381,23 +1381,26 @@ void Sequencer::setPatternHeader(strPattern* patt)
     patt->header.fileStructureVersion[2] = PATTERN_FILE_VERSION;
     patt->header.fileStructureVersion[3] = PATTERN_FILE_VERSION;
 
-    patt->header.size = sizeof(strPattern);
+    patt->header.size = 0; // size does not fit in 16 bits since file version 7
 }
 
 void Sequencer::clearPattern(strPattern* patt)
 {
 
     patt->swingRez = 0.0;
-    patt->rezerwa1 = 0;
+    patt->linesPerBeatIndex = getLinesPerBeatIndex();
     patt->rezerwa2 = 0;
     patt->rezerwa3 = 0;
     patt->rezerwa4 = 0;
 
     setPatternHeader(patt);
 
+    const uint16_t defaultRows =
+      std::max<uint16_t>(1, DEFAULT_PATTERN_LENGTH * getLinesPerBeat() / kStepsPerBeat);
+
     for (strPattern::strTrack& track : patt->track)
     {
-        track.length = DEFAULT_PATTERN_LENGTH - 1;
+        track.length = defaultRows - 1;
 
         for (strPattern::strTrack::strStep& step : track.step)
         {
@@ -1406,9 +1409,41 @@ void Sequencer::clearPattern(strPattern* patt)
     }
 }
 
+void Sequencer::fitPatternToLinesPerBeat(strPattern* patt)
+{
+    const uint8_t fromIdx = patt->linesPerBeatIndex < kLinesPerBeatOptionsCount
+                              ? patt->linesPerBeatIndex
+                              : kDefaultLinesPerBeatIndex;
+    const uint32_t fromLpb = kLinesPerBeatOptions[fromIdx];
+    const uint32_t toLpb = getLinesPerBeat();
+
+    if (fromLpb != toLpb)
+    {
+        for (strPattern::strTrack& track : patt->track)
+        {
+            const uint32_t rows = (track.length + 1) * toLpb + fromLpb / 2;
+            track.length = clamp<uint32_t>(rows / fromLpb, 1, MAXSTEP + 1) - 1;
+        }
+    }
+
+    patt->linesPerBeatIndex = getLinesPerBeatIndex();
+}
+
+void Sequencer::onLinesPerBeatChanged()
+{
+    if (isPlay())
+    {
+        stop();
+    }
+
+    fitPatternToLinesPerBeat(currentPattern);
+    fitPatternToLinesPerBeat(bufferPattern);
+    newFileManager.clearUndoHistory();
+}
+
 void Sequencer::clearSingleTrack(strPattern::strTrack* track)
 {
-    for (uint8_t i = 0; i <= MAXSTEP; i++)
+    for (uint16_t i = 0; i <= MAXSTEP; i++)
     {
         clearStep(&track->step[i]);
     }
@@ -1421,7 +1456,7 @@ void Sequencer::insert(strSelection* selection)
 
     for (uint8_t t = selection->firstTrack; t <= selection->lastTrack; t++)
     {
-        for (uint8_t s = MAXSTEP; s > selection->firstStep; s--)
+        for (uint16_t s = MAXSTEP; s > selection->firstStep; s--)
         {
             currentPattern->track[t].step[s] = currentPattern->track[t].step[s - 1];
         }
@@ -1437,7 +1472,7 @@ void Sequencer::insertReversed(strSelection* selection)
 
     for (uint8_t t = selection->firstTrack; t <= selection->lastTrack; t++)
     {
-        for (uint8_t s = MINSTEP; s < selection->firstStep; s++)
+        for (uint16_t s = MINSTEP; s < selection->firstStep; s++)
         {
             currentPattern->track[t].step[s] = currentPattern->track[t].step[s + 1];
         }
@@ -1459,7 +1494,7 @@ bool Sequencer::backspace()
 
     for (uint8_t t = selection.firstTrack; t <= selection.lastTrack; t++)
     {
-        for (uint8_t s = selection.firstStep - 1; s < currentPattern->track[0].length; s++)
+        for (uint16_t s = selection.firstStep - 1; s < currentPattern->track[0].length; s++)
         {
             stepFrom = &currentPattern->track[t].step[s + 1];
             stepTo = &currentPattern->track[t].step[s];
@@ -1639,9 +1674,9 @@ bool Sequencer::isSingleSelection(strSelection* selection)
     }
 }
 
-void Sequencer::setCopySelection(uint8_t stepFrom,
+void Sequencer::setCopySelection(uint16_t stepFrom,
                                  uint8_t trackFrom,
-                                 uint8_t stepTo,
+                                 uint16_t stepTo,
                                  uint8_t trackTo)
 {
     if (stepTo < stepFrom)
@@ -1666,7 +1701,7 @@ void Sequencer::setCopySelection(uint8_t stepFrom,
         copySelection.lastTrack = trackTo;
     }
 }
-uint8_t Sequencer::getCopySelectionHeight()
+uint16_t Sequencer::getCopySelectionHeight()
 {
     if (isSelectionCorrect(&copySelection))
     {
@@ -1689,7 +1724,7 @@ int8_t Sequencer::getSelectionFirstNote()
     return retNote;
 }
 
-void Sequencer::setSelection(uint8_t stepFrom, uint8_t trackFrom, uint8_t stepTo, uint8_t trackTo)
+void Sequencer::setSelection(uint16_t stepFrom, uint8_t trackFrom, uint16_t stepTo, uint8_t trackTo)
 {
     if (stepTo < stepFrom)
     {
@@ -1714,9 +1749,9 @@ void Sequencer::setSelection(uint8_t stepFrom, uint8_t trackFrom, uint8_t stepTo
     }
 }
 
-void Sequencer::setPasteSelection(uint8_t stepFrom,
+void Sequencer::setPasteSelection(uint16_t stepFrom,
                                   uint8_t trackFrom,
-                                  uint8_t stepTo,
+                                  uint16_t stepTo,
                                   uint8_t trackTo)
 {
     if (stepTo < stepFrom)
@@ -1881,7 +1916,7 @@ void Sequencer::makeFxValLabelForSeqStep(char* ptr,
                                          int len,
                                          uint8_t fxID,
                                          uint8_t track,
-                                         uint8_t step)
+                                         uint16_t step)
 {
     assert(track < kAllTracks);
 
@@ -2068,12 +2103,12 @@ char Sequencer::getRollTypeChar(uint8_t val)
     }
     return '?';
 }
-AUDIO_CORE_RAM uint8_t Sequencer::calcStepLength(uint8_t track, uint8_t step)
+AUDIO_CORE_RAM uint16_t Sequencer::calcStepLength(uint8_t track, uint16_t step)
 {
-    uint8_t trackLen = getActualPattern()->track[0].length;
+    uint16_t trackLen = getActualPattern()->track[0].length;
 
-    uint8_t b = 1;
-    for (uint8_t a = step + 1; a <= trackLen; a++, b++)
+    uint16_t b = 1;
+    for (uint16_t a = step + 1; a <= trackLen; a++, b++)
     {
         if (getActualPattern()->track[track].step[a].note != STEP_NOTE_EMPTY)
         {

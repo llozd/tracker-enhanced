@@ -1,4 +1,5 @@
 
+#include <algorithm>
 #include <string.h>
 
 #include "configEditor/configEditor.h"
@@ -117,6 +118,16 @@ void setLimiterMode()
 {
     engine.setLimiterAttack(mtProject.values.limiterAttack);
     engine.setLimiterRelease(mtProject.values.limiterRelease);
+    newFileManager.setProjectStructChanged();
+}
+
+void setLinesPerBeat()
+{
+    sequencer.onLinesPerBeatChanged();
+
+    // highlight rows once per beat, as far as the divider range allows
+    uint8_t lpb = kLinesPerBeatOptions[mtProject.values.linesPerBeatIndex];
+    mtProject.values.patternDiv = std::min<uint8_t>(lpb, 16) - 1;
     newFileManager.setProjectStructChanged();
 }
 
