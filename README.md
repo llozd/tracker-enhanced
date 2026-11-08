@@ -6,10 +6,29 @@
 
 ---
 
-## Important: Read Before Flashing
+## tl;dr
+Hopefully, the Tracker Enhanced becomes a mini Renoise, and just generally have more polished features.
 
-> **Supported hardware: Tracker+ and Tracker Mini only.**
-> The Original Polyend Tracker (`MK66`) is **not supported yet**: its platform code is currently removed. Support with a reduced feature set is planned (sequencer improvements only, no realtime effects), see `original-tracker-support`. The planned effects need the CPU headroom of the i.MX RT (Cortex-M7 @ 600 MHz) devices.
+Use this firmware at your own risk and curiousity. Things may still be in development, so it is recommended to stick to [https://github.com/llozd/tracker-enhanced/releases](released) versions - building from source on `main` may contain partially complete or features that aren't fully tested. If you find any bugs, or have any general issues or suggestions, feel free to open an [https://github.com/llozd/tracker-enhanced/issues](issue)!
+
+Some features will not make it to the OG Tracker unfortunately, due to hardware limitations. Below is a list of planned features for each device.
+
+#### All Versions (OG, Mini, Plus)
+- LPB (Lines per Beat) settings
+- Smoother rolls/fast retriggering notes - currently have an audible stop between each retrigger, giving a weird gappy effect
+- Effects on a row without a note - currently unable to run things like microtune/pitchbend on built-in synths, after the key has been released
+- Extended MIDI settings
+    - More assignable CCs per instrument
+    - More than two CCs per row
+- Better chord implementation
+
+#### Plus and Mini only
+- More realtime effects
+    - Vintage-modeled parametric EQs
+    - More compressor types
+    - Signal processing, like exciters, signal colouring, saturation
+
+## Important: Read Before Flashing
 
 > **Project files are NOT backwards compatible.**
 > Tracker Enhanced changes the project and pattern file structures (for example to store lines per beat, extra MIDI CC assignments and new effect settings).
@@ -66,32 +85,6 @@ Tracker Enhanced is derived from the source code released by **Polyend** as [Pol
 This is an independent community project. It is **not** made, endorsed or supported by Polyend. See the disclaimer below.
 
 > **Provided "AS IS" without warranty or support.** Flashing custom firmware is done at your own risk. Thanks to the isolated bootloader and hardware recovery button (see [Flashing on Hardware & Emergency Recovery](#4-flashing-on-hardware--emergency-recovery)), a build that fails to boot can be recovered by re-flashing a known-good `.ptf`. Issues with this firmware should be reported in this repository, not to Polyend support.
-
----
-
-## Repository Structure
-
-```text
-.
-├── Makefile                # Top-level build & version management
-├── version.mk              # Centralized version & build number configuration
-├── CHANGELOG.md            # Release history
-├── CONTRIBUTING.md         # Contribution rules & hardware testing workflow
-├── LICENSE                 # MIT License (+ No Wholesale Commercial Clones & Precompiled Synth Terms)
-├── NOTICE.md               # Third-party open-source attributions
-├── core/                   # Shared Tracker application, audio engine, UI & open synth engines
-├── platforms/
-│   └── imx/                # Tracker+ & Tracker Mini (i.MX RT1051) HAL, drivers & linker scripts
-├── synth/
-│   ├── include/PolySynth/  # PolySynth public headers & Open Synth SDK
-│   └── lib/                # Precompiled libPolySynth.a & libPolyDSP.a + LICENSE-PROPRIETARY.txt
-├── util/                   # Shared C++ utility headers & third-party header libraries
-├── editor-fx-sdk/          # .ptfx Sample Editor plugin SDK, builder & effects/ sources
-├── openspec/               # Change records (proposals, designs, specs, tasks)
-└── docs/                   # User guides, SDK tutorials & architecture documentation
-```
-
-> `.ptfx` plugins are offline **Sample Editor** effects. The planned realtime track and master effects are separate and will be built into the firmware.
 
 ---
 
