@@ -52,6 +52,7 @@ CPU usage will be measured on hardware, and the number of simultaneous per-track
 * **Legato rolls**: Roll hits currently close the gate at half the period and send a note-off before each retrigger, which sounds gappy. The plan is full-length, click-free hits. See `legato-rolls`.
 * **Held button release**: a held button (such as FX1) sometimes acts as released while turning the knob. A suspected cause is the key driver clearing buttons after an I2C error. See `button-hold-release`.
 * **Position on slices**: the Position effect will scrub within the played slice instead of the whole sample. See `position-fx-slices`.
+* **Effects on rows without a note**: Microtune and synth effects on an empty row currently do nothing on MIDI and synth tracks. They will target the track's last played instrument, so a note can be bent later, including on its release. See `fx-only-row-instrument`.
 
 ---
 

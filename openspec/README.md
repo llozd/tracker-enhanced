@@ -10,3 +10,4 @@ Change records for Tracker Enhanced, in [OpenSpec](https://github.com/Fission-AI
 | [legato-rolls](changes/legato-rolls/proposal.md) | Planned |
 | [button-hold-release](changes/button-hold-release/proposal.md) | Investigating |
 | [position-fx-slices](changes/position-fx-slices/proposal.md) | Planned |
+| [fx-only-row-instrument](changes/fx-only-row-instrument/proposal.md) | Planned |
