@@ -2,6 +2,8 @@
 
 **Status: planned**
 
+**Platforms:** all. No feature gate.
+
 ## Why
 Position currently scrubs the whole sample. With slices, the user wants it to scrub within the played slice.
 

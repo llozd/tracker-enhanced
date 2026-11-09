@@ -5,22 +5,22 @@ Polyend Tracker Community Edition (CE) incorporates or links against the followi
 ---
 
 ## 1. ARM CMSIS & CMSIS-DSP
-* **Location**: `platforms/imx/CMSIS/`
+* **Location**: `platforms/imx/CMSIS/`, `platforms/mk66/3rdparty/teensy_core/`
 * **License**: Apache License 2.0 / BSD-3-Clause
 * **Copyright**: Copyright (c) ARM Limited. All rights reserved.
 
-## 2. NXP MCUXpresso SDK (i.MX RT1050/RT1060)
-* **Location**: `platforms/imx/drivers/`, `platforms/imx/device/`, `platforms/imx/usb/`, `platforms/imx/sdmmc/`
+## 2. NXP MCUXpresso SDK (Kinetis K66 & i.MX RT1050/RT1060)
+* **Location**: `platforms/imx/drivers/`, `platforms/imx/device/`, `platforms/imx/usb/`, `platforms/imx/sdmmc/`, `platforms/mk66/3rdparty/SD/`, `platforms/mk66/3rdparty/I2C/`, `platforms/mk66/3rdparty/SDRAM/`
 * **License**: BSD-3-Clause
 * **Copyright**: Copyright (c) Freescale Semiconductor, Inc. / Copyright 2016-2022 NXP.
 
 ## 3. FatFs - Generic FAT Filesystem Module
-* **Location**: `platforms/imx/fatfs/`
+* **Location**: `platforms/imx/fatfs/`, `platforms/mk66/3rdparty/SD/fatfs/`
 * **License**: FatFs License (BSD-style)
 * **Copyright**: Copyright (C) ChaN, 2019. All rights reserved.
 
 ## 4. Teensy Cores & Teensy Audio Library (PJRC)
-* **Location**: `core/libs/Audio/`
+* **Location**: `platforms/mk66/3rdparty/teensy_core/`, `platforms/mk66/3rdparty/Audio/`, `core/libs/Audio/`
 * **License**: MIT / PJRC Permissive License
 * **Copyright**: Copyright (c) 2014-2018 Paul Stoffregen, PJRC.COM, LLC.
 
@@ -40,7 +40,7 @@ Polyend Tracker Community Edition (CE) incorporates or links against the followi
 * **Copyright**: Copyright (c) 2019 - 2022 Daniil Goncharov.
 
 ## 8. FastCRC
-* **Location**: `platforms/imx/3rdparty/FastCRC/`
+* **Location**: `platforms/mk66/3rdparty/FastCRC/`, `platforms/imx/3rdparty/FastCRC/`
 * **License**: MIT / GPLv3 dual-licensed (used under MIT/BSD terms where applicable)
 * **Copyright**: Copyright (c) 2014-2016 Frank Boesing.
 

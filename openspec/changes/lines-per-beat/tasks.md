@@ -5,6 +5,7 @@
 - [x] Global default LPB in config (#4)
 - [x] Per-project LPB setting and project file version 18 (#5)
 - [x] Widen patterns to 1024 rows, load legacy pattern files (#6)
+- [x] Reduce patterns to 512 rows (pattern file v8), cut v7 files on load
 - [x] Scale pattern lengths on LPB change (#7)
 - [x] Update README and memory docs (#7)
 - [ ] Hardware test: load old projects, save and reload, undo, copy/paste at long lengths

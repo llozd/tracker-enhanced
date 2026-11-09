@@ -8,6 +8,7 @@ namespace PatternFileValidation
 {
 constexpr uint8_t kLastLegacyPatternVersion = 5;
 constexpr uint8_t kLastNarrowPatternVersion = 6; // up to 128 rows per track
+constexpr uint8_t kWidePatternVersion = 7;        // 1024 rows per track
 constexpr uint16_t k8TracksPatternSizeV5 = 6184;
 constexpr uint16_t k12TracksPatternSizeV5 = 9260;
 constexpr uint16_t k16TracksPatternSizeV5 = 12336;
@@ -16,6 +17,7 @@ constexpr uint16_t k12TracksPatternSizeV6 = 12332;
 constexpr uint16_t k16TracksPatternSizeV6 = 16432;
 // since version 7 the header size field is unused, only the file size is checked
 constexpr size_t kPatternSizeV7 = 131136;
+constexpr size_t kPatternSizeV8 = 65600;
 constexpr size_t kCrcSize = sizeof(uint32_t);
 
 struct Layout
@@ -53,7 +55,7 @@ inline bool resolveLayout(uint8_t version,
 
     if (version > kLastNarrowPatternVersion)
     {
-        if (fileSize != kPatternSizeV7)
+        if (fileSize != (version == kWidePatternVersion ? kPatternSizeV7 : kPatternSizeV8))
         {
             return false;
         }

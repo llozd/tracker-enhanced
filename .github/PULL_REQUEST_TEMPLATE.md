@@ -3,11 +3,12 @@
 
 
 ## Behavior & Changes
-<!-- Describe WHAT changed: user-facing behavior, UI screens, button combinations (on both Tracker+ and Tracker Mini if applicable), and key technical details. -->
+<!-- Describe WHAT changed: user-facing behavior, UI screens, button combinations (on both Original/Plus and Tracker Mini if applicable), and key technical details. -->
 
 
 ## Target Devices
 <!-- Check all devices for which this feature/fix is built: -->
+- [ ] **Original Polyend Tracker** (`MK66`)
 - [ ] **Polyend Tracker+** (`IMX`)
 - [ ] **Polyend Tracker Mini** (`IMX`)
 
@@ -17,6 +18,7 @@
 
 | Device | Tested on Hardware by Author | Needs Community Hardware Testing | Not Applicable | Notes / Tested By |
 | :--- | :---: | :---: | :---: | :--- |
+| **Original Tracker** (`MK66`) | [ ] | [ ] | [ ] | |
 | **Tracker+** (`IMX`) | [ ] | [ ] | [ ] | |
 | **Tracker Mini** (`IMX`) | [ ] | [ ] | [ ] | |
 
@@ -29,7 +31,7 @@
 ## Developer Checklist
 - [ ] I have read and understood the Contribution & Pull Request Guidelines (`CONTRIBUTING.md`).
 - [ ] This PR implements **one single feature or bug fix** (no unrelated refactors or formatting sweeps).
-- [ ] `make all` compiles cleanly for both devices (`Plus`, `Mini`).
+- [ ] `make all` compiles cleanly for all three devices (`Original`, `Plus`, `Mini`).
 - [ ] Memory usage (`SRAM_DTC`, `EXTERNAL_RAM`, `FLASH`) was checked and stays within safe hardware headroom.
 - [ ] No heap allocations (`new`/`malloc`) or SD card I/O were added to real-time audio callbacks.
 - [ ] Existing `.mt` projects, `.pti` instruments, `.pts` synth patches, and `mtConfig` settings remain backward-compatible.

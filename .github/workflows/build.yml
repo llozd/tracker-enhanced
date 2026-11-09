@@ -50,13 +50,13 @@ jobs:
       - name: Check version configuration
         run: make version
 
-      - name: Build Tracker+ and Tracker Mini firmware
+      - name: Build Original Tracker, Tracker+, and Tracker Mini firmware
         run: |
           set -o pipefail
           POSTFIX_ARGS=""
           if [[ "${{ github.ref }}" != refs/tags/v* ]]; then
             SHORT_SHA=$(git rev-parse --short=7 HEAD)
-            POSTFIX_ARGS="PLUS_POSTFIX=CE_${SHORT_SHA} MINI_POSTFIX=CE_${SHORT_SHA}"
+            POSTFIX_ARGS="ORIGINAL_POSTFIX=CE_${SHORT_SHA} PLUS_POSTFIX=CE_${SHORT_SHA} MINI_POSTFIX=CE_${SHORT_SHA}"
           fi
           make all $POSTFIX_ARGS 2>&1 | tee build_output.log
 
@@ -91,7 +91,7 @@ jobs:
             cat pr_summary.md
             echo ""
             echo "> **Downloads (Bottom of Summary Page)**:"
-            echo "> * **\`polyend-tracker-ce-firmware\`**: Ready-to-flash \`.ptf\` firmware files for **Tracker+** and **Tracker Mini**."
+            echo "> * **\`polyend-tracker-ce-firmware\`**: Ready-to-flash \`.ptf\` firmware files for **Original Tracker**, **Tracker+**, and **Tracker Mini**."
             echo "> * **\`polyend-tracker-ce-effects\`**: Unzip and copy the included **\`Effects/\`** folder directly to the root of your Tracker's microSD card."
           } >> "$GITHUB_STEP_SUMMARY"
 

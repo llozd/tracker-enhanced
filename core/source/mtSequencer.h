@@ -66,7 +66,7 @@ class Sequencer
     enum enMisc
     {
         MINSTEP = 0,
-        MAXSTEP = 1023, // rows per pattern - 1
+        MAXSTEP = 511, // rows per pattern - 1
         DEFAULT_PATTERN_LENGTH = 32,
 
     };

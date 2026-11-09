@@ -48,10 +48,10 @@ Renoise-style control over how many pattern rows make up one beat. Stock firmwar
 * A **global default** (**General > Default LPB**) is given to new projects.
 * Step FX (Roll, Arp, Micromove, Swing, Slide, Tempo) and envelope/LFO sync are measured in steps, so they speed up with LPB. The short delay sync stays tied to the beat.
 * MIDI clock out and in, and Song Position, follow the LPB.
-* **Patterns hold up to 1024 rows** (128 before). When LPB changes, pattern **lengths scale with it**, so a 64 row pattern at 4 LPB becomes 256 rows at 16 LPB and keeps its duration. Note content is not moved or stretched, only the length changes. Scaling down rounds the length to the nearest row.
+* **Patterns hold up to 512 rows** (128 before). When LPB changes, pattern **lengths scale with it**, so a 64 row pattern at 4 LPB becomes 256 rows at 16 LPB and keeps its duration. Note content is not moved or stretched, only the length changes. Scaling down rounds the length to the nearest row.
 * New patterns default to 32 rows at 4 LPB, scaled to the current LPB. The preset length values in the pattern editor scale the same way.
 * Changing LPB stops playback and clears the undo history.
-* To make room for the larger pattern buffers (about 4.5 MB), the sample memory is reduced from 60 MB to 55 MB. Long samples are streamed from the SD card as before.
+* To make room for the larger pattern buffers (about 2.3 MB), the sample memory is reduced from 60 MB to 55 MB on Tracker+ and Mini, and from 11.25 MB to 10.25 MB on the Original. Long samples are streamed from the SD card as before.
 
 ### 2. Extended MIDI CC Control (planned)
 Today each MIDI instrument has 6 CC slots and each step has 2 FX slots.
@@ -73,7 +73,7 @@ CPU usage will be measured on hardware, and the number of simultaneous per-track
 * **Position on slices**: the Position effect will scrub within the played slice instead of the whole sample. See `position-fx-slices`.
 * **Effects on rows without a note**: Microtune and synth effects on an empty row currently do nothing on MIDI and synth tracks. They will target the track's last played instrument, so a note can be bent later, including on its release. See `fx-only-row-instrument`.
 
-### 5. Original Tracker Support (planned)
+### 5. Original Tracker Support (in progress)
 The Original Tracker (`MK66`) build will come back with a reduced feature set. It will get lines per beat (up to 16), legato rolls and other sequencer improvements. Realtime effects and other features with significant CPU or memory overhead will be compiled out. Projects will stay portable between devices. See `original-tracker-support`.
 
 ---

@@ -2,6 +2,8 @@
 
 **Status: planned**
 
+**Platforms:** all. On the Original only the MIDI part applies, because synth tracks are already compiled out there (`FEATURE_SYNTH`). No new gate.
+
 ## Problem
 Microtune (pitchbend) and synth effects placed on a row with no note do nothing on MIDI and synth tracks. A note cannot be bent a few rows after it starts, for example on its release.
 

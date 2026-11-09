@@ -2,6 +2,8 @@
 
 **Status: investigating**
 
+**Platforms:** all. The fix is in the IMX key driver (`platforms/imx/source/Drivers/Keys.cpp`); the MK66 driver (`platforms/mk66/3rdparty/Buttons/Keys.cpp`) is checked separately. No feature gate.
+
 ## Problem
 While holding a button such as FX1 and turning the knob to pick an effect, the button sometimes acts as released. The knob then changes the effect's value instead. Also seen on older firmware, so not caused by the LPB work.
 
