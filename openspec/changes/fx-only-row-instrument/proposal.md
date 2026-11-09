@@ -1,6 +1,6 @@
 # Effects on rows without a note
 
-**Status: planned**
+**Status: implemented**, untested on hardware
 
 **Platforms:** all. On the Original only the MIDI part applies, because synth tracks are already compiled out there (`FEATURE_SYNTH`). No new gate.
 
