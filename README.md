@@ -51,7 +51,7 @@ Renoise-style control over how many pattern rows make up one beat. Stock firmwar
 * **Patterns hold up to 512 rows** (128 before). When LPB changes, pattern **lengths scale with it**, so a 64 row pattern at 4 LPB becomes 256 rows at 16 LPB and keeps its duration. Note content is not moved or stretched, only the length changes. Scaling down rounds the length to the nearest row.
 * New patterns default to 32 rows at 4 LPB, scaled to the current LPB. The preset length values in the pattern editor scale the same way.
 * Changing LPB stops playback and clears the undo history.
-* To make room for the larger pattern buffers (about 2.3 MB), the sample memory is reduced from 60 MB to 55 MB. Long samples are streamed from the SD card as before.
+* To make room for the larger pattern buffers (about 2.3 MB), the sample memory is reduced from 60 MB to 55 MB on Tracker+ and Mini, and from 11.25 MB to 10.25 MB on the Original. Long samples are streamed from the SD card as before.
 
 ### 2. Extended MIDI CC Control (planned)
 Today each MIDI instrument has 6 CC slots and each step has 2 FX slots.

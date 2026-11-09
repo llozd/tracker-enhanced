@@ -63,7 +63,7 @@ const float MIN_WAVE_FLOAT = -1.0;
 // T1
 const uint32_t EXTERAL_MEMORY_ADDRESS = 0x70000000;
 const uint32_t TOTAL_EXTERNAL_MEMORY = (16 * 1024 * 1024); // 16 MB
-const uint32_t SAMPLE_MEMORY_SIZE = (45 * 256 * 1024);     // 11,25 MB = 133.7469 sec = 2.229 min
+const uint32_t SAMPLE_MEMORY_SIZE = (41 * 256 * 1024);     // 10,25 MB, 1 MB less to fit 512 row patterns
 #else
 // Tmini / Tplus
 const uint32_t EXTERAL_MEMORY_ADDRESS = 0x80000000;
