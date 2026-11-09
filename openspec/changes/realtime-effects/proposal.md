@@ -2,6 +2,8 @@
 
 **Status: planned**
 
+**Platforms:** Plus and Mini only. Code and UI are wrapped in `#if FEATURE_REALTIME_FX` (`core/include/platformFeatures.h`), which is 0 on the Original. Effect settings are still stored in project files there.
+
 ## Why
 The firmware lacks console-style tone shaping and character effects.
 

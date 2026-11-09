@@ -2,6 +2,8 @@
 
 **Status: planned**
 
+**Platforms:** all. Sequencer-only, so no feature gate. The declick must stay cheap enough for the Original.
+
 ## Why
 Rolls and fast runs of notes sound gappy, with a tiny stop between hits. This exists in older firmware too.
 

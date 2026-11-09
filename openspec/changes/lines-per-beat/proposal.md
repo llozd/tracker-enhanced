@@ -2,6 +2,8 @@
 
 **Status: complete** (PRs #3 to #7). Built for Tracker+ and Mini; not yet tested on hardware.
 
+**Platforms:** all, with the same 512-row pattern format everywhere. On the Original the pattern buffers are paid for by 1 MB less sample memory. The 16 LPB cap may need lowering there after hardware tests.
+
 ## Why
 Fixed 4 lines per beat limits rhythmic detail. Renoise lets the user choose the resolution per song.
 

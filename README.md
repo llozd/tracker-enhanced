@@ -73,7 +73,7 @@ CPU usage will be measured on hardware, and the number of simultaneous per-track
 * **Position on slices**: the Position effect will scrub within the played slice instead of the whole sample. See `position-fx-slices`.
 * **Effects on rows without a note**: Microtune and synth effects on an empty row currently do nothing on MIDI and synth tracks. They will target the track's last played instrument, so a note can be bent later, including on its release. See `fx-only-row-instrument`.
 
-### 5. Original Tracker Support (planned)
+### 5. Original Tracker Support (in progress)
 The Original Tracker (`MK66`) build will come back with a reduced feature set. It will get lines per beat (up to 16), legato rolls and other sequencer improvements. Realtime effects and other features with significant CPU or memory overhead will be compiled out. Projects will stay portable between devices. See `original-tracker-support`.
 
 ---

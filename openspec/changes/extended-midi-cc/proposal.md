@@ -2,6 +2,8 @@
 
 **Status: planned**
 
+**Platforms:** Plus and Mini; Original if the memory fits. Slot and column counts go in `PlatformLimits` (`core/include/platformFeatures.h`) so the Original can use lower values. Project files keep the full layout on every device.
+
 ## Why
 Each MIDI instrument has 6 CC slots and each step has 2 FX slots, which limits expressive control of external gear.
 
