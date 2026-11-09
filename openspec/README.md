@@ -7,7 +7,7 @@ Change records for Tracker Enhanced, in [OpenSpec](https://github.com/Fission-AI
 | [lines-per-beat](changes/lines-per-beat/proposal.md) | Complete (PRs #3 to #7), untested on hardware |
 | [extended-midi-cc](changes/extended-midi-cc/proposal.md) | Planned |
 | [realtime-effects](changes/realtime-effects/proposal.md) | Planned |
-| [legato-rolls](changes/legato-rolls/proposal.md) | Planned |
+| [legato-rolls](changes/legato-rolls/proposal.md) | Implemented, untested on hardware |
 | [button-hold-release](changes/button-hold-release/proposal.md) | Investigating |
 | [position-fx-slices](changes/position-fx-slices/proposal.md) | Planned |
 | [fx-only-row-instrument](changes/fx-only-row-instrument/proposal.md) | Implemented, untested on hardware |

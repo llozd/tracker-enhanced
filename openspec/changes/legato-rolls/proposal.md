@@ -1,6 +1,6 @@
 # Legato rolls
 
-**Status: planned**
+**Status: implemented**, untested on hardware
 
 **Platforms:** all. Sequencer-only, so no feature gate. The declick must stay cheap enough for the Original.
 
@@ -14,4 +14,4 @@ In `core/source/mtSequencer.cpp` (roll handling, about lines 1085 to 1155):
 - The next note-on restarts the voice from the sample start.
 
 ## What changes
-Make roll hits legato: gate for the full period, no note-off before each retrigger, and avoid a click on restart (for example a short crossfade). Check the same restart behaviour for consecutive notes.
+Make roll hits legato: gate each hit for the full period, so the next hit's note-off and note-on land in the same tick. The sample engine already fades a sounding voice out over 1 ms before restarting it, so the restart is click-free without a new crossfade. Consecutive notes already behave this way.

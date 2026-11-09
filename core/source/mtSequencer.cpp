@@ -971,7 +971,7 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
         if (playerRow.roll.isOn)
         {
             playerRow.roll.period = playerRow.roll.val;
-            playerRow.noteLength = rollValToMicroSteps(playerRow.roll.period) / 2;
+            playerRow.noteLength = rollGateLength(playerRow.roll.period);
             playerRow.stepOpen = 1;
         }
 
@@ -1100,7 +1100,7 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
                 {
                     playerRow.stepContRoll = playerRow.stepSent;
 
-                    playerRow.noteLength = rollValToMicroSteps(playerRow.roll.period) / 2;
+                    playerRow.noteLength = rollGateLength(playerRow.roll.period);
 
                     if (playerRow.roll.type == fx.rollType_noteUp)
                     {
@@ -1277,6 +1277,13 @@ uint16_t Sequencer::rollValToMicroSteps(int8_t rollVal)
         default: return 0;
     }
     return 0;
+}
+
+// One tick past the period, so each hit's note-off lands in the same tick as the next note-on
+// and roll hits follow each other without a gap.
+uint16_t Sequencer::rollGateLength(int8_t rollVal)
+{
+    return rollValToMicroSteps(rollVal) + 1;
 }
 
 uint16_t Sequencer::stutterValToPeriod(int8_t rollVal)
