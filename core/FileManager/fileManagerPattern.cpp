@@ -11,6 +11,7 @@
 
 #include "convertOldFileVersionVolume.h"
 
+#include <algorithm>
 #include <stddef.h>
 #include <string.h>
 #include <tuple>
@@ -22,7 +23,8 @@ static_assert(PatternFileValidation::k12TracksPatternSizeV5 == k12TracksPatternS
 static_assert(PatternFileValidation::k16TracksPatternSizeV5 == k16TracksPatternSize_v5);
 static_assert(PatternFileValidation::k12TracksPatternSizeV6 == k12TracksPatternSize_v6);
 static_assert(PatternFileValidation::k16TracksPatternSizeV6 == k16TracksPatternSize_v6);
-static_assert(PatternFileValidation::kPatternSizeV7 == sizeof(Sequencer::strPattern));
+static_assert(PatternFileValidation::kPatternSizeV7 == kPatternSize_v7);
+static_assert(PatternFileValidation::kPatternSizeV8 == sizeof(Sequencer::strPattern));
 
 void cFileManager::updateLoadWorkspacePattern()
 {
@@ -62,15 +64,9 @@ void cFileManager::loadPatternFromWorkspace(uint8_t index)
     snprintf(patternFilename, PATCH_SIZE, cWorkspacePatternFileFormat, index);
     loadedPattern = index;
 
-    uint8_t loadStatus = fileTransfer.loadFileToMemory(patternFilename,
-                                                       (uint8_t*)&fileManagerPatternBuffer,
-                                                       sizeof(Sequencer::strPattern),
-                                                       fileWholeOnce);
-
-    if (loadStatus == fileTransferEnd)
+    if (fileSystem->exists(patternFilename))
     {
-        size_t fileSize = fileSystem->getFileSize(patternFilename);
-        if (validatePatternFileData(patternFilename, &fileManagerPatternBuffer, fileSize) &&
+        if (readPatternFile(patternFilename, &fileManagerPatternBuffer) &&
             sequencer.copyBufferToBufferPattern((uint8_t*)&fileManagerPatternBuffer))
         {
             report(" no blocking pattern load - success ", loadedPattern);
@@ -78,7 +74,7 @@ void cFileManager::loadPatternFromWorkspace(uint8_t index)
             return;
         }
     }
-    else if (loadStatus == fileTransferFileNoExist) // brak pliku patternu
+    else // brak pliku patternu
     {
         sequencer.clearPattern(&fileManagerPatternBuffer);
         sequencer.copyBufferToBufferPattern((uint8_t*)&fileManagerPatternBuffer);
@@ -98,26 +94,8 @@ const Sequencer::strPattern* cFileManager::loadWorkspacePatternToTempBuffer(uint
     char patternToLoad[PATCH_SIZE];
     snprintf(patternToLoad, PATCH_SIZE, cWorkspacePatternFileFormat, index);
 
-    uint8_t loadStatus = fileTransfer.loadFileToMemory(patternToLoad,
-                                                       (uint8_t*)&fileManagerPatternBuffer,
-                                                       sizeof(Sequencer::strPattern),
-                                                       fileWholeOnce);
-
-    if (loadStatus == fileTransferEnd)
-    {
-        size_t fileSize = fileSystem->getFileSize(patternToLoad);
-        if (!validatePatternFileData(patternToLoad, &fileManagerPatternBuffer, fileSize))
-        {
-            return nullptr;
-        }
-
-        checkVersionAndTranslate(&fileManagerPatternBuffer);
-        return &fileManagerPatternBuffer;
-    }
-    else
-    {
-        return nullptr;
-    }
+    return readPatternFile(patternToLoad, &fileManagerPatternBuffer) ? &fileManagerPatternBuffer
+                                                                      : nullptr;
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -328,17 +306,25 @@ bool cFileManager::readPatternFile(const char* filePath, Sequencer::strPattern* 
     }
 
     size_t fileSize = fileSystem->getFileSize(file);
-    if (fileSize > sizeof(Sequencer::strPattern))
+    bool readOk;
+    if (fileSize == PatternFileValidation::kPatternSizeV7)
+    {
+        readOk = readWidePatternFile(file, destPattern);
+    }
+    else if (fileSize <= sizeof(Sequencer::strPattern))
+    {
+        int32_t bytesRead = fileSystem->readFile(destPattern, fileSize, file);
+        readOk = bytesRead >= 0 && static_cast<size_t>(bytesRead) == fileSize;
+    }
+    else
     {
         fileSystem->closeFile(file);
         report("load pattern file - invalid size ", filePath);
         return false;
     }
-
-    int32_t bytesRead = fileSystem->readFile(destPattern, fileSize, file);
     fileSystem->closeFile(file);
 
-    if (bytesRead < 0 || static_cast<size_t>(bytesRead) != fileSize)
+    if (!readOk)
     {
         report("load pattern file - read error ", filePath);
         return false;
@@ -352,6 +338,33 @@ bool cFileManager::readPatternFile(const char* filePath, Sequencer::strPattern* 
     checkVersionAndTranslate(destPattern);
 
     report("load pattern file - success ", filePath);
+    return true;
+}
+
+// Version 7 files hold 1024 rows per track: read only the first MAXSTEP + 1 rows of each.
+bool cFileManager::readWidePatternFile(FileSystem::FileHandle file, Sequencer::strPattern* destPattern)
+{
+    using strTrack = Sequencer::strPattern::strTrack;
+    constexpr int32_t kHeaderBytes = offsetof(Sequencer::strPattern, track);
+    constexpr int32_t kTrackBytes = sizeof(strTrack);
+    constexpr int32_t kSkippedBytes = (1024 - (Sequencer::MAXSTEP + 1)) * sizeof(strTrack::strStep);
+    static_assert(kHeaderBytes + kAllTracks * (kTrackBytes + kSkippedBytes) + sizeof(uint32_t) ==
+                  kPatternSize_v7);
+
+    if (fileSystem->readFile(destPattern, kHeaderBytes, file) != kHeaderBytes)
+    {
+        return false;
+    }
+
+    for (strTrack& track : destPattern->track)
+    {
+        if (fileSystem->readFile(&track, kTrackBytes, file) != kTrackBytes ||
+            !fileSystem->seekFileCur(kSkippedBytes, file))
+        {
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -391,6 +404,19 @@ void cFileManager::checkVersionAndTranslate(Sequencer::strPattern* pattern)
 
         translatePatternWithDifferentTrackCount(legacy);
         expandLegacyPattern(pattern);
+    }
+    else if (version == PatternFileValidation::kWidePatternVersion)
+    {
+        // rows past MAXSTEP were dropped on read
+        for (Sequencer::strPattern::strTrack& track : pattern->track)
+        {
+            track.length = std::min<uint16_t>(track.length, Sequencer::MAXSTEP);
+        }
+        pattern->crc = 0;
+        for (uint8_t i = 0; i < 4; i++)
+        {
+            pattern->header.fileStructureVersion[i] = PATTERN_FILE_VERSION;
+        }
     }
 
     sequencer.fitPatternToLinesPerBeat(pattern);

@@ -28,7 +28,7 @@ When extending the **Polyend Tracker Community Edition (CE)** firmware, adding n
 | **Plus / Mini (IMX) - `SRAM_ITC` (`RAM2`)** | `128 KB` | `~105.4 KB` (`82.4%`) | **`~22.5 KB`** | — | Zero-wait-state instruction TCM (`.ramfunc.$RAM2` / `.audio_ram_functions` hot DSP loops). |
 | **Plus / Mini (IMX) - `SRAM_DTC` (`RAM`)** | `352 KB` | `~330–331 KB` (`93.9–94.0%`) | **`~21–22 KB`** | — | Main stack, heap, `.data`, and real-time `.bss`. Keep large or non-realtime buffers in `EXTERNAL_RAM`. |
 | **Plus / Mini (IMX) - `SRAM_OC` (`RAM3`)** | `32 KB` | `~22.7 KB` (`70.8%`) | **`~9.3 KB`** | — | Non-cacheable OCRAM used for USB/SDMA buffers and `audioRecBuff`. |
-| **Plus / Mini (IMX) - `EXTERNAL_RAM` (`RAM4`)** | `65,536 KB` | `~64,548 KB` (`98.5%`) | **`~988 KB`** | **`+24.0 MB`** *(up to `~25 MB` total)* | `55 MB` `SAMPLE_MEMORY_SIZE` (`40 MB` stereo sample pool + `15 MB` FX edit buffer) + `~4.5 MB` of pattern buffers (36+ patterns of `128 KB`, 1024 rows each) + `1.5 MB` delay + `768 KB` shared `externalRamScratchBuff` + `VoiceStreamManager` ring buffers + `64 KB` `g_wtEnvelopeBank`. |
+| **Plus / Mini (IMX) - `EXTERNAL_RAM` (`RAM4`)** | `65,536 KB` | `~62,180 KB` (`94.9%`) | **`~3,356 KB`** | **`+24.0 MB`** *(up to `~25 MB` total)* | `55 MB` `SAMPLE_MEMORY_SIZE` (`40 MB` stereo sample pool + `15 MB` FX edit buffer) + `~2.3 MB` of pattern buffers (36+ patterns of `64 KB`, 512 rows each) + `1.5 MB` delay + `768 KB` shared `externalRamScratchBuff` + `VoiceStreamManager` ring buffers + `64 KB` `g_wtEnvelopeBank`. |
 
 ### Theoretically Available `EXTERNAL_RAM` via `SAMPLE_MEMORY_SIZE` (Hybrid SD Streaming)
 

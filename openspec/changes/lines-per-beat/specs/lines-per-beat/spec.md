@@ -23,7 +23,7 @@ Step-based effects and MIDI sync SHALL follow the LPB.
 - **THEN** 24 pulses per beat are emitted
 
 ### Requirement: Pattern length scales with LPB
-Pattern lengths SHALL keep their duration when LPB changes, up to 1024 rows.
+Pattern lengths SHALL keep their duration when LPB changes, up to 512 rows.
 
 #### Scenario: Raise LPB
 - **WHEN** a 64 row pattern at 4 LPB is changed to 16 LPB
@@ -34,8 +34,12 @@ Pattern lengths SHALL keep their duration when LPB changes, up to 1024 rows.
 - **THEN** it is rounded to the nearest row, minimum 1
 
 ### Requirement: Old pattern files load
-Pattern files of version 6 or older SHALL load and be expanded to the 1024 row layout.
+Pattern files of version 7 or older SHALL load into the 512 row layout.
 
 #### Scenario: Legacy pattern
 - **WHEN** a 128 row pattern file is opened
 - **THEN** all steps are preserved and its LPB is 4
+
+#### Scenario: 1024 row pattern
+- **WHEN** a version 7 pattern file longer than 512 rows is opened
+- **THEN** its first 512 rows are kept and its length is clamped to 512

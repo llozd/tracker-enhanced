@@ -11,5 +11,5 @@ Each MIDI instrument has 6 CC slots and each step has 2 FX slots, which limits e
 - Project format change (already not backwards compatible).
 
 ## Open questions
-- Number of CC slots and extra FX columns, given tight SRAM_DTC (about 16 KB free) and 128 KB pattern size.
+- Number of CC slots and extra FX columns, given tight SRAM_DTC (about 16 KB free) and 64 KB pattern size.
 - How extra columns are shown and edited in the pattern view.

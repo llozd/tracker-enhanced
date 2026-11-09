@@ -48,10 +48,10 @@ Renoise-style control over how many pattern rows make up one beat. Stock firmwar
 * A **global default** (**General > Default LPB**) is given to new projects.
 * Step FX (Roll, Arp, Micromove, Swing, Slide, Tempo) and envelope/LFO sync are measured in steps, so they speed up with LPB. The short delay sync stays tied to the beat.
 * MIDI clock out and in, and Song Position, follow the LPB.
-* **Patterns hold up to 1024 rows** (128 before). When LPB changes, pattern **lengths scale with it**, so a 64 row pattern at 4 LPB becomes 256 rows at 16 LPB and keeps its duration. Note content is not moved or stretched, only the length changes. Scaling down rounds the length to the nearest row.
+* **Patterns hold up to 512 rows** (128 before). When LPB changes, pattern **lengths scale with it**, so a 64 row pattern at 4 LPB becomes 256 rows at 16 LPB and keeps its duration. Note content is not moved or stretched, only the length changes. Scaling down rounds the length to the nearest row.
 * New patterns default to 32 rows at 4 LPB, scaled to the current LPB. The preset length values in the pattern editor scale the same way.
 * Changing LPB stops playback and clears the undo history.
-* To make room for the larger pattern buffers (about 4.5 MB), the sample memory is reduced from 60 MB to 55 MB. Long samples are streamed from the SD card as before.
+* To make room for the larger pattern buffers (about 2.3 MB), the sample memory is reduced from 60 MB to 55 MB. Long samples are streamed from the SD card as before.
 
 ### 2. Extended MIDI CC Control (planned)
 Today each MIDI instrument has 6 CC slots and each step has 2 FX slots.

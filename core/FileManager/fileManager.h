@@ -544,6 +544,7 @@ class cFileManager
                                  size_t fileSize);
     bool writePatternFile(const char* filePath, Sequencer::strPattern* sourcePattern);
     bool readPatternFile(const char* filePath, Sequencer::strPattern* destPattern);
+    bool readWidePatternFile(FileSystem::FileHandle file, Sequencer::strPattern* destPattern);
     bool saveActualPattern(const char* path, uint8_t index);
     bool loadPattern(const char* path, uint8_t index);
 
