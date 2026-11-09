@@ -164,6 +164,8 @@ class AudioPlayMemory : public AudioStream
     void setForcedSlice(uint8_t value);
     void setSliceForcedFlag();
     void clearSliceForcedFlag();
+    void setForcedSlicePosition(uint16_t value);
+    void clearSlicePositionForcedFlag();
     //************************************************
 
     void setCurrentInstrIdx(uint8_t n);
@@ -237,6 +239,7 @@ class AudioPlayMemory : public AudioStream
     void playLoopBackward(uint8_t instrIdx, int8_t note);
     void playLoopPingpong(uint8_t instrIdx, int8_t note);
     void playSlice(uint8_t instrIdx, int8_t note);
+    void applyForcedSlicePosition(uint16_t& startSlice, uint16_t& endSlice);
     void playBeatSlice(uint8_t instrIdx, int8_t note);
     void playGranular(uint8_t instrIdx, int8_t note);
     void playWavetable(uint8_t instrIdx, int8_t note);
@@ -464,6 +467,7 @@ class AudioPlayMemory : public AudioStream
     uint8_t fineTuneForceFlag;
     uint8_t wavetableWindowForceFlag;
     uint8_t sliceForcedFlag;
+    uint8_t slicePositionForcedFlag;
     uint8_t granularForcedFlag;
     uint8_t granularLengthForcedFlag = 0;
     uint8_t reverseDirectionFlag;
@@ -477,6 +481,7 @@ class AudioPlayMemory : public AudioStream
     int8_t forcedFineTune;
     uint32_t forcedWavetableWindow;
     uint8_t forcedSlice;
+    uint16_t forcedSlicePosition;
     uint16_t forcedGranularPosition;
     uint16_t forcedGranularLength = MIN_GRANULAR_LENGTH;
 

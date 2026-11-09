@@ -223,6 +223,7 @@ uint8_t AudioPlayMemory::playForPrev(uint8_t instr_idx, int8_t n)
     fineTuneForceFlag = 0;
     wavetableWindowForceFlag = 0;
     sliceForcedFlag = 0;
+    slicePositionForcedFlag = 0;
     granularForcedFlag = 0;
     reverseDirectionFlag = 0;
     constrainsInSamples.pitchSmoothing = 0;
@@ -253,6 +254,7 @@ uint8_t AudioPlayMemory::playForPrev(int16_t* addr, uint32_t len, uint8_t type)
     fineTuneForceFlag = 0;
     wavetableWindowForceFlag = 0;
     sliceForcedFlag = 0;
+    slicePositionForcedFlag = 0;
     granularForcedFlag = 0;
     reverseDirectionFlag = 0;
     constrainsInSamples.pitchSmoothing = 0;
@@ -376,6 +378,7 @@ uint8_t AudioPlayMemory::playForPrev(int16_t* addr, uint32_t len, uint8_t n, uin
     fineTuneForceFlag = 0;
     wavetableWindowForceFlag = 0;
     sliceForcedFlag = 0;
+    slicePositionForcedFlag = 0;
     granularForcedFlag = 0;
     reverseDirectionFlag = 0;
 
@@ -1064,6 +1067,30 @@ void AudioPlayMemory::setSliceForcedFlag()
 void AudioPlayMemory::clearSliceForcedFlag()
 {
     sliceForcedFlag = 0;
+}
+void AudioPlayMemory::setForcedSlicePosition(uint16_t value)
+{
+    forcedSlicePosition = value;
+    slicePositionForcedFlag = 1;
+}
+void AudioPlayMemory::clearSlicePositionForcedFlag()
+{
+    slicePositionForcedFlag = 0;
+}
+// Position effect on slices: move the start within the slice, in the playback direction
+void AudioPlayMemory::applyForcedSlicePosition(uint16_t& startSlice, uint16_t& endSlice)
+{
+    if (!slicePositionForcedFlag || endSlice <= startSlice)
+        return;
+
+    const uint32_t sliceLength = endSlice - startSlice;
+    const uint32_t offset =
+      std::min<uint32_t>(sliceLength * forcedSlicePosition / MAX_16BIT, sliceLength - 1);
+
+    if (reverseDirectionFlag)
+        endSlice -= offset;
+    else
+        startSlice += offset;
 }
 void AudioPlayMemory::setCurrentInstrIdx(uint8_t n)
 {
