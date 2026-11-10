@@ -199,8 +199,7 @@ cTracker::cTracker(strControlProperties* properties)
 {
     colorsCount = 21;
     colors = display.getTheme().patternTrackerColors;
-    dimFx1Color = ((colors[8] & 0xFEFEFE) >> 1) + ((colors[1] & 0xFEFEFE) >> 1);
-    dimFx2Color = ((colors[9] & 0xFEFEFE) >> 1) + ((colors[1] & 0xFEFEFE) >> 1);
+    refreshDimColors();
 
     if (properties == nullptr)
     {
@@ -254,8 +253,21 @@ void cTracker::setValue(int value)
 void cTracker::setColors(const uint32_t* colors)
 {
     this->colors = colors;
-    dimFx1Color = ((colors[8] & 0xFEFEFE) >> 1) + ((colors[1] & 0xFEFEFE) >> 1);
-    dimFx2Color = ((colors[9] & 0xFEFEFE) >> 1) + ((colors[1] & 0xFEFEFE) >> 1);
+    refreshDimColors();
+}
+
+// halfway between two 0xRRGGBB colors
+static uint32_t mixColors(uint32_t a, uint32_t b)
+{
+    return ((a & 0xFEFEFE) >> 1) + ((b & 0xFEFEFE) >> 1);
+}
+
+void cTracker::refreshDimColors()
+{
+    dimFx1Color = mixColors(colors[8], colors[1]);
+    dimFx2Color = mixColors(colors[9], colors[1]);
+    offBeatRowNumColor = mixColors(colors[16], colors[1]);
+    halfBeatRowNumColor = mixColors(colors[16], offBeatRowNumColor);
 }
 
 void cTracker::setData(void* data)
@@ -832,6 +844,23 @@ uint8_t cTracker::whichParamFromTwoSelected()
 
 //-------------------------------------------------------------------------------------
 // step number
+// Beat rows at full brightness, half-beat rows slightly dimmer, all other rows dimmest
+uint32_t cTracker::rowNumberColor(uint16_t rowNumber)
+{
+    const uint8_t lpb = tracks->linesPerBeat > 0 ? tracks->linesPerBeat : 1;
+    const uint16_t posInBeat = (rowNumber - 1) % lpb;
+
+    if (posInBeat == 0)
+    {
+        return colors[16];
+    }
+    if (lpb % 2 == 0 && posInBeat == lpb / 2)
+    {
+        return halfBeatRowNumColor;
+    }
+    return offBeatRowNumColor;
+}
+
 void cTracker::drawRowNumbers(uint16_t* rowNumbers, bool showTrackEndLines)
 {
     API_SAVE_CONTEXT();
@@ -853,6 +882,8 @@ void cTracker::drawRowNumbers(uint16_t* rowNumbers, bool showTrackEndLines)
         {
             continue;
         }
+
+        API_COLOR(rowNumberColor(rowNumbers[i]));
 
         if (hexMode)
         {

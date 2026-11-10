@@ -29,6 +29,7 @@ struct strTrackerPattern
     int8_t firstVisibleTrack;     // pierwszy track od lewej widziany na wyswitlaczu (0-4)
                                   // - steruje przesunieciem na boki
     uint8_t stepDevider;          // podzialka
+    uint8_t linesPerBeat;         // shades the row numbers within each beat
 
     bool showPlayhead;
     int16_t playheadPosition; // linia odtwarzania - wartosc stepa (0-xxx)
@@ -83,6 +84,7 @@ struct strTrackerPattern
         patternLength = 1;
         firstVisibleTrack = 0;
         stepDevider = 4;
+        linesPerBeat = 4;
         showPlayhead = true;
         playheadPosition = 0;
         playheadStartTrack = 0;
@@ -137,6 +139,8 @@ class cTracker : public cDisplayControl
     void playHead();
     void selection();
     void drawRowNumbers(uint16_t* rowNumbers, bool showTrackEndLines);
+    uint32_t rowNumberColor(uint16_t rowNumber);
+    void refreshDimColors();
     void tracksNumbers();
 
     void notes();
@@ -166,6 +170,8 @@ class cTracker : public cDisplayControl
     uint32_t lastFontColor;
     uint32_t dimFx1Color;
     uint32_t dimFx2Color;
+    uint32_t offBeatRowNumColor;
+    uint32_t halfBeatRowNumColor;
 
     uint8_t stepHight;
 };
