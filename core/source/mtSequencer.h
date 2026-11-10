@@ -1002,6 +1002,7 @@ class Sequencer
     uint8_t rollValToVolumeOption(uint8_t);
     int8_t rollValToPeriod(int8_t rollVal);
     inline uint16_t rollValToMicroSteps(int8_t rollType);
+    uint16_t rollGateLength(int8_t rollVal);
     inline uint16_t stutterValToPeriod(int8_t rollType);
 
     uint16_t arpPeriodToMicrosteps(int8_t period);

@@ -490,6 +490,12 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
             }
         }
 
+        // rows without a note send MIDI and synth effects to the last played instrument
+        const uint8_t fxInstrument =
+          (stepToSend.note == STEP_NOTE_EMPTY && stepSent.note != STEP_NOTE_EMPTY)
+            ? stepSent.instrument
+            : stepToSend.instrument;
+
         for (int8_t fxIndex = 1; fxIndex >= 0; fxIndex--)
         {
             strPlayer::strPlayerTrack::strSendStep::strFx _fx = stepToSend.fx[fxIndex];
@@ -503,9 +509,9 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
                 stepToSend.fx[fxIndex].value = _fx.value;
             }
 #ifdef FEATURE_SYNTH
-            if (isSynthInstrument(stepToSend.instrument) && engine.isSynthFx(_fx.type))
+            if (isSynthInstrument(fxInstrument) && engine.isSynthFx(_fx.type))
             {
-                int synthIdx = instrumentIdxToMidiChannel(stepToSend.instrument) - 1;
+                int synthIdx = instrumentIdxToMidiChannel(fxInstrument) - 1;
                 assert(!isOutOfRange(synthIdx, 0, kSynthParts - 1));
 
                 engine.seqSynthFx(_fx.type, _fx.value, fxIndex, synthIdx);
@@ -602,8 +608,7 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
                 }
                 case fx.FX_TYPE_SEND_CC_A:
                 {
-                    // todo or last used on track?
-                    int instrument = stepToSend.instrument;
+                    int instrument = fxInstrument;
                     uint8_t ccChannel = 0;
                     ccChannel = instrumentIdxToMidiChannel(instrument);
 
@@ -652,7 +657,7 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
                 break;
                 case fx.FX_TYPE_MICROTUNING:
                 {
-                    int instrument = stepToSend.instrument;
+                    int instrument = fxInstrument;
                     bool isSynth = isSynthInstrument(instrument);
                     bool isMidi = isMidiInstrument(instrument);
                     if (isMidi || isSynth)
@@ -966,7 +971,7 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
         if (playerRow.roll.isOn)
         {
             playerRow.roll.period = playerRow.roll.val;
-            playerRow.noteLength = rollValToMicroSteps(playerRow.roll.period) / 2;
+            playerRow.noteLength = rollGateLength(playerRow.roll.period);
             playerRow.stepOpen = 1;
         }
 
@@ -1095,7 +1100,7 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
                 {
                     playerRow.stepContRoll = playerRow.stepSent;
 
-                    playerRow.noteLength = rollValToMicroSteps(playerRow.roll.period) / 2;
+                    playerRow.noteLength = rollGateLength(playerRow.roll.period);
 
                     if (playerRow.roll.type == fx.rollType_noteUp)
                     {
@@ -1272,6 +1277,13 @@ uint16_t Sequencer::rollValToMicroSteps(int8_t rollVal)
         default: return 0;
     }
     return 0;
+}
+
+// One tick past the period, so each hit's note-off lands in the same tick as the next note-on
+// and roll hits follow each other without a gap.
+uint16_t Sequencer::rollGateLength(int8_t rollVal)
+{
+    return rollValToMicroSteps(rollVal) + 1;
 }
 
 uint16_t Sequencer::stutterValToPeriod(int8_t rollVal)

@@ -56,6 +56,8 @@ AUDIO_CORE_FLASH void AudioPlayMemory::playSlice(uint8_t instrIdx, int8_t note)
                      : MAX_16BIT;
     }
 
+    applyForcedSlicePosition(startSlice, endSlice);
+
     if (samplePointsSource != nullptr)
     {
         pointsInSamples.start = samplePointsSource->pointsInSamples.start;

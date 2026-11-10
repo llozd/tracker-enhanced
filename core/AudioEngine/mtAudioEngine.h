@@ -402,6 +402,7 @@ class playerEngine
         granularPosition,
         granularLength,
         slice,
+        slicePosition,
 
         parameterListLength
     };
@@ -435,6 +436,7 @@ class playerEngine
         uint16_t granularLength;
         uint8_t volume;
         uint8_t slice;
+        uint16_t slicePosition;
 
         uint8_t lfoAmpEnable;
         uint8_t lfoAmpRate;
@@ -712,6 +714,7 @@ class playerEngine
     //***position
     void fxPosition(uint8_t fx_val, uint8_t fx_n);
     void fxPositionStartPoint(uint8_t fx_val, uint8_t fx_n);
+    void fxPositionSlice(uint8_t fx_val, uint8_t fx_n);
     void fxPositionWavetable(uint8_t fx_val, uint8_t fx_n);
     void fxPositionGranular(uint8_t fx_val, uint8_t fx_n);
     //***
@@ -751,6 +754,7 @@ class playerEngine
     //****** position
     void endFxPosition(uint8_t fx_n);
     void endFxPositionStartPoint(uint8_t fx_n);
+    void endFxPositionSlice(uint8_t fx_n);
     void endFxPositionGranular(uint8_t fx_n);
     void endFxPositionWavetable(uint8_t fx_n);
     //******
@@ -799,6 +803,8 @@ class playerEngine
 
     void setFxSlice();
     void clearFxSlice();
+    void setFxSlicePosition();
+    void clearFxSlicePosition();
 
     void setFxOverdrive();
     void clearFxOverdrive();

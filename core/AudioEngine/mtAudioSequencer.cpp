@@ -421,8 +421,12 @@ void playerEngine::fxPosition(uint8_t fx_val, uint8_t fx_n)
     {
         fxPositionGranular(fx_val, fx_n);
     }
-    else if ((mtProject.instrument[currentInstrument_idx].playMode != playModeSlice) &&
-             (mtProject.instrument[currentInstrument_idx].playMode != playModeBeatSlice))
+    else if ((mtProject.instrument[currentInstrument_idx].playMode == playModeSlice) ||
+             (mtProject.instrument[currentInstrument_idx].playMode == playModeBeatSlice))
+    {
+        fxPositionSlice(fx_val, fx_n);
+    }
+    else
     {
         fxPositionStartPoint(fx_val, fx_n);
     }
@@ -452,6 +456,26 @@ void playerEngine::fxPositionStartPoint(uint8_t fx_val, uint8_t fx_n)
     }
 
     setFxStartPoint(fx_n);
+}
+void playerEngine::fxPositionSlice(uint8_t fx_val, uint8_t fx_n)
+{
+    uint8_t otherFx_n = !fx_n;
+
+    uint8_t maxFxPosition = sequencer.getFxMax(Sequencer::strFxConsts::FX_TYPE_POSITION);
+    uint8_t minFxPosition = sequencer.getFxMin(Sequencer::strFxConsts::FX_TYPE_POSITION);
+
+    trackControlParameter[(int)controlType::sequencerMode + fx_n]
+                         [(int)parameterList::slicePosition] = 1;
+
+    if (fx_n == MOST_SIGNIFICANT_FX ||
+        !trackControlParameter[(int)controlType::sequencerMode + otherFx_n]
+                              [(int)parameterList::slicePosition])
+    {
+        currentSeqModValues.slicePosition =
+          mapClamped<int>(fx_val, minFxPosition, maxFxPosition, 0, MAX_16BIT);
+    }
+
+    setFxSlicePosition();
 }
 void playerEngine::fxPositionWavetable(uint8_t fx_val, uint8_t fx_n)
 {
@@ -1469,7 +1493,12 @@ void playerEngine::endFxPosition(uint8_t fx_n)
     //	}
 
     if (trackControlParameter[(int)controlType::sequencerMode + fx_n]
-                             [(int)parameterList::wavetablePosition])
+                             [(int)parameterList::slicePosition])
+    {
+        endFxPositionSlice(fx_n);
+    }
+    else if (trackControlParameter[(int)controlType::sequencerMode + fx_n]
+                                  [(int)parameterList::wavetablePosition])
     {
         endFxPositionWavetable(fx_n);
     }
@@ -1482,6 +1511,28 @@ void playerEngine::endFxPosition(uint8_t fx_n)
                                   [(int)parameterList::startPoint])
     {
         endFxPositionStartPoint(fx_n);
+    }
+}
+void playerEngine::endFxPositionSlice(uint8_t fx_n)
+{
+    uint8_t otherFx_n = !fx_n;
+
+    trackControlParameter[(int)controlType::sequencerMode + fx_n]
+                         [(int)parameterList::slicePosition] = 0;
+
+    if (trackControlParameter[(int)controlType::sequencerMode + otherFx_n]
+                             [(int)parameterList::slicePosition])
+    {
+        uint8_t maxFxPosition = sequencer.getFxMax(Sequencer::strFxConsts::FX_TYPE_POSITION);
+        uint8_t minFxPosition = sequencer.getFxMin(Sequencer::strFxConsts::FX_TYPE_POSITION);
+
+        currentSeqModValues.slicePosition =
+          mapClamped<int>(lastSeqVal[otherFx_n], minFxPosition, maxFxPosition, 0, MAX_16BIT);
+        setFxSlicePosition();
+    }
+    else
+    {
+        clearFxSlicePosition();
     }
 }
 void playerEngine::endFxPositionStartPoint(uint8_t fx_n)
@@ -2673,6 +2724,20 @@ void playerEngine::clearFxSlice()
     for (int channel = 0; channel < (int)playMemPtr.size(); channel++)
     {
         playMemPtr[channel]->clearSliceForcedFlag();
+    }
+}
+void playerEngine::setFxSlicePosition()
+{
+    for (int channel = 0; channel < (int)playMemPtr.size(); channel++)
+    {
+        playMemPtr[channel]->setForcedSlicePosition(currentSeqModValues.slicePosition);
+    }
+}
+void playerEngine::clearFxSlicePosition()
+{
+    for (int channel = 0; channel < (int)playMemPtr.size(); channel++)
+    {
+        playMemPtr[channel]->clearSlicePositionForcedFlag();
     }
 }
 // OVERDRIVE
