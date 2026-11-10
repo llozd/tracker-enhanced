@@ -153,7 +153,7 @@ Full details in [`docs/modular_effects_system.md`](modular_effects_system.md).
     * `PolyendTrac` (Original Tracker)
     * `TrackerPlus` (Tracker+)
     * `TrackerMini` (Tracker Mini)
-  * **31-Character Maximum on Original Tracker**: `PlatformImpl::runBootloader()` ([`platforms/mk66/source/PlatformImpl.cpp`](../platforms/mk66/source/PlatformImpl.cpp) / [`platforms/imx/source/PlatformImpl.cpp`](../platforms/imx/source/PlatformImpl.cpp)) writes the selected `.ptf` filename to `/Firmware/_fwinfo`. The Original Tracker's on-chip bootloader reads `/Firmware/_fwinfo` into a 32-byte `char[32]` buffer. Filenames of 32+ characters overwrite the trailing `\0` byte and cause garbage symbols on the bootloader flashing screen. Always keep `.ptf` filenames `<= 31` characters.
+  * **31-Character Maximum on Original Tracker**: `PlatformImpl::runBootloader()` ([`platforms/mk66/source/PlatformImpl.cpp`](../platforms/mk66/source/PlatformImpl.cpp) / [`platforms/imx/source/PlatformImpl.cpp`](../platforms/imx/source/PlatformImpl.cpp)) writes the selected `.ptf` filename to `/Firmware/_fwinfo`. The Original Tracker's on-chip bootloader reads `/Firmware/_fwinfo` into a 32-byte `char[32]` buffer. Filenames of 32+ characters overwrite the trailing `\0` byte and cause garbage symbols on the bootloader flashing screen. Always keep `.ptf` filenames `<= 31` characters. Release builds are named `PolyendTracker_ENH_<version>.ptf` (28 characters for `0.1.0`), CI builds `PolyendTracker_ENH_<7-char hash>.ptf` (30), and `make original` fails if the name is longer than 31.
 
 ---
 

@@ -692,8 +692,9 @@ make mini
 ```
 
 The flashable `.ptf` files are generated in `build/`:
-- `build/TrackerPlus_CE_1.0.0.ptf`
-- `build/TrackerMini_CE_1.0.0.ptf`
+- `build/PolyendTracker_ENH_0.1.0.ptf`
+- `build/TrackerPlus_ENH_0.1.0.ptf`
+- `build/TrackerMini_ENH_0.1.0.ptf`
 
 Copy the `.ptf` file to the `/Firmware/` directory on your Tracker's SD card and flash via **Config → Firmware → Firmware update**.
 

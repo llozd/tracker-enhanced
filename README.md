@@ -110,12 +110,13 @@ Bug reports and pull requests are welcome. Please read [`CONTRIBUTING.md`](CONTR
 From the repository root:
 
 ```bash
-# Build both devices (Tracker+, Tracker Mini)
+# Build all devices (Original, Tracker+, Tracker Mini)
 make all
 
 # Or build a single target:
-make plus       # -> build/TrackerPlus_CE_1.0.0.ptf
-make mini       # -> build/TrackerMini_CE_1.0.0.ptf
+make original   # -> build/PolyendTracker_ENH_0.1.0.ptf
+make plus       # -> build/TrackerPlus_ENH_0.1.0.ptf
+make mini       # -> build/TrackerMini_ENH_0.1.0.ptf
 
 # Build reference .ptfx Sample Editor effects into editor-fx-sdk/build/Effects/:
 make ptfx
@@ -140,7 +141,7 @@ make bump-minor TARGET=all        # or TARGET=plus | TARGET=mini
 
 ### 4. Flashing on Hardware & Emergency Recovery
 
-1. Copy the generated `.ptf` file from `build/` (`TrackerPlus_*.ptf` or `TrackerMini_*.ptf`) to the `/Firmware/` folder on your Tracker's microSD card.
+1. Copy the generated `.ptf` file from `build/` (`PolyendTracker_ENH_*.ptf`, `TrackerPlus_ENH_*.ptf` or `TrackerMini_ENH_*.ptf`) to the `/Firmware/` folder on your Tracker's microSD card.
 2. On the device, open **Config > Firmware > Firmware update**, select the `.ptf` file, and confirm.
 
 > **Bootloader Resilience & Emergency Firmware Recovery**:

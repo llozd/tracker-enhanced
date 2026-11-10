@@ -63,7 +63,7 @@ SD Card Root/
 
 ## 2. Bundled Reference Plugins (`editor-fx-sdk/effects/`)
 
-All reference plugins in [`editor-fx-sdk/effects/`](../editor-fx-sdk/effects) can be compiled locally via `make ptfx` (outputting to `editor-fx-sdk/build/Effects/*.ptfx`) or downloaded ready-to-use from the **`polyend-tracker-ce-effects`** GitHub Actions build artifact:
+All reference plugins in [`editor-fx-sdk/effects/`](../editor-fx-sdk/effects) can be compiled locally via `make ptfx` (outputting to `editor-fx-sdk/build/Effects/*.ptfx`) or downloaded ready-to-use from the **`tracker-enhanced-effects`** GitHub Actions build artifact:
 
 | Plugin Source | Display Name | Capability Flags | Scratch RAM | Parameters & Description |
 | :--- | :--- | :--- | :--- | :--- |
