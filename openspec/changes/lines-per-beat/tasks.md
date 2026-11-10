@@ -11,7 +11,7 @@
 - [x] Add 12 LPB for triplet subdivisions
 - [ ] Hardware test: load old projects, save and reload, undo, copy/paste at long lengths
 - [ ] Hardware test: external clock sync and CPU load at 16 LPB
-- [ ] Metronome ticks every `timeSignatureDenominator` rows, so above 4 LPB it ticks more than once per beat
+- [x] Metronome follows LPB: its settings count 16th notes and are converted to rows (`isMetronomeTickRow`, `getMetronomeBarRows`), including the count-in length
 - [ ] MOD export and time-stretch FX still assume 4 steps per beat
 - [ ] Pads backlight length indicator above 191 rows; performance-mode length values
 - [ ] Optional: stretch note content when LPB changes
