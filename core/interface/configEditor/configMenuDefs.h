@@ -169,7 +169,7 @@ const char* const numberingModeTexts[3] = {
 };
 
 const char* const linesPerBeatTexts[kLinesPerBeatOptionsCount] = {
-    "1", "2", "4", "8", "16",
+    "1", "2", "4", "8", "12", "16",
 };
 
 const char* const padPreviewInPatternEditTexts[3] = {

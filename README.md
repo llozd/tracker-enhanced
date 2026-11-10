@@ -44,7 +44,7 @@ Each item has an OpenSpec record in [`openspec/changes/`](openspec/README.md).
 
 ### 1. Lines Per Beat (LPB) -- complete, untested on hardware
 Renoise-style control over how many pattern rows make up one beat. Stock firmware is fixed at 4 steps per beat.
-* LPB selectable as **1, 2, 4, 8 or 16** per project (**Project Settings > Lines per beat**). Changing it also sets the pattern divider to one beat.
+* LPB selectable as **1, 2, 4, 8, 12 or 16** per project (12 gives triplet subdivisions) (**Project Settings > Lines per beat**). Changing it also sets the pattern divider to one beat.
 * A **global default** (**General > Default LPB**) is given to new projects.
 * Step FX (Roll, Arp, Micromove, Swing, Slide, Tempo) and envelope/LFO sync are measured in steps, so they speed up with LPB. The short delay sync stays tied to the beat.
 * MIDI clock out and in, and Song Position, follow the LPB.

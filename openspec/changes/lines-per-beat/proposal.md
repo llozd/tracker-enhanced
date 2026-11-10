@@ -8,7 +8,7 @@
 Fixed 4 lines per beat limits rhythmic detail. Renoise lets the user choose the resolution per song.
 
 ## What changes
-- Selectable LPB of 1, 2, 4, 8 or 16, stored per project, with a global default for new projects.
+- Selectable LPB of 1, 2, 4, 8, 12 or 16, stored per project, with a global default for new projects.
 - Patterns grow from 128 to 512 rows (1024 in pattern file v7, reduced to 512 in v8 so the Original fits).
 - Changing LPB scales pattern lengths so duration is kept.
 - Project and pattern formats change and are not backwards compatible with official firmware. Old pattern files (v1 to v7) still load; v7 patterns longer than 512 rows are cut to 512.

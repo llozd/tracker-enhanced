@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Selectable lines per beat
-The project SHALL have a lines per beat setting of 1, 2, 4, 8 or 16, defaulting to the global default.
+The project SHALL have a lines per beat setting of 1, 2, 4, 8, 12 or 16, defaulting to the global default.
 
 #### Scenario: New project
 - **WHEN** a project is created

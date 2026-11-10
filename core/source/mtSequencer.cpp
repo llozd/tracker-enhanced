@@ -191,21 +191,20 @@ AUDIO_CORE_RAM void Sequencer::tick_uStep(void)
                   isMetronomeActive() || (SR->waitForPreRollEnd && !isMetronomeActive());
 
                 if ((player.preRecMetronomeActive || isActiveRecordingMetronome) &&
-                    player.extRecMetronomeStep %
-                        (getMetronomeDenominator() * getMetronomeNumerator()) ==
-                      0)
+                    isMetronomeTickRow(player.extRecMetronomeStep,
+                                       getMetronomeDenominator() * getMetronomeNumerator()))
                 {
                     engine.makeMetronomeTick(1);
                 }
                 else if ((player.preRecMetronomeActive || isActiveRecordingMetronome) &&
-                         player.extRecMetronomeStep % getMetronomeDenominator() == 0)
+                         isMetronomeTickRow(player.extRecMetronomeStep, getMetronomeDenominator()))
                 {
                     engine.makeMetronomeTick(0);
                 }
 
                 player.extRecMetronomeStep++;
 
-                int preRollLengthStep = getMetronomeDenominator() * getMetronomeNumerator();
+                int preRollLengthStep = getMetronomeBarRows();
 
                 if (player.extRecMetronomeStep > preRollLengthStep)
                 {
@@ -268,11 +267,13 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
     if (row == 0 && playerRow.uStep == 1 && isRec())
     {
         if (isMetronomeActive() &&
-            playerRow.actual_pos % (getMetronomeDenominator() * getMetronomeNumerator()) == 0)
+            isMetronomeTickRow(playerRow.actual_pos,
+                               getMetronomeDenominator() * getMetronomeNumerator()))
         {
             engine.makeMetronomeTick(1);
         }
-        else if (isMetronomeActive() && playerRow.actual_pos % getMetronomeDenominator() == 0)
+        else if (isMetronomeActive() &&
+                 isMetronomeTickRow(playerRow.actual_pos, getMetronomeDenominator()))
         {
             engine.makeMetronomeTick(0);
         }
@@ -1718,7 +1719,7 @@ void Sequencer::recStart(void)
 void Sequencer::showPreRollPopup()
 {
     uint8_t stepSec = (uint8_t)clamp<>(
-      ((float)getMetronomeNumerator() * (float)getMetronomeDenominator() * getStepPeriodMs()) /
+      ((float)getMetronomeBarRows() * getStepPeriodMs()) /
         1000.0f,
       0.0f,
       (float)std::numeric_limits<uint8_t>::max());
@@ -2719,7 +2720,7 @@ AUDIO_CORE_FLASH void Sequencer::handleNoteOn(
             uint8_t threshold = std::min<uint8_t>(mtConfig.general.recThreshold, recThreshold_max) * 4;
             if (threshold > 0)
             {
-                int preRollLengthStep = getMetronomeDenominator() * getMetronomeNumerator();
+                int preRollLengthStep = getMetronomeBarRows();
                 if (player.extRecMetronomeStep == preRollLengthStep)
                 {
                     int stepTick = timerTicks % kTicksInStep;
@@ -3481,6 +3482,18 @@ AUDIO_CORE_RAM uint8_t Sequencer::getMetronomeNumerator()
 AUDIO_CORE_RAM uint8_t Sequencer::getMetronomeDenominator()
 {
     return mtConfig.metronome.timeSignatureDenominator + 1;
+}
+// The metronome settings count 16th notes. True when the row starts on a multiple of that
+// length, so clicks stay on the beat at any lines per beat.
+AUDIO_CORE_RAM bool Sequencer::isMetronomeTickRow(int row, int sixteenthsPerTick)
+{
+    return (row * kStepsPerBeat) % (sixteenthsPerTick * getLinesPerBeat()) == 0;
+}
+// One metronome bar (the count-in length) in rows, at least one row
+AUDIO_CORE_RAM int Sequencer::getMetronomeBarRows()
+{
+    const int sixteenths = getMetronomeNumerator() * getMetronomeDenominator();
+    return std::max(1, (sixteenths * getLinesPerBeat() + kStepsPerBeat / 2) / kStepsPerBeat);
 }
 
 void Sequencer::setMidiInVoiceMode(enMidiInVoiceMode mode)

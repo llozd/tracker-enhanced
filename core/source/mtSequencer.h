@@ -778,6 +778,8 @@ class Sequencer
     uint8_t isPreRollConfigOn();
     uint8_t getMetronomeNumerator();
     uint8_t getMetronomeDenominator();
+    bool isMetronomeTickRow(int row, int sixteenthsPerTick);
+    int getMetronomeBarRows();
     void setMidiInVoiceMode(enMidiInVoiceMode mode);
     uint8_t getMidiInVoiceMode();
 

@@ -113,7 +113,7 @@ static constexpr uint8_t kSampleInstrumentsCount = 48;
 static constexpr uint8_t kMidiInstrumentsCount = 16;
 
 // Lines per beat: pattern rows per beat. Stored as an index into this table.
-static constexpr uint8_t kLinesPerBeatOptions[] = { 1, 2, 4, 8, 16 };
+static constexpr uint8_t kLinesPerBeatOptions[] = { 1, 2, 4, 8, 12, 16 };
 static constexpr uint8_t kLinesPerBeatOptionsCount = std::size(kLinesPerBeatOptions);
 static constexpr uint8_t kDefaultLinesPerBeatIndex = 2; // 4 LPB
 static constexpr uint8_t kSynthInstrumentsCount = 3;
