@@ -12,3 +12,4 @@ Change records for Tracker Enhanced, in [OpenSpec](https://github.com/Fission-AI
 | [position-fx-slices](changes/position-fx-slices/proposal.md) | Implemented, untested on hardware |
 | [fx-only-row-instrument](changes/fx-only-row-instrument/proposal.md) | Implemented, untested on hardware |
 | [original-tracker-support](changes/original-tracker-support/proposal.md) | In progress: builds, untested on hardware |
+| [row-number-beat-shading](changes/row-number-beat-shading/proposal.md) | Implemented, untested on hardware |

@@ -320,6 +320,7 @@ void cPatternEditor::start(uint32_t options)
     }
 
     trackerPattern.stepDevider = (mtProject.values.patternDiv + 1);
+    trackerPattern.linesPerBeat = sequencer.getLinesPerBeat();
 
     trackerPattern.showTrackNames = true;
     for (int nameIdx = 0; nameIdx < 16; nameIdx++)
