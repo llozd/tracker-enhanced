@@ -14,7 +14,7 @@
 
 ## Hardware Testing Status
 <!-- Please be explicit about which physical devices you have tested yourself and which devices still need testing by community members who own them.
-     Note for testers: You can download ready-to-flash .ptf files from the "Checks" tab -> "polyend-tracker-ce-firmware" artifact on this PR! -->
+     Note for testers: You can download ready-to-flash .ptf files from the "Checks" tab -> "tracker-enhanced-firmware" artifact on this PR! -->
 
 | Device | Tested on Hardware by Author | Needs Community Hardware Testing | Not Applicable | Notes / Tested By |
 | :--- | :---: | :---: | :---: | :--- |

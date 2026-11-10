@@ -39,7 +39,7 @@ Thank you for contributing to the firmware! Whether you are fixing a bug, creati
      * Which devices you have **tested on physical hardware**.
      * Which devices **need hardware testing from the community**.
    * **Testing PR Builds via GitHub Actions**:
-     * Every PR automatically triggers the [GitHub Actions build workflow](.github/workflows/build.yml), which compiles `.ptf` firmware files for all three devices and uploads them as the `polyend-tracker-ce-firmware` artifact on the PR's **Checks** tab.
+     * Every PR automatically triggers the [GitHub Actions build workflow](.github/workflows/build.yml), which compiles `.ptf` firmware files for all three devices and uploads them as the `tracker-enhanced-firmware` artifact on the PR's **Checks** tab.
      * Community testers who own the remaining devices can download the `.ptf` artifact, flash it via **Config > Firmware > Firmware update**, run through your **How to Test** steps, and leave a comment on the PR confirming their results.
 
 ---

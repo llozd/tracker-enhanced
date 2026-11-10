@@ -27,7 +27,12 @@ MINI_POSTFIX     ?= $(EDITION_NAME)_$(MINI_VER_MAJOR).$(MINI_VER_MINOR).$(MINI_V
 
 all: original plus mini
 
+# The Original's bootloader reads the .ptf name into a 32 byte buffer
+ORIGINAL_PTF_NAME := PolyendTracker_$(ORIGINAL_POSTFIX).ptf
+
 original:
+	@if [ $$(printf '%s' "$(ORIGINAL_PTF_NAME)" | wc -c) -gt 31 ]; then \
+		echo "error: $(ORIGINAL_PTF_NAME) is longer than 31 characters"; exit 1; fi
 	@echo "=================================================================="
 	@echo " Building Original Tracker (MK66) - $(EDITION_NAME) $(ORIGINAL_VER_MAJOR).$(ORIGINAL_VER_MINOR).$(ORIGINAL_VER_PATCH) ($(BUILD_TAG))"
 	@echo "=================================================================="
