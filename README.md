@@ -2,7 +2,15 @@
 
 **Tracker Enhanced** is a community firmware for the **Polyend Tracker+**, **Polyend Tracker Mini** and, with a reduced feature set, the **Original Polyend Tracker**, built on top of the open-source [Polyend Tracker Community Edition](https://github.com/polyend/tracker-ce). It adds finer sequencing resolution, deeper MIDI CC control and more audio processing, taking some of the ideas that make [Renoise](https://www.renoise.com/) good for detailed tracking.
 
-> **Status: beta.** The first beta, [0.1.0 beta 1](https://github.com/llozd/tracker-enhanced/releases), includes lines per beat, row number beat shading, legato rolls, Position on slices and effects on rows without a note. None of these have been tested on hardware yet. Extended MIDI CC control and the new effects are still planned. Every change, finished or planned, is recorded in [`openspec/`](openspec/README.md).
+> **Status: beta.** The first beta, [0.1.0 beta 1](https://github.com/llozd/tracker-enhanced/releases), has been tested on a Tracker+. It has not been tested on the Original or Mini yet. It includes:
+> * Lines per beat (1, 2, 4, 8, 12 or 16)
+> * Row number beat shading
+> * Legato rolls
+> * Position on slices
+> * Effects on rows without a note
+> * Original Tracker build (reduced feature set)
+>
+> Extended MIDI CC control and the new effects are still planned. Every change, finished or planned, is recorded in [`openspec/`](openspec/README.md).
 
 ---
 
@@ -11,12 +19,12 @@ Hopefully, the Tracker Enhanced becomes a mini Renoise, and just generally have 
 
 Use this firmware at your own risk and curiousity. Things may still be in development, so it is recommended to stick to [released](https://github.com/llozd/tracker-enhanced/releases) versions - building from source on `main` may contain partially complete or features that aren't fully tested. If you find any bugs, or have any general issues or suggestions, feel free to open an [issue](https://github.com/llozd/tracker-enhanced/issues)!
 
-Some features will not make it to the OG Tracker unfortunately, due to hardware limitations. Below is a list of features for each device, and which ones are in the beta.
+Some features will not make it to the OG Tracker unfortunately, due to hardware limitations. Below is a list of features for each device.
 
 #### All Versions (OG, Mini, Plus)
-- LPB (Lines per Beat) settings -- in the beta
-- Smoother rolls/fast retriggering notes, without the audible stop between each retrigger -- in the beta
-- Effects on a row without a note, so things like microtune/pitchbend work after the key has been released -- in the beta
+- LPB (Lines per Beat) settings
+- Smoother rolls/fast retriggering notes, without the audible stop between each retrigger
+- Effects on a row without a note, so things like microtune/pitchbend work after the key has been released
 - Extended MIDI settings
     - More assignable CCs per instrument
     - More than two CCs per row
@@ -42,7 +50,7 @@ Some features will not make it to the OG Tracker unfortunately, due to hardware 
 
 Each item has an OpenSpec record in [`openspec/changes/`](openspec/README.md).
 
-### 1. Lines Per Beat (LPB) -- in 0.1.0 beta 1, untested on hardware
+### 1. Lines Per Beat (LPB)
 Renoise-style control over how many pattern rows make up one beat. Stock firmware is fixed at 4 steps per beat.
 * LPB selectable as **1, 2, 4, 8, 12 or 16** per project (12 gives triplet subdivisions) (**Project Settings > Lines per beat**). Changing it also sets the pattern divider to one beat.
 * A **global default** (**General > Default LPB**) is given to new projects.
@@ -69,13 +77,13 @@ New realtime effects, available on individual tracks and on the master channel:
 CPU usage will be measured on hardware, and the number of simultaneous per-track effects may be limited accordingly.
 
 ### 4. Playback and Interface Fixes
-* **Legato rolls** -- in 0.1.0 beta 1, untested on hardware: roll hits are gated for the full period, so rolls play as full-length, click-free hits instead of sounding gappy. See `legato-rolls`.
-* **Position on slices** -- in 0.1.0 beta 1, untested on hardware: in Slice and Beat Slice modes, the Position effect scrubs within the played slice instead of the whole sample. See `position-fx-slices`.
-* **Effects on rows without a note** -- in 0.1.0 beta 1, untested on hardware: Microtune and synth effects on an empty row use the track's last played instrument on MIDI and synth tracks, so a note can be bent later, including on its release. See `fx-only-row-instrument`.
-* **Held button release** -- investigating: a held button (such as FX1) sometimes acts as released while turning the knob. A suspected cause is the key driver clearing buttons after an I2C error. See `button-hold-release`.
+* **Legato rolls**: roll hits are gated for the full period, so rolls play as full-length, click-free hits instead of sounding gappy. See `legato-rolls`.
+* **Position on slices**: in Slice and Beat Slice modes, the Position effect scrubs within the played slice instead of the whole sample. See `position-fx-slices`.
+* **Effects on rows without a note**: Microtune and synth effects on an empty row use the track's last played instrument on MIDI and synth tracks, so a note can be bent later, including on its release. See `fx-only-row-instrument`.
+* **Held button release** (investigating): a held button (such as FX1) sometimes acts as released while turning the knob. A suspected cause is the key driver clearing buttons after an I2C error. See `button-hold-release`.
 
 ### 5. Original Tracker Support (in progress)
-The Original Tracker (`MK66`) is built again, with a reduced feature set, and is part of 0.1.0 beta 1. It gets the sequencer improvements: lines per beat (up to 16), legato rolls, Position on slices, and the MIDI part of effects on rows without a note. Realtime effects and other features with significant CPU or memory overhead will be compiled out. Projects will stay portable between devices. It has not been tested on hardware yet, and a hardware tester is still needed. See `original-tracker-support`.
+The Original Tracker (`MK66`) is built again, with a reduced feature set. It gets the sequencer improvements: lines per beat (up to 16), legato rolls, Position on slices, and the MIDI part of effects on rows without a note. Realtime effects and other features with significant CPU or memory overhead will be compiled out. Projects will stay portable between devices. It has not been tested on hardware yet, and a hardware tester is still needed. See `original-tracker-support`.
 
 ---
 
