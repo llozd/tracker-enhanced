@@ -6,7 +6,7 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ## [ENH 0.1.0 beta 1] - First Tracker Enhanced Beta
 
-> **Beta, untested on hardware.** Back up your microSD card before flashing. Projects saved with Tracker Enhanced will not open on stock or Community Edition firmware.
+> **Beta.** Tested on a Tracker+, not yet tested on the Original or Mini. Back up your microSD card before flashing. Projects saved with Tracker Enhanced will not open on stock or Community Edition firmware.
 
 ### Added
 * **Lines per beat (all devices)**: 1, 2, 4, 8, 12 or 16 lines per beat per project, with a global default for new projects. Step FX, envelope/LFO sync, MIDI clock, Song Position and the metronome follow it. Patterns hold up to 512 rows, and lengths scale when lines per beat changes.
