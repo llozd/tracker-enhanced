@@ -267,7 +267,12 @@ void cTracker::refreshDimColors()
     dimFx1Color = mixColors(colors[8], colors[1]);
     dimFx2Color = mixColors(colors[9], colors[1]);
     offBeatRowNumColor = mixColors(colors[16], colors[1]);
-    halfBeatRowNumColor = mixColors(colors[16], offBeatRowNumColor);
+    // dimmed note color; mono themes fall back to a lighter shade of the row number
+    halfBeatRowNumColor = mixColors(colors[2], colors[1]);
+    if (halfBeatRowNumColor == offBeatRowNumColor)
+    {
+        halfBeatRowNumColor = mixColors(colors[16], offBeatRowNumColor);
+    }
 }
 
 void cTracker::setData(void* data)
@@ -844,7 +849,7 @@ uint8_t cTracker::whichParamFromTwoSelected()
 
 //-------------------------------------------------------------------------------------
 // step number
-// Beat rows at full brightness, half-beat rows slightly dimmer, all other rows dimmest
+// Beat rows at full brightness, half-beat rows in a dimmed note color, all other rows dimmest
 uint32_t cTracker::rowNumberColor(uint16_t rowNumber)
 {
     const uint8_t lpb = tracks->linesPerBeat > 0 ? tracks->linesPerBeat : 1;
