@@ -4,6 +4,24 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ---
 
+## [ENH 0.1.0 beta 1] - First Tracker Enhanced Beta
+
+> **Beta, untested on hardware.** Back up your microSD card before flashing. Projects saved with Tracker Enhanced will not open on stock or Community Edition firmware.
+
+### Added
+* **Lines per beat (all devices)**: 1, 2, 4, 8, 12 or 16 lines per beat per project, with a global default for new projects. Step FX, envelope/LFO sync, MIDI clock, Song Position and the metronome follow it. Patterns hold up to 512 rows, and lengths scale when lines per beat changes.
+* **Row number beat shading (all devices)**: row numbers show where each row sits in the beat. Beat rows are full brightness, half-beat rows use a dimmed note colour, and other rows are dimmed.
+* **Original Tracker build**: the Original (`MK66`) firmware is built again alongside Tracker+ and Mini.
+
+### Changed
+* **Legato rolls**: roll hits are gated for the full period, so rolls no longer sound gappy.
+* **Position on slices**: in Slice and Beat Slice modes, Position scrubs within the played slice.
+* **Effects on rows without a note**: Microtune and synth effects on an empty row apply to the track's last played instrument on MIDI and synth tracks.
+* Sample memory is reduced to make room for longer patterns: 60 MB to 55 MB on Tracker+ and Mini, 11.25 MB to 10.25 MB on the Original.
+* Firmware files are named `PolyendTracker_ENH_*`, `TrackerPlus_ENH_*` and `TrackerMini_ENH_*`.
+
+---
+
 ## [1.0.0] - Initial Community Edition Release
 
 > **⚠️ Important :: Project Compatibility Notice:**
