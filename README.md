@@ -114,9 +114,9 @@ From the repository root:
 make all
 
 # Or build a single target:
-make original   # -> build/PolyendTracker_ENH_0.1.0.ptf
-make plus       # -> build/TrackerPlus_ENH_0.1.0.ptf
-make mini       # -> build/TrackerMini_ENH_0.1.0.ptf
+make original   # -> build/PolyendTracker_ENH_0.1.0b1.ptf
+make plus       # -> build/TrackerPlus_ENH_0.1.0b1.ptf
+make mini       # -> build/TrackerMini_ENH_0.1.0b1.ptf
 
 # Build reference .ptfx Sample Editor effects into editor-fx-sdk/build/Effects/:
 make ptfx
@@ -138,6 +138,8 @@ make bump-patch TARGET=all        # or TARGET=plus | TARGET=mini
 # Increment minor version (e.g. 1.0.x -> 1.1.0)
 make bump-minor TARGET=all        # or TARGET=plus | TARGET=mini
 ```
+
+`*_VER_BETA` marks a beta: any value other than `255` adds `b<n>` to the `.ptf` name (e.g. `TrackerPlus_ENH_0.1.0b1.ptf`) and shows `beta <n>` on the device. Set it to `255` for a full release. Pushing a tag with a suffix, such as `v0.1.0-beta.1`, publishes a GitHub pre-release.
 
 ### 4. Flashing on Hardware & Emergency Recovery
 

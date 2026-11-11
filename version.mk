@@ -4,23 +4,27 @@ EDITION_NAME := ENH
 VER_ROOT_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 BUILD_TAG    ?= $(shell git -C "$(VER_ROOT_DIR)" rev-parse --short=7 HEAD 2>/dev/null || date +"%Y%m%d")
 
+# *_VER_BETA: 255 is a full release, anything else is that beta number
+# and adds e.g. "b1" to the .ptf name
+beta_suffix = $(if $(filter 255,$(1)),,b$(1))
+
 # Original Tracker (MK66)
 ORIGINAL_VER_MAJOR := 0
 ORIGINAL_VER_MINOR := 1
 ORIGINAL_VER_PATCH := 0
-ORIGINAL_VER_BETA  := 255
+ORIGINAL_VER_BETA  := 1
 
 # Tracker+ (IMX)
 PLUS_VER_MAJOR     := 0
 PLUS_VER_MINOR     := 1
 PLUS_VER_PATCH     := 0
-PLUS_VER_BETA      := 255
+PLUS_VER_BETA      := 1
 
 # Tracker Mini (IMX)
 MINI_VER_MAJOR     := 0
 MINI_VER_MINOR     := 1
 MINI_VER_PATCH     := 0
-MINI_VER_BETA      := 255
+MINI_VER_BETA      := 1
 
 ifeq ($(PRODUCT), MINI)
   FW_VER_1    := $(MINI_VER_MAJOR)
@@ -46,4 +50,4 @@ FW_VERSION_DEFINES := -DFW_EDITION_NAME=\"$(EDITION_NAME)\" \
                       -DFW_VER_BETA=$(FW_BETA)
 
 BUILD_ID_STR           := $(BUILD_TAG)
-DEFAULT_TARGET_POSTFIX := $(EDITION_NAME)_$(FW_VER_1).$(FW_VER_2).$(FW_VER_3)
+DEFAULT_TARGET_POSTFIX := $(EDITION_NAME)_$(FW_VER_1).$(FW_VER_2).$(FW_VER_3)$(call beta_suffix,$(FW_BETA))
