@@ -19,6 +19,7 @@ namespace polysynth
 namespace
 {
 
+// Stored in patches by position: append only. core/synth/presets/gen_presets.py mirrors this order.
 enum class MonoParamId : int
 {
     kSaw = 0,
