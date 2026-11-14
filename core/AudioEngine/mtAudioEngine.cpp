@@ -172,6 +172,16 @@ audioEngine::audioEngine()
 
 void audioEngine::init(Platform* platform, [[maybe_unused]] Synth* synth)
 {
+#if FEATURE_REALTIME_FX
+    insertfx::initChannels(); // before audio starts: the inserts read it every block
+    output.getMasterInsert()->attach(insertfx::kMaster);
+    for (int i = 0; i < kVoices; i++)
+    {
+        instrumentPlayer[i].getAudioVoice()->getInsert()->attach(
+          static_cast<insertfx::ChannelId>(insertfx::kTrack0 + i));
+    }
+#endif
+
     codec = platform->getCodecAudio();
     radio = platform->getRadio();
     usb = platform->getUsb();
@@ -369,24 +379,24 @@ void audioEngine::connectVoiceToMixer(AudioVoice* voice, MixerAndFxs<kVoices>* m
                           idx));
 
     connections.push_back(
-      new AudioConnection(voice->getFilter(AudioVoice::VoiceChannels::kLeft),
-                          0,
+      new AudioConnection(voice->getPostFilter(AudioVoice::VoiceChannels::kLeft),
+                          voice->getPostFilterIndex(AudioVoice::VoiceChannels::kLeft),
                           mixerAndFxs->getPreFxMixer(MixerAndFxs<kVoices>::FxType::kReverb),
                           idx));
     connections.push_back(
-      new AudioConnection(voice->getFilter(AudioVoice::VoiceChannels::kRight),
-                          0,
+      new AudioConnection(voice->getPostFilter(AudioVoice::VoiceChannels::kRight),
+                          voice->getPostFilterIndex(AudioVoice::VoiceChannels::kRight),
                           mixerAndFxs->getPreFxMixer(MixerAndFxs<kVoices>::FxType::kReverb),
                           kVoices + kInputsChannels + idx));
 
     connections.push_back(
-      new AudioConnection(voice->getFilter(AudioVoice::VoiceChannels::kLeft),
-                          0,
+      new AudioConnection(voice->getPostFilter(AudioVoice::VoiceChannels::kLeft),
+                          voice->getPostFilterIndex(AudioVoice::VoiceChannels::kLeft),
                           mixerAndFxs->getPreFxMixer(MixerAndFxs<kVoices>::FxType::kDelay),
                           idx));
     connections.push_back(
-      new AudioConnection(voice->getFilter(AudioVoice::VoiceChannels::kRight),
-                          0,
+      new AudioConnection(voice->getPostFilter(AudioVoice::VoiceChannels::kRight),
+                          voice->getPostFilterIndex(AudioVoice::VoiceChannels::kRight),
                           mixerAndFxs->getPreFxMixer(MixerAndFxs<kVoices>::FxType::kDelay),
                           kVoices + kInputsChannels + idx));
 }
@@ -537,6 +547,21 @@ void audioEngine::connectInputToOutput(AudioInput* input, AudioOutput* output)
 
 void audioEngine::connectMixerToOutput(MixerAndFxs<kVoices>* mixerAndFxs, AudioOutput* output)
 {
+#if FEATURE_REALTIME_FX
+    for (int channel = 0; channel < AudioOutput::OutputChannels::kChannelsCount; channel++)
+    {
+        connections.push_back(new AudioConnection(
+          mixerAndFxs->getTracksAndSendsMixer(static_cast<MixerAndFxChannelType>(channel)),
+          0,
+          output->getMasterInsert(),
+          channel));
+        connections.push_back(
+          new AudioConnection(output->getMasterInsert(),
+                              channel,
+                              output->getLimiter(static_cast<AudioOutput::OutputChannels>(channel)),
+                              0));
+    }
+#else
     connections.push_back(
       new AudioConnection(mixerAndFxs->getTracksAndSendsMixer(MixerAndFxChannelType::kLeft),
                           0,
@@ -548,6 +573,7 @@ void audioEngine::connectMixerToOutput(MixerAndFxs<kVoices>* mixerAndFxs, AudioO
                           0,
                           output->getLimiter(AudioOutput::OutputChannels::kRight),
                           0));
+#endif
 
 #ifdef PLATFORM_IMX
     static constexpr int kPolyverbLeftUsbStreamIdx = 16;
@@ -897,6 +923,56 @@ void audioEngine::refreshDelayVolume()
 #ifdef FEATURE_SYNTH
     refreshSynthParam(SynthParam::kDelaySend);
 #endif
+}
+
+bool audioEngine::setInsertSlot(int channel, int slot, const strInsertSlot& settings)
+{
+    if (channel < 0 || channel >= kInsertChannels || slot < 0 || slot >= kInsertSlots)
+    {
+        return false;
+    }
+#if FEATURE_REALTIME_FX
+    insertfx::Slot fx;
+    fx.type = settings.type < insertfx::kTypeCount ? static_cast<insertfx::Type>(settings.type)
+                                                   : insertfx::kOff;
+    static_assert(kInsertParams == insertfx::kParams && kInsertSlots == insertfx::kSlots &&
+                  kInsertChannels == insertfx::kChannelCount);
+    memcpy(fx.params, settings.params, sizeof(fx.params));
+    if (!insertfx::setSlot(static_cast<insertfx::ChannelId>(channel), slot, fx))
+    {
+        return false;
+    }
+#endif
+    mtProject.values.insertSlot[channel][slot] = settings;
+    return true;
+}
+
+void audioEngine::refreshInserts()
+{
+#if FEATURE_REALTIME_FX
+    // Free every reverb first, so the order of the slots does not matter.
+    insertfx::Slot off;
+    insertfx::setDefaults(off, insertfx::kOff);
+    for (int channel = 0; channel < kInsertChannels; channel++)
+    {
+        for (int slot = 0; slot < kInsertSlots; slot++)
+        {
+            insertfx::setSlot(static_cast<insertfx::ChannelId>(channel), slot, off);
+        }
+    }
+#endif
+    for (int channel = 0; channel < kInsertChannels; channel++)
+    {
+        for (int slot = 0; slot < kInsertSlots; slot++)
+        {
+            strInsertSlot& stored = mtProject.values.insertSlot[channel][slot];
+            if (!setInsertSlot(channel, slot, stored))
+            {
+                stored = strInsertSlot{}; // no free reverb: the slot loads empty
+                setInsertSlot(channel, slot, stored);
+            }
+        }
+    }
 }
 
 void audioEngine::refreshAllSends()
