@@ -79,6 +79,8 @@
 #include "images/mono_mini_nomark_80x28_L2.h"
 #include "images/prism_med_108x40_L2.h"
 #include "images/prism_mini_nomark_80x28_L2.h"
+#include "images/grit_med_108x40_L2.h"
+#include "images/grit_mini_nomark_80x28_L2.h"
 
 #endif
 
@@ -218,6 +220,8 @@ const strBitmap bitmaps[displayBitmapsCount] = {
     { mono_med_108x40_L2, 131300, 1080, 108, 40, L2, 27 },
     { prism_mini_nomark_80x28_L2, 129000, 560, 80, 28, L2, 20 },
     { prism_med_108x40_L2, 129600, 1080, 108, 40, L2, 27 },
+    { grit_mini_nomark_80x28_L2, 132400, 560, 80, 28, L2, 20 },
+    { grit_med_108x40_L2, 133000, 1080, 108, 40, L2, 27 },
 
 #endif
 };

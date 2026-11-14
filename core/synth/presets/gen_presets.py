@@ -244,7 +244,70 @@ def prism_presets():
         yield name, PRISM_ID, v, prism_macros()
 
 
-ENGINES = {"MONO": mono_presets, "PRISM": prism_presets}
+# --- GRIT (GritSynthVoice.cpp, InstrumentTypeId::kGritSynth) ------------------------------
+
+GRIT_ID = 11
+GRIT_PARAMS = [  # (name, default), in GritParamId order
+    ("wave", 2), ("steps", 1), ("step_time", 0.078), ("crossfade", 0.5), ("jump", 1), ("loop", 1),
+    ("level_step", 0.0), ("random", 0.0), ("layer", 0.0), ("layer_wave", 0), ("layer_transpose", 0.0),
+    ("layer_detune", 0.0), ("layer_time", 0.0), ("velocity_wave", 0.0), ("grit", 0.0), ("bits", 0.0),
+    ("attack", 0.003), ("decay", 0.4), ("sustain", 0.85), ("release", 0.2), ("vibrato_rate", 5.0),
+    ("vibrato_depth", 0.0), ("tune", 0.0), ("fine", 0.0), ("play_mode", 0), ("glide_time", 0.0),
+    ("volume", 1.0),
+]
+GRIT_INDEX = {name: i for i, (name, _) in enumerate(GRIT_PARAMS)}
+
+
+def grit_macros():
+    i = GRIT_INDEX
+    return [
+        {"name": "Wave", "bipolar": True, "targets": [(i["wave"], 1.0)]},
+        {"name": "Step Time", "bipolar": True, "targets": [(i["step_time"], 1.0)]},
+        {"name": "Crossfade", "bipolar": True, "targets": [(i["crossfade"], 1.0)]},
+        {"name": "Jump", "bipolar": True, "targets": [(i["jump"], 1.0)]},
+        {"name": "Layer", "bipolar": True, "targets": [(i["layer"], 1.0)]},
+        {"name": "Grit / Bits", "targets": [(i["grit"], 0.8), (i["bits"], 0.6)]},
+        {"name": "", "targets": [(i["volume"], 1.0)]},
+        {"name": ""},
+    ]
+
+
+# Pocket Rack's MS800 presets: (name, (WAVE, STEP, TIME, XFAD, JUMP, LOOP, LSTP, RAND), (A, D, S, R),
+# (LAYR, BWAV, BTRN, DTUN, BTIM, VELW, GRIT, BITS))
+GRIT_PRESETS = [
+    ("DIGI SAW", (2, 1, 60, 0, 0, 1, 0, 0), (0, 60, 110, 30), (90, 0, 0, 9, 0, 0, 0, 0)),
+    ("GRIT BASS", (3, 2, 40, 60, 2, 0, 0, 0), (0, 70, 60, 20), (110, 0, -12, 0, 0, 0, 30, 0)),
+    ("WAVE CHOIR", (11, 4, 85, 127, 1, 2, 0, 0), (60, 60, 120, 80), (80, 1, 0, 12, 20, 0, 0, 0)),
+    ("SEQ ORGAN", (6, 3, 70, 90, 1, 1, 0, 0), (2, 50, 127, 30), (70, 1, 12, 0, 0, 0, 0, 0)),
+    ("CHIP ARP", (3, 4, 38, 0, 4, 1, 0, 0), (0, 60, 110, 25), None),
+    ("DUST KEYS", (13, 3, 55, 80, 3, 0, -24, 0), (0, 85, 30, 60), (60, 0, 12, 4, 0, 40, 0, 0)),
+    ("PING PAD", (9, 6, 80, 127, 1, 2, 0, 0), (80, 60, 127, 100), (90, 3, 0, -10, 25, 0, 0, 0)),
+    ("ALIAS LEAD", (10, 2, 60, 40, 5, 1, 0, 0), (2, 60, 110, 40), (80, 0, 7, 6, 0, 0, 0, 20)),
+    ("NOISE SWEEP", (18, 4, 75, 127, 1, 0, -12, 0), (30, 60, 110, 90), (50, 2, -12, 0, 0, 0, 60, 0)),
+    ("STEP RHYTHM", (14, 8, 45, 10, 3, 1, -20, 0), (0, 60, 110, 30), None),
+    ("GLASS SCAN", (0, 8, 60, 127, 2, 2, 0, 0), (10, 70, 100, 80), (60, 6, 12, 0, -30, 0, 0, 0)),
+    ("RANDOM BITS", (20, 8, 42, 20, 1, 1, 0, 70), (0, 60, 100, 40), (0, 0, 0, 0, 0, 0, 40, 60)),
+]
+
+
+def grit_presets():
+    for name, e, env, x in GRIT_PRESETS:
+        v = [d for _, d in GRIT_PARAMS]
+        i = GRIT_INDEX
+        v[i["wave"]], v[i["steps"]] = e[0], e[1]
+        v[i["step_time"]] = pr_time_ms(e[2]) / 1000
+        v[i["crossfade"]], v[i["jump"]], v[i["loop"]] = e[3] / 127, e[4], e[5]
+        v[i["level_step"]], v[i["random"]] = e[6] / 64, e[7] / 127
+        x = x or (0,) * 8
+        v[i["layer"]], v[i["layer_wave"]], v[i["layer_transpose"]] = x[0] / 127, x[1], x[2]
+        v[i["layer_detune"]], v[i["layer_time"]] = x[3], x[4] / 64
+        v[i["velocity_wave"]], v[i["grit"]], v[i["bits"]] = x[5] / 127, x[6] / 127, x[7] / 127
+        v[i["attack"]], v[i["decay"]] = pr_attack(env[0]), min(pr_decay(env[1]), 10.0)
+        v[i["sustain"]], v[i["release"]] = env[2] / 127, min(pr_decay(env[3]), 10.0)
+        yield name, GRIT_ID, v, grit_macros()
+
+
+ENGINES = {"MONO": mono_presets, "PRISM": prism_presets, "GRIT": grit_presets}
 
 
 def file_name(name):
