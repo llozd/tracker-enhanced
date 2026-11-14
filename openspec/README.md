@@ -14,6 +14,6 @@ Change records for Tracker Enhanced, in [OpenSpec](https://github.com/Fission-AI
 | [original-tracker-support](changes/original-tracker-support/proposal.md) | In progress: builds, untested on hardware |
 | [row-number-beat-shading](changes/row-number-beat-shading/proposal.md) | Implemented, untested on hardware |
 | [pocket-rack-engines](changes/pocket-rack-engines/proposal.md) | Planned |
-| [synth-randomise](changes/synth-randomise/proposal.md) | Planned |
+| [synth-randomise](changes/synth-randomise/proposal.md) | Implemented, untested on hardware |
 | [track-half-jump](changes/track-half-jump/proposal.md) | Planned |
 | [all-tracks-view](changes/all-tracks-view/proposal.md) | Planned |

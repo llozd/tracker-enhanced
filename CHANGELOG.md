@@ -4,6 +4,13 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ---
 
+## [Unreleased]
+
+### Added
+* **Synth randomise (Tracker+ and Mini)**: hold Shift on a synth part's parameter screen; F7 randomises the patch (any engine, mix and tuning kept, envelopes and cutoff kept in a playable range) and F8 restores the previous patch.
+
+---
+
 ## [ENH 0.1.0 beta 1] - First Tracker Enhanced Beta
 
 > **Beta.** Tested on a Tracker+, not yet tested on the Original or Mini. Back up your microSD card before flashing. Projects saved with Tracker Enhanced will not open on stock or Community Edition firmware.
