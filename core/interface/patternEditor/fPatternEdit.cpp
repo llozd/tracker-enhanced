@@ -965,6 +965,35 @@ void cPatternEditor::focusOnActual()
       clamp<int8_t>(trackerPattern.firstVisibleTrack, 0, kAllTracks - columnCounts);
 }
 
+void cPatternEditor::jumpTrackHalf(int8_t direction)
+{
+    constexpr int kHalf = kAllTracks / 2;
+    const int from = trackerPattern.actualTrack;
+    const int to = from + direction * kHalf;
+    patternShiftLayerUsed = true;
+    if ((direction > 0 && from >= kHalf) || (direction < 0 && from < kHalf) || to < 0 || to >= kAllTracks)
+    {
+        return;
+    }
+
+    // The view moves with the cursor, so the cursor keeps its place on screen.
+    const int columnCounts = patternViewMode > 0 ? 8 : 4;
+    trackerPattern.actualTrack = to;
+    trackerPattern.firstVisibleTrack = clamp<int>(trackerPattern.firstVisibleTrack + direction * kHalf,
+                                                  0,
+                                                  kAllTracks - columnCounts);
+    focusOnActual();
+
+    trackerPattern.selectState = 1;
+    trackerPattern.selectColumn = 0;
+    isSelectingNow = 0;
+    patternViewChanged = 1; // releasing Pattern keeps the compact view
+
+    showFxInfo();
+    lightUpPadBoard();
+    display.refreshControl(patternControl);
+}
+
 void cPatternEditor::moveCursorByStep()
 {
     moveCursorByStep(0);
@@ -2162,6 +2191,13 @@ static void functLeft()
         return;
     }
 
+    if (PTE->buttons->isButtonPressed(interfaceButtonPattern) &&
+        PTE->buttons->isButtonPressed(interfaceButtonShift))
+    {
+        PTE->jumpTrackHalf(-1);
+        return;
+    }
+
     if (PTE->buttons->isButtonPressed(interfaceButtonPattern))
     {
         if (sequencer.isPlay())
@@ -2209,6 +2245,13 @@ static void functRight()
             case 6: functUndoRedoOnLeftRight(1); return;
             default: break;
         }
+        return;
+    }
+
+    if (PTE->buttons->isButtonPressed(interfaceButtonPattern) &&
+        PTE->buttons->isButtonPressed(interfaceButtonShift))
+    {
+        PTE->jumpTrackHalf(1);
         return;
     }
 

@@ -53,6 +53,9 @@ class cPatternEditor : public ModuleBase
     void setKeyboardNamePatternFunctions(void (*confirmFunct)(void), bool autoNameEnabled);
 
     void focusOnActual();
+    // Pattern + Shift + Left/Right (openspec track-half-jump): the cursor 8 tracks left or right
+    void jumpTrackHalf(int8_t direction);
+    bool patternShiftLayerUsed = false; // an arrow was pressed while Pattern and Shift were held
     void moveCursorByStep();
     void moveCursorByStep(uint16_t);
     void moveCursorByStepParallel();
