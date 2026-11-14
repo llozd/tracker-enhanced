@@ -24,3 +24,14 @@ Randomise SHALL NOT produce a silent or stuck patch.
 #### Scenario: Recover
 - **WHEN** the user dislikes the result
 - **THEN** randomising again, or loading a patch, replaces it
+
+### Requirement: Previous patch
+The parameter screen SHALL offer Previous, which restores the patch from before the last randomise.
+
+#### Scenario: Go back
+- **WHEN** the user randomises and then presses Shift + F8 (Previous)
+- **THEN** the part's parameters return to their values before that randomise
+
+#### Scenario: Nothing to restore
+- **WHEN** no randomise happened since the part's patch was loaded or its engine changed
+- **THEN** Previous is unavailable

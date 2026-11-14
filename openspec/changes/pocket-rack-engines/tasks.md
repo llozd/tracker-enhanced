@@ -1,7 +1,8 @@
 # Tasks
 
 ## Shared
-- [ ] Answer the open questions (display names, shipped presets)
+- [x] Answer the open questions: neutral device names, presets ship as `.patch` files
+- [ ] Convert Pocket Rack presets of PRISM, SH-101, MS800 and K5 to `.patch` files, and add them to the release zip
 - [ ] Append the six `InstrumentTypeId` values and register them (`registry.cpp`, `Synth::kSynthTypes`, model names, badges)
 - [ ] Reusable amp envelope, filter envelope, LFO and glide helpers for the ports (or per engine, if they differ)
 

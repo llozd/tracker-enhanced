@@ -25,9 +25,19 @@ Each engine is a `CustomSynthVoice` (`docs/custom_synth_sdk.md`) in `core/synth/
 - PRISM, SH-101, MS800 and K5 were written only by llozd (checked in git history and file headers), so llozd relicenses them under this repository's `LICENSE` for the port. Pocket Rack's shared helpers are not by llozd and are not ported: the ports use the SDK's maths (`sdk::fastSine`, `sdk::fastPow2`) instead of `x0x/fastmath.h`, and their own envelopes, LFO and glide instead of Pocket Rack's `voice.c`.
 - PHASE and PROPHET in Pocket Rack are GPL-3.0 code by other authors (Kerem Kilic; Leo Kuroshita's CrispyZebra for PHASE) and cannot be combined with Polyend's closed synth libraries. The Tracker versions are written new, from the instruments' published architecture. Nobody working on them reads Pocket Rack's `eng_phase.c`, `eng_prophet_test.c`, `prophet_*.c` or CrispyZebra. Sequential's factory programs are not shipped.
 
-## Open questions
-- Display names: the model list uses short names (`ACD`, `CHIP`). Should the names avoid other makers' trademarks (SH-101, K5, Prophet)? The `realtime-effects` record uses "inspired by, no copied branding".
-- Should Pocket Rack's presets for the four ported engines ship as factory `.patch` files on the SD card?
+## Decisions
+- **No other makers' trademarks on the device.** Model names, badges and patch folders use neutral names. Docs may still describe an engine as "after the Kawai K5", as the `realtime-effects` record does. Working names, which can be changed before release:
+
+  | Engine | Device name |
+  | :--- | :--- |
+  | PRISM | `PRISM` |
+  | SH-101 | `MONO` |
+  | MS800 | `GRIT` |
+  | K5 | `HARM` |
+  | PHASE | `PHASE` |
+  | PROPHET | `POLY` |
+
+- **Presets ship.** Pocket Rack's presets for the four ported engines (llozd's own) are converted to factory `.patch` files under `/Patches/` on the SD card, with the factory patches' layout and the device names above. PHASE and PROPHET get new presets.
 
 ## Out of scope
 - The Original Tracker.

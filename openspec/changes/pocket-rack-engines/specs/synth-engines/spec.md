@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: New engines alongside the existing ones
-The synth model list SHALL offer PRISM, SH-101, MS800, K5, PHASE and PROPHET in addition to every existing engine.
+The synth model list SHALL offer PRISM, MONO, GRIT, HARM, PHASE and POLY (the ports of PRISM, SH-101, MS800 and K5, and the new PHASE and PROPHET engines) in addition to every existing engine. No other maker's trademark appears on the device.
 
 #### Scenario: Pick a new engine
 - **WHEN** the user picks one of the new engines on a synth part
