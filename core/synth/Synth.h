@@ -42,7 +42,8 @@ class Synth
                                                 polysynth::InstrumentTypeId::kShapingSynth, polysynth::InstrumentTypeId::kChiptuneSynth,
                                                 polysynth::InstrumentTypeId::kMonoSynth,
                                                 polysynth::InstrumentTypeId::kPrismSynth,
-                                                polysynth::InstrumentTypeId::kGritSynth };
+                                                polysynth::InstrumentTypeId::kGritSynth,
+                                                polysynth::InstrumentTypeId::kHarmSynth };
     static constexpr auto kInitPatchName = "Init";
 
     Synth();

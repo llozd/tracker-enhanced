@@ -307,7 +307,70 @@ def grit_presets():
         yield name, GRIT_ID, v, grit_macros()
 
 
-ENGINES = {"MONO": mono_presets, "PRISM": prism_presets, "GRIT": grit_presets}
+# --- HARM (HarmSynthVoice.cpp, InstrumentTypeId::kHarmSynth) ------------------------------
+
+HARM_ID = 12
+HARM_PARAMS = [  # (name, default), in HarmParamId order
+    ("angle", 1.0), ("odd_even", 0.0), ("bloom", 0.0), ("harmonic_decay", 0.0), ("cutoff", 1.0),
+    ("slope", 0.504), ("flat", 1.0), ("velocity_filter", 0.0), ("formant_depth", 0.0), ("formant_freq", 0.0),
+    ("octave", 0.0), ("fifth", 0.0), ("twin", 0.0), ("harmonic_mod", 0.0), ("key_harmonics", 0.0),
+    ("key_scale", 0.0), ("env_amount", 0.0), ("attack", 0.003), ("decay", 0.4), ("sustain", 0.85),
+    ("release", 0.3), ("tune", 0.0), ("fine", 0.0), ("play_mode", 0), ("glide_time", 0.0), ("volume", 1.0),
+]
+HARM_INDEX = {name: i for i, (name, _) in enumerate(HARM_PARAMS)}
+
+
+def harm_macros():
+    i = HARM_INDEX
+    return [
+        {"name": "Cutoff", "bipolar": True, "targets": [(i["cutoff"], 1.0)]},
+        {"name": "Angle", "bipolar": True, "targets": [(i["angle"], 1.0)]},
+        {"name": "Bloom / Decay", "bipolar": True, "targets": [(i["bloom"], 0.8), (i["harmonic_decay"], 0.8)]},
+        {"name": "Formant", "bipolar": True, "targets": [(i["formant_depth"], 1.0), (i["formant_freq"], 0.5)]},
+        {"name": "Odd / Even", "bipolar": True, "targets": [(i["odd_even"], 1.0)]},
+        {"name": "Twin / Mod", "bipolar": True, "targets": [(i["twin"], 0.8), (i["harmonic_mod"], 0.6)]},
+        {"name": "", "targets": [(i["volume"], 1.0)]},
+        {"name": ""},
+    ]
+
+
+# Pocket Rack's K5 presets: (name, (ANGL, ODEV, BLOM, DCAY, CUT, SLOP, FLAT, VELF), (A, D, S, R), fenv,
+# (FDEP, FFRQ, OCTV, FIFT, TWIN, HMOD, KEYH, KSCL))
+HARM_PRESETS = [
+    ("HARM BRASS", (30, 0, 25, 10, 55, 60, 127, 50), (12, 70, 110, 50), 35, (0, 0, 0, 0, 0, 0, 0, 40)),
+    ("DIGI BELL", (14, 0, 0, 95, 120, 40, 127, 30), (0, 110, 0, 100), 0, (0, 0, 0, 40, 0, 0, 20, 0)),
+    ("GLASS PAD", (18, 0, 90, 0, 100, 50, 90, 0), (80, 60, 127, 100), 0, (60, 20, 0, 0, 20, 40, 0, 32)),
+    ("HOLLOW REED", (24, 56, 10, 0, 80, 70, 127, 30), (10, 60, 115, 45), 10, (30, 4, 0, 0, 0, 0, 0, 48)),
+    ("VOX FORMANT", (20, 0, 30, 0, 110, 50, 127, 0), (40, 60, 120, 70), 0, (110, -10, 0, 0, 30, 20, 0, 32)),
+    ("DRAWBAR ORGAN", (48, 0, 0, 0, 127, 40, 127, 0), (1, 50, 127, 25), 0, (0, 0, 50, 30, 0, 0, 0, 0)),
+    ("PLUCK HARP", (28, 0, 0, 100, 105, 50, 127, 40), (0, 95, 0, 70), 0, (0, 0, 0, 0, 0, 0, 16, 40)),
+    ("BAND SWEEP", (10, 0, 40, 0, 40, 80, 0, 0), (60, 90, 100, 90), 50, (0, 0, 0, 0, 30, 30, 0, 32)),
+    ("TWIN STRINGS", (32, 0, 40, 0, 90, 45, 127, 20), (60, 60, 120, 85), 10, (20, 8, 0, 0, 45, 0, 0, 32)),
+    ("ADDITIVE BASS", (30, 0, 0, 30, 45, 70, 127, 45), (0, 60, 100, 25), 40, (0, 0, 20, 0, 0, 0, 0, 32)),
+    ("SHIMMER PAD", (10, 0, 60, 0, 110, 45, 110, 0), (90, 60, 127, 110), 0, (50, 30, 0, 0, 15, 90, 0, 32)),
+    ("E PIANO", (40, 20, 0, 70, 95, 55, 127, 60), (0, 90, 30, 60), 0, (0, 0, 0, 30, 10, 0, 24, 48)),
+]
+
+
+def harm_presets():
+    for name, e, env, fenv, x in HARM_PRESETS:
+        v = [d for _, d in HARM_PARAMS]
+        i = HARM_INDEX
+        v[i["angle"]], v[i["odd_even"]] = e[0] / 32, e[1] / 64
+        v[i["bloom"]], v[i["harmonic_decay"]] = e[2] / 127, e[3] / 127
+        v[i["cutoff"]], v[i["slope"]], v[i["flat"]], v[i["velocity_filter"]] = (y / 127 for y in e[4:8])
+        v[i["formant_depth"]], v[i["formant_freq"]] = x[0] / 127, x[1] / 16
+        # OCTV / FIFT: log2 gain x / 32, in dB
+        v[i["octave"]], v[i["fifth"]] = x[2] / 32 * 6.0206, x[3] / 32 * 6.0206
+        v[i["twin"]], v[i["harmonic_mod"]] = x[4] / 127, x[5] / 127
+        v[i["key_harmonics"]], v[i["key_scale"]] = x[6] / 64, x[7] / 64
+        v[i["env_amount"]] = max(-1.0, min(1.0, fenv * 0.0709 / 8))
+        v[i["attack"]], v[i["decay"]] = pr_attack(env[0]), min(pr_decay(env[1]), 10.0)
+        v[i["sustain"]], v[i["release"]] = env[2] / 127, min(pr_decay(env[3]), 10.0)
+        yield name, HARM_ID, v, harm_macros()
+
+
+ENGINES = {"MONO": mono_presets, "PRISM": prism_presets, "GRIT": grit_presets, "HARM": harm_presets}
 
 
 def file_name(name):

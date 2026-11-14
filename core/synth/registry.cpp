@@ -6,6 +6,7 @@
 #include "engines/MonoSynthVoice.h"
 #include "engines/PrismSynthVoice.h"
 #include "engines/GritSynthVoice.h"
+#include "engines/HarmSynthVoice.h"
 
 namespace polysynth
 {
@@ -39,6 +40,7 @@ void InstrumentTypeRegistry::registerInstrumentTypes(
     registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kMonoSynth), createMonoSynth());
     registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kPrismSynth), createPrismSynth());
     registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kGritSynth), createGritSynth());
+    registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kHarmSynth), createHarmSynth());
 }
 
 } // namespace polysynth
