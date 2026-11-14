@@ -9,6 +9,12 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 ### Added
 * **Insert effects (Tracker+ and Mini)**: three insert slots on every sample track, synth part and the master, on the Master screen's new **Inserts** page. EQs (including a PQ1549-style parametric EQ), compressors (utility, limiter, glue, FET), drives, tape, tube, transformer, console, saturator, exciter, chorus, flanger, phaser and reverb. Saved with the project. See [`docs/realtime_effects.md`](docs/realtime_effects.md).
 * **Dev console**: `fx` and `cpu` commands to set inserts and read the audio load.
+* **MONO synth engine (Tracker+ and Mini)**: a one-oscillator monosynth after the SH-101, ported from Pocket Rack, with 8 factory patches in the release's `Patches/` folder. See [`docs/synth_engines.md`](docs/synth_engines.md).
+* **PRISM synth engine (Tracker+ and Mini)**: an additive spectral synth with 24 partials a voice, ported from Pocket Rack, with 40 factory patches.
+* **GRIT synth engine (Tracker+ and Mini)**: an MS800 style digital wave module (stepped 8-bit wave sequences, a second layer, grit and bit reduction), ported from Pocket Rack, with 12 factory patches.
+* **HARM synth engine (Tracker+ and Mini)**: additive synthesis after the K5 (32 harmonics in four envelope groups, a spectral filter and a formant EQ), ported from Pocket Rack, with 12 factory patches.
+* **PHASE synth engine (Tracker+ and Mini)**: a CZ-style phase distortion synth with two lines, eight waves and DCW envelopes, written new, with 8 factory patches.
+* **POLY synth engine (Tracker+ and Mini)**: a Prophet-5 style analog polysynth with sync, Poly-Mod, a four-pole filter and per-voice drift, written new, with 8 factory patches.
 * **Synth randomise (Tracker+ and Mini)**: hold Shift on a synth part's parameter screen; F7 randomises the patch (any engine, mix and tuning kept, envelopes and cutoff kept in a playable range) and F8 restores the previous patch.
 
 ### Changed
