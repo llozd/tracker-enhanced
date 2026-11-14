@@ -329,7 +329,13 @@ void cTracker::update()
 
     stepHight = height / 15;
 
-    if (displayMode > 0)
+    if (displayMode == kPatternViewAllTracks) // three narrow cells a track: note, FX1, FX2
+    {
+        tracksWidth = (800 - (rightOffset + leftOffset)) / strTrackerPattern::kTrackCount;
+        columnsCount = strTrackerPattern::kTrackCount;
+        paramCount = 0;
+    }
+    else if (displayMode > 0)
     {
         tracksWidth = (800 - (rightOffset + leftOffset)) / 8;
         columnsCount = (tracks->popupMode & 2) ? 6 : 8;
@@ -401,6 +407,11 @@ void cTracker::update()
 //------------------------------------------------------------------------------------------
 void cTracker::update2()
 {
+    if (displayMode == kPatternViewAllTracks)
+    {
+        dots();
+        return;
+    }
     if (displayMode == 0 || displayMode & 1)
     {
         notes();
@@ -785,6 +796,13 @@ void cTracker::selection()
             rect_select_x = select_x + fourParamsSelOffset[tracks->selectedParam];
             rect_select_width = fourParamsSelWidth[tracks->selectedParam];
         }
+        else if (paramCount == 0) // all tracks view: the note (and instrument), FX1 or FX2 cell
+        {
+            const uint16_t cellWidth = tracksWidth / 3;
+            const uint8_t cell = tracks->selectedParam <= 1 ? 0 : tracks->selectedParam - 1;
+            rect_select_x = select_x + cell * cellWidth;
+            rect_select_width = cellWidth - 1;
+        }
 
         API_COLOR(selection_color);
         API_LINE_WIDTH(kRedFrameWidth);
@@ -1033,6 +1051,69 @@ void cTracker::tracksNumbers()
 }
 
 //===============================================================================================================================
+// The all tracks view: a dot for each filled cell (a dash for note off, cut or fade).
+void cTracker::dots()
+{
+    const uint16_t cellWidth = tracksWidth / 3;
+    const int8_t cursorCell = tracks->selectedParam <= 1 ? 0 : tracks->selectedParam - 1;
+
+    API_SAVE_CONTEXT();
+    for (uint8_t pass = 0; pass < 2; pass++) // dots, then dashes
+    {
+        if (pass == 0)
+        {
+            API_POINT_SIZE(16 * 3);
+            API_BEGIN(FTPOINTS);
+        }
+        else
+        {
+            API_LINE_WIDTH(16);
+            API_BEGIN(RECTS);
+        }
+        for (uint8_t i = 0; i < columnsCount; i++)
+        {
+            const uint8_t track = tracks->firstVisibleTrack + i;
+            for (uint8_t j = 0; j < rowCount; j++)
+            {
+                const auto& row = tracks->track[track].row[j];
+                const int16_t y = posY + j * stepHight + stepHight / 2;
+                for (uint8_t c = 0; c < 3; c++)
+                {
+                    const char* text = c == 0 ? row.note : row.fx[c - 1];
+                    if (text[0] == 0 || text[0] == '-' || (c > 0 && text[1] == '-'))
+                        continue;
+                    // note off, cut and fade have a letter second (OFF, CUT, FAD); notes have - or #
+                    const bool noteOff = c == 0 && text[1] >= 'A' && text[1] <= 'Z';
+                    if (noteOff != (pass == 1))
+                        continue;
+
+                    const bool cursor = tracks->selectState && j == 7 &&
+                                        track == tracks->actualTrack && c == cursorCell;
+                    uint32_t color = c == 0 ? colors[2] : c == 1 ? colors[4] : colors[5];
+                    if (cursor)
+                        color = colors[14];
+                    else if (tracks->inactive[track])
+                        color = colors[12];
+                    API_COLOR(color);
+
+                    const int16_t x = rightOffset + i * tracksWidth + cellWidth * c + cellWidth / 2;
+                    if (pass == 0)
+                    {
+                        API_VERTEX2F(x, y);
+                    }
+                    else
+                    {
+                        API_VERTEX2F(x - 4, y - 1);
+                        API_VERTEX2F(x + 4, y + 1);
+                    }
+                }
+            }
+        }
+        API_END();
+    }
+    API_RESTORE_CONTEXT();
+}
+
 void cTracker::notes()
 {
     API_SAVE_CONTEXT();
