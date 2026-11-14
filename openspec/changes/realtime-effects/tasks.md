@@ -13,7 +13,7 @@
 - [ ] Cost per block of each effect type, then the CPU budget and the per-type cost table
 
 ## Follow-ups
-- [ ] Mono synth parts: stereo output when an insert widens (chorus, flanger)
+- [x] Mono synth parts: stereo output when a chorus is in a slot
 
 ## Reverb (PR 2)
 - [ ] `AudioEffectPolyverb` takes its buffers from the caller; reverb pool and limit

@@ -10,7 +10,7 @@ filter L/R -> [insert: slot 1 -> 2 -> 3] -> amplifier -> panning -> tracks mixer
 ```
 
 **Synth parts.** `PolySynth::update` (`core/libs/Audio/synth_PolySynth.cpp`, open source) renders each part to float buffers, then splits them into the dry output and the two sends. The part's inserts run on those float buffers before the split, so the sends hear them too.
-- Every engine except PERC renders mono, so their inserts run in mono: a chorus thickens a synth part but does not widen it. Making a mono part stereo when it has a widening insert is a follow-up.
+- Every engine except PERC renders mono. When a part's slots include a chorus, the part is made stereo before its inserts (left copied to right) and takes the stereo output path, so the chorus widens it. Without a chorus it stays mono and costs nothing extra.
 - PERC renders its own per-voice sends, which bypass the inserts.
 
 **Master.** Between the tracks-and-sends mixer and the limiter (`connectMixerToOutput`):

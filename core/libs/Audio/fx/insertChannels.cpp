@@ -59,6 +59,16 @@ bool hasActiveSlot(const Channel& ch)
     return false;
 }
 
+bool widensStereo(const Channel& ch)
+{
+    for (const Slot& s : ch.slot)
+    {
+        if (s.type == kChorus)
+            return true;
+    }
+    return false;
+}
+
 void processChannel(Channel& ch, float* l, float* r, uint32_t n)
 {
     for (int s = 0; s < kSlots; s++)

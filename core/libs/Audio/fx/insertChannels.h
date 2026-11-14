@@ -36,6 +36,9 @@ const Slot& getSlot(ChannelId id, int slotIdx);
 
 bool hasActiveSlot(const Channel& ch);
 
+// True when a slot makes a mono input stereo (chorus), so the caller should feed it stereo.
+bool widensStereo(const Channel& ch);
+
 // Audio side: runs the channel's slots in place. r may be null for mono.
 void processChannel(Channel& ch, float* l, float* r, uint32_t n);
 
