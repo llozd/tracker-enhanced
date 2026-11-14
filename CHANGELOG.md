@@ -4,6 +4,13 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ---
 
+## [Unreleased]
+
+### Added
+* **Jump between track halves**: in the pattern editor, hold Pattern and Shift and press Left/Right to move the cursor between tracks 1 to 8 and 9 to 16 (same row and column). The view moves with it.
+
+---
+
 ## [ENH 0.1.0 beta 1] - First Tracker Enhanced Beta
 
 > **Beta.** Tested on a Tracker+, not yet tested on the Original or Mini. Back up your microSD card before flashing. Projects saved with Tracker Enhanced will not open on stock or Community Edition firmware.

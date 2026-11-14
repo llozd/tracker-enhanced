@@ -1,6 +1,6 @@
 # Jump between track halves
 
-**Status: planned**
+**Status: implemented**, untested on hardware
 
 **Platforms:** all. UI only, no feature gate.
 
