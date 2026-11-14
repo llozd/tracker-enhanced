@@ -78,6 +78,7 @@ CI (`.github/workflows/build.yml`) runs `make version`, `make all` and `make ptf
 - **File formats**: `PROJECT_FILE_VERSION`, `PATTERN_FILE_VERSION` and `INSTRUMENT_FILE_VERSION` are in `core/source/mtStructs.h`. Never reorder serialized enums or shift existing struct fields. To bump a version, add an upgrade step in `mtFileManagerOldVersionRecovery.cpp`. ENH files are already incompatible with stock firmware (this is intended), but projects must stay portable between all three ENH devices.
 - **Memory**: patterns are 512 rows on every device. `SAMPLE_MEMORY_SIZE` was reduced to pay for this, so check the memory regions before adding big static buffers.
 - **UI**: never shift `Interface::modules[]` indices. Any UI or shortcut change needs to work on both the desktop units (pads and jog wheel) and the Mini (D-pad, Shift combos).
+- **Line endings**: some files are CRLF (for example `core/libs/Audio/synth_PolySynth.cpp`). Keep each file's line endings, and check `git diff --stat` for whole-file changes. Python rewrites must use `open(p, newline='')`.
 - **Style**: `core/.clang-format` (Mozilla based, Allman braces, 4 spaces, 100 columns). Only format the lines you change, never sweep a whole file. Many older comments are in Polish -- leave them alone.
 
 ## Workflow for a feature or fix

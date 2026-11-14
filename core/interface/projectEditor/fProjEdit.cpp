@@ -366,6 +366,7 @@ uint8_t cProjectEditor::loadProjectValues()
     engine.setReverbPredelay(mtProject.values.reverb.predelay);
     engine.setReverbDiffusion(mtProject.values.reverb.diffusion);
     engine.setInterpolationEnable(mtProject.values.antialiasingEnable);
+    engine.refreshInserts();
 
     masterEnhancer.fiveBandsEq.change(mtProject.values.eqBandAdjustment);
     masterEnhancer.changeBassBoost(mtProject.values.bassBoost);
