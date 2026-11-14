@@ -9,6 +9,8 @@
 #include "cr_section_macros.h"
 #include "fileManager.h"
 #include "mtAudioEngine.h"
+#include "Platform.h"
+#include "SynthRandomiser.h"
 #include "util_math.h"
 #include "util_string.h"
 
@@ -53,6 +55,8 @@ static void functSynthPads(uint8_t pad, uint8_t state, int16_t velo);
 static void functSynthLeft();
 static void functSynthRight();
 static void functSynthShift(uint8_t state);
+static void functSynthRandomise();
+static void functSynthPrevious();
 
 void cInstrumentEditor::exitSynthEditor()
 {
@@ -218,6 +222,13 @@ static void functSynthShift(uint8_t state)
         {
             mtPopups.toggleNoteKeyboardPopup(InterfacePopups::noteKeyboardOption::kShowEditButtons);
         }
+        else if (IE->mode == mtInstEditModeSynth)
+        {
+            // While Shift is held, F7 and F8 randomise and restore the previous patch.
+            IE->ip->setButtonObj(interfaceButton6, buttonPress, functSynthRandomise);
+            IE->ip->setButtonObj(interfaceButton7, buttonPress, functSynthPrevious);
+            IE->showSynthShiftLabels(true);
+        }
     }
     else if (state == buttonRelease)
     {
@@ -225,7 +236,55 @@ static void functSynthShift(uint8_t state)
         {
             mtPopups.toggleNoteKeyboardPopup(InterfacePopups::noteKeyboardOption::kForceShow);
         }
+        else if (IE->mode == mtInstEditModeSynth)
+        {
+            IE->ip->setButtonObj(interfaceButton6, buttonPress, functSynthLoad);
+            IE->ip->setButtonObj(interfaceButton7, buttonPress, functSynthEditPatch);
+            IE->showSynthShiftLabels(false);
+        }
     }
+}
+
+static void functSynthRandomise()
+{
+    IE->randomiseSynthPatch();
+}
+
+static void functSynthPrevious()
+{
+    IE->restorePreviousSynthPatch();
+}
+
+void cInstrumentEditor::showSynthShiftLabels(bool shifted)
+{
+    display.setControlText(label[6], shifted ? "Randomise" : "Load");
+    display.setControlText(label[7], shifted ? "Previous" : "Edit");
+    display.setControlText2(label[6], "Patch");
+    display.setControlText2(label[7], "Patch");
+    display.refreshControl(label[6]);
+    display.refreshControl(label[7]);
+}
+
+void cInstrumentEditor::randomiseSynthPatch()
+{
+    const int part = mtProject.values.lastUsedInstrument - SYNTH_INSTRUMENTS_START_IDX;
+    if (part < 0 || part >= kSynthInstrumentsCount)
+    {
+        return;
+    }
+    synthrandom::randomise(*getSynth(), part, platform->getTimer()->clockCycles());
+    mtPopups.show(0, "Patch randomised");
+}
+
+void cInstrumentEditor::restorePreviousSynthPatch()
+{
+    const int part = mtProject.values.lastUsedInstrument - SYNTH_INSTRUMENTS_START_IDX;
+    if (part < 0 || part >= kSynthInstrumentsCount)
+    {
+        return;
+    }
+    mtPopups.show(0, synthrandom::restorePrevious(*getSynth(), part) ? "Previous patch restored"
+                                                                     : "No previous patch");
 }
 
 static void functSynthActionButtons(uint8_t button)
