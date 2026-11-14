@@ -91,3 +91,35 @@ The 21 waves: SINE, TRI, SAW, SQR, P25, P12, ORGN, OCTV, FIFT, HOLW, BUZZ, AH, E
 Macros: Wave, Step Time, Crossfade, Jump, Layer and Grit / Bits. Velocity controls the volume.
 
 Factory patches: Digi Saw, Grit Bass, Wave Choir, Seq Organ, Chip Arp, Dust Keys, Ping Pad, Alias Lead, Noise Sweep, Step Rhythm, Glass Scan and Random Bits.
+
+---
+
+## HARM
+
+Additive synthesis after the Kawai K5 and K5m, ported from Pocket Rack. Each voice has 32 sine harmonics, shaped in three stages as on the original: the harmonic levels (each harmonic on one of four envelopes), a spectral filter applied by frequency, and a formant EQ. The original sets 63 levels and four six-stage envelopes by hand; here a few controls draw them. Up to 4 voices.
+
+The four harmonic groups are harmonics 1-2, 3-6, 7-14 and 15-32. The harmonic levels and the formant EQ are balanced for loudness; the filter is not, so it takes level away as it closes. Harmonics near the top of the audio band fade out, so nothing aliases.
+
+| Section | Parameter | What it does |
+| :--- | :--- | :--- |
+| **Harmonics** | Angle | The slope of the harmonic levels: +1 is about a saw, higher is darker, below 0 brighter |
+| | Odd / Even | Below 0 thins the odd harmonics, above 0 the even ones (hollow, a clarinet) |
+| | Octave, Fifth | The harmonics an octave apart (2, 4, 8, 16, 32) and a fifth above those (3, 6, 12, 24), ±12 dB |
+| | Bloom | The harmonic groups' attacks: the higher a group, the later it comes in (up to 3 s) |
+| | Harm Decay | The harmonic groups' decays: the higher a group, the faster and further it falls (a pluck, a bell) |
+| **Filter** | Cutoff | About 50 Hz to 12.8 kHz |
+| | Slope | How steeply it falls above the cutoff, 6 to 48 dB an octave |
+| | Flat | The harmonics under the cutoff against the peak at it: 100 % a low-pass, 0 a band-pass |
+| | Env Amount | How far the envelope opens (positive) or closes (negative) the filter |
+| | Vel > Filter | Velocity opens the filter, up to 4 octaves |
+| | Key > Filter | How far the cutoff follows the keyboard |
+| **Formant** | Formant, Formant Freq | A formant peak up to 12 dB over the dip around it, centred 62 Hz to 16 kHz |
+| | Twin | Two sources of 16 harmonics, the second detuned up to 50 cents (0: one source of 32) |
+| | Harm Mod | The two upper groups swell and fade, each at its own rate |
+| | Key > Harm | Above 0 high notes lose their upper harmonics, below 0 low notes do |
+| **Envelope** | Attack, Decay, Sustain, Release | The amplitude envelope, which also drives Env Amount |
+| **Voice** | Tune, Fine, Glide Mode, Glide Time, Volume | |
+
+Macros: Cutoff, Angle, Bloom / Decay, Formant, Odd / Even and Twin / Mod. Velocity controls the volume.
+
+Factory patches: Harm Brass, Digi Bell, Glass Pad, Hollow Reed, Vox Formant, Drawbar Organ, Pluck Harp, Band Sweep, Twin Strings, Additive Bass, Shimmer Pad and E Piano.
