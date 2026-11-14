@@ -75,6 +75,8 @@
 #include "images/synth_shaper_18x18_L4.h"
 #include "images/chip_med_108x40_L2.h"
 #include "images/chip_mini_nomark_80x28_L2.h"
+#include "images/mono_med_108x40_L2.h"
+#include "images/mono_mini_nomark_80x28_L2.h"
 
 #endif
 
@@ -209,6 +211,9 @@ const strBitmap bitmaps[displayBitmapsCount] = {
     { synth_shaper_18x18_L4, 126900, 162, 18, 18, L4, 9 },
     { chip_mini_nomark_80x28_L2, 127100, 560, 80, 28, L2, 20 },
     { chip_med_108x40_L2, 127700, 1080, 108, 40, L2, 27 },
+    // Tracker Enhanced engines: 1700 bytes each from 129000 (RAM_G is free up to 150000)
+    { mono_mini_nomark_80x28_L2, 130700, 560, 80, 28, L2, 20 },
+    { mono_med_108x40_L2, 131300, 1080, 108, 40, L2, 27 },
 
 #endif
 };
