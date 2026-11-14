@@ -8,6 +8,7 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ### Added
 * **MONO synth engine (Tracker+ and Mini)**: a one-oscillator monosynth after the SH-101, ported from Pocket Rack, with 8 factory patches in the release's `Patches/` folder. See [`docs/synth_engines.md`](docs/synth_engines.md).
+* **PRISM synth engine (Tracker+ and Mini)**: an additive spectral synth with 24 partials a voice, ported from Pocket Rack, with 40 factory patches.
 
 ---
 
