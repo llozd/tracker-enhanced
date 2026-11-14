@@ -2,6 +2,7 @@
 #define AUDIOENGINE_AUDIOOUTPUT_H_
 
 #include "Audio.h"
+#include "effect_insert.h"
 
 class AudioOutput
 {
@@ -30,6 +31,9 @@ class AudioOutput
     UsbOutputStream* getUsbStream();
     AudioMux* getLimiterSidechainMux(OutputChannels channel);
 #endif
+#if FEATURE_REALTIME_FX
+    AudioEffectInsert* getMasterInsert();
+#endif
     AudioEffectLimiter* getLimiter(OutputChannels channel);
     AudioMixer<FinalMixInputs::kFinalMixerSize>* getFinalMixer(OutputChannels channel);
     AudioOutputStream* getStream();
@@ -40,6 +44,9 @@ class AudioOutput
 #else
     AudioMux limiterSidechainMux[OutputChannels::kChannelsCount];
     UsbOutputStream usbOutput;
+#endif
+#if FEATURE_REALTIME_FX
+    AudioEffectInsert masterInsert; // declared before the limiters so it updates first
 #endif
     AudioEffectLimiter limiter[OutputChannels::kChannelsCount];
     AudioOutputStream outputStream;

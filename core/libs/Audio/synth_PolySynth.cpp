@@ -7,6 +7,7 @@
 #include "PolySynth/Synth.h"
 #include "Synth.h"
 #include "config.h"
+#include "fx/insertChannels.h"
 #include <span>
 //#include "Audio.h"
 //#include "dspinst.h'
@@ -98,6 +99,15 @@ AUDIO_CORE_RAM void PolySynth::update(void)
           { tempBufSendsCommonLeft, tempBufSendsCommonRight },
           std::span<polysynth::AudioBufferRef>(tempSendsBufArray),
           partIdx);
+
+#if FEATURE_REALTIME_FX
+        // Inserts run before the split, so the sends hear them. Mono parts are processed in mono.
+        insertfx::processChannel(
+          insertfx::channel(static_cast<insertfx::ChannelId>(insertfx::kSynth0 + partIdx)),
+          tempBufSendsCommonLeft.data(),
+          isStereo ? tempBufSendsCommonRight.data() : nullptr,
+          polysynth::kAudioBufferSize);
+#endif
 
         const bool reuseUnmodifiedMono = (!hasSends && !isStereo && gainDB[partIdx] == 0.0f);
         if (!reuseUnmodifiedMono)
