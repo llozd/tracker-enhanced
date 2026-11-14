@@ -1,6 +1,7 @@
 #ifndef AUDIOENGINE_AUDIOVOICE_H_
 #define AUDIOENGINE_AUDIOVOICE_H_
 #include "Audio.h"
+#include "effect_insert.h"
 
 class AudioVoice
 {
@@ -40,6 +41,12 @@ class AudioVoice
     AudioAmplifier* getAmplifier(VoiceChannels channel);
     AudioAmplifier* getPanningAmplifier(VoiceChannels channel);
     AudioAnalyzeRMS* getRMS(VoiceChannels channel);
+    // What follows the filter: the insert if there is one. Sends tap from here.
+    AudioStream* getPostFilter(VoiceChannels channel);
+    uint8_t getPostFilterIndex(VoiceChannels channel);
+#if FEATURE_REALTIME_FX
+    AudioEffectInsert* getInsert();
+#endif
 #endif
     envelopeGenerator* getEnvelopeGenerator(EnvelopeGeneratorType type);
 
@@ -55,6 +62,9 @@ class AudioVoice
     AudioPlayMemory memoryPlayer[VoiceChannels::kChannelsCount];
     AudioBitDepth bitDepth[VoiceChannels::kChannelsCount];
     AudioFilterStateVariable filter[VoiceChannels::kChannelsCount];
+#if FEATURE_REALTIME_FX
+    AudioEffectInsert insert; // declared here so it updates between the filter and the amplifier
+#endif
     AudioAmplifier amplifier[VoiceChannels::kChannelsCount];
     AudioAmplifier panningAmplifier[VoiceChannels::kChannelsCount];
     AudioAnalyzeRMS rms[VoiceChannels::kChannelsCount];

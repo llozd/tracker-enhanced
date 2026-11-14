@@ -11,6 +11,7 @@
 #include <cstring>
 
 bool onDevStorageMode(bool enable);
+bool onDevCommand(const char* command, char* argument, char* reply, size_t size);
 
 namespace
 {
@@ -193,11 +194,19 @@ void handleLine(char* line)
     }
     else if (strcmp(line, "help") == 0)
     {
-        reply("ok commands: ping, storage on|off, flash <name>, reboot, help");
+        reply("ok commands: ping, storage on|off, flash <name>, reboot, cpu, fx, help");
     }
     else
     {
-        reply("err unknown command: %s", line);
+        char coreReply[kFormatBufferSize - 8];
+        if (onDevCommand(line, argument, coreReply, sizeof(coreReply)))
+        {
+            reply("%s", coreReply);
+        }
+        else
+        {
+            reply("err unknown command: %s", line);
+        }
     }
 }
 

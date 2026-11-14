@@ -74,6 +74,13 @@ AudioMux* AudioOutput::getLimiterSidechainMux(OutputChannels channel)
 }
 #endif
 
+#if FEATURE_REALTIME_FX
+AudioEffectInsert* AudioOutput::getMasterInsert()
+{
+    return &masterInsert;
+}
+#endif
+
 AudioEffectLimiter* AudioOutput::getLimiter(OutputChannels channel)
 {
     return &limiter[channel];
