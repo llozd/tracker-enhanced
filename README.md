@@ -76,11 +76,11 @@ Three insert slots on every sample track, synth part and the master, set on the 
 
 Not yet tested on hardware, and CPU limits are still to be measured.
 
-### 4. New Synth Engines (planned)
+### 4. New Synth Engines
 On Tracker+ and Mini, alongside the existing engines:
-* **Ported from [Pocket Rack](https://github.com/llozd/pocket-rack)**: PRISM (additive spectral), SH-101 style monosynth, MS800 style digital wave module and K5 style additive synthesis.
-* **New**: a CZ-style phase distortion synth and a Prophet-5 style analog polysynth.
-* **Randomise** on every synth engine, including the existing ones.
+* **Ported from [Pocket Rack](https://github.com/llozd/pocket-rack)**: PRISM (additive spectral), MONO (an SH-101 style monosynth), GRIT (an MS800 style digital wave module) and HARM (K5 style additive synthesis), all available (see [`docs/synth_engines.md`](docs/synth_engines.md)).
+* **New**: PHASE, a CZ-style phase distortion synth, and POLY, a Prophet-5 style analog polysynth.
+* **Randomise** on every synth engine, including the existing ones: hold Shift on the synth parameter screen, F7 randomises and F8 brings back the previous patch.
 
 See `pocket-rack-engines` and `synth-randomise`.
 
