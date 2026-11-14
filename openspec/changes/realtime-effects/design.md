@@ -52,5 +52,7 @@ tracks and sends mixer L/R -> [master insert: slot 1 -> 2 -> 3] -> limiter -> fi
 - Effect type IDs are append-only, because they are stored.
 - The Original reads and writes the same settings and ignores them (`FEATURE_REALTIME_FX` 0).
 
-## UI (to be detailed before that PR)
-- An inserts page per channel, reached from the track and synth part screens and from the Master screen: three slot rows, an effect picker by family, and the effect's parameters on the encoder, with the same layout on the Mini.
+## UI
+- A fourth Master screen page, **Inserts** (`core/interface/masterParams/masterInserts.cpp`), after the two mixer pages in the Master button's cycle, and a fourth Master mode in the Mini menu.
+- Labels: F1 Channel (Track 1-8, Synth 1-3, Master), F2 Slot, F3 Effect (picker grouped by family), F4 Page, F5-F8 the page's 4 parameters. Left/Right move between fields, encoder and Up/Down change, Delete clears the effect or restores a parameter's default.
+- A refused reverb shows a "No free reverb" popup. A CPU budget check is left until the costs are measured on hardware.

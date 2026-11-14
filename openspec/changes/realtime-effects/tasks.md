@@ -20,9 +20,10 @@
 
 ## Storage and UI (PR 3)
 - [x] Insert slots in the project (`strMtValues::insertSlot`), file version 19 and upgrade step, loaded on project open
-- [ ] Inserts page: slot list, effect picker, parameters, on desktop and Mini
-- [ ] Budget check with a popup when refused
+- [x] Inserts page on the Master screen: channel, slot, effect picker, paged parameters, on desktop and Mini (Mini menu mode 4)
+- [x] Popup when a reverb is refused
+- [ ] CPU budget check with a popup, after measuring
 
 ## Finish
 - [ ] Hardware listening tests, CPU checks with full projects, export with inserts
-- [ ] README, CHANGELOG and user docs
+- [x] README, CHANGELOG and user docs (`docs/realtime_effects.md`)

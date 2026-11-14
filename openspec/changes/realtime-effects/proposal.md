@@ -1,6 +1,6 @@
 # Realtime track and master effects
 
-**Status: planned**
+**Status: implemented**, untested on hardware. CPU limits to be measured.
 
 **Platforms:** Plus and Mini only. Code and UI are wrapped in `#if FEATURE_REALTIME_FX` (`core/include/platformFeatures.h`), which is 0 on the Original. Effect settings are still stored in project files there.
 
