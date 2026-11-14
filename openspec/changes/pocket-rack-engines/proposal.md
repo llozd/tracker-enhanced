@@ -1,6 +1,6 @@
 # Pocket Rack synth engines
 
-**Status: planned**
+**Status: implemented**, untested on hardware. CPU at full polyphony to be measured.
 
 **Platforms:** Plus and Mini only. Synth engines need `FEATURE_SYNTH`, which is off on the Original.
 

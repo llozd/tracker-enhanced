@@ -80,6 +80,18 @@ enum enDisplayBitmaps
     kBitmapShaper,
     kBitmapMiniCHIP,
     kBitmapCHIP,
+    kBitmapMiniMONO,
+    kBitmapMONO,
+    kBitmapMiniPRISM,
+    kBitmapPRISM,
+    kBitmapMiniGRIT,
+    kBitmapGRIT,
+    kBitmapMiniHARM,
+    kBitmapHARM,
+    kBitmapMiniPHASE,
+    kBitmapPHASE,
+    kBitmapMiniPOLY,
+    kBitmapPOLY,
 
 #endif
 
