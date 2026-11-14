@@ -11,6 +11,7 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 * **PRISM synth engine (Tracker+ and Mini)**: an additive spectral synth with 24 partials a voice, ported from Pocket Rack, with 40 factory patches.
 * **GRIT synth engine (Tracker+ and Mini)**: an MS800 style digital wave module (stepped 8-bit wave sequences, a second layer, grit and bit reduction), ported from Pocket Rack, with 12 factory patches.
 * **HARM synth engine (Tracker+ and Mini)**: additive synthesis after the K5 (32 harmonics in four envelope groups, a spectral filter and a formant EQ), ported from Pocket Rack, with 12 factory patches.
+* **PHASE synth engine (Tracker+ and Mini)**: a CZ-style phase distortion synth with two lines, eight waves and DCW envelopes, written new, with 8 factory patches.
 
 ---
 

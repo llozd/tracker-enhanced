@@ -123,3 +123,28 @@ The four harmonic groups are harmonics 1-2, 3-6, 7-14 and 15-32. The harmonic le
 Macros: Cutoff, Angle, Bloom / Decay, Formant, Odd / Even and Twin / Mod. Velocity controls the volume.
 
 Factory patches: Harm Brass, Digi Bell, Glass Pad, Hollow Reed, Vox Formant, Drawbar Organ, Pluck Harp, Band Sweep, Twin Strings, Additive Bass, Shimmer Pad and E Piano.
+
+---
+
+## PHASE
+
+A phase distortion synth in the manner of Casio's CZ series. Written new for Tracker Enhanced from the published description of phase distortion, not ported. Each oscillator reads a cosine through a bent phase: **DCW** sets how far it bends, from a pure sine at 0 to the full wave shape at 100 %. Two lines, each with two waves that alternate cycle by cycle, their own DCW envelope and a level; the second line can be detuned, mixed or ring modulated. Up to 8 voices.
+
+Waves: Saw, Square, Pulse, Double Sine, Saw-Pulse and the three resonance waves (Reso Saw, Reso Tri, Reso Trap), whose resonant peak rises with DCW. Wave B can be Off (Wave A every cycle).
+
+| Section | Parameter | What it does |
+| :--- | :--- | :--- |
+| **Line 1, Line 2** | Wave A, Wave B | The two waves the line alternates between, cycle by cycle |
+| | DCW | The distortion before the envelope: 0 is a sine |
+| | DCW Env | How far the DCW envelope adds to (or takes from) DCW |
+| | DCW Att, Dec, Sus, Rel | The line's DCW envelope, which sweeps the timbre like a filter envelope |
+| **Lines** | Line Mode | Line 1, Line 2, 1 + 2 (mixed) or 1 × 2 Ring |
+| | L2 Level, L2 Detune, L2 Fine | Line 2's level in 1 + 2, its transposition (±24) and fine detune |
+| | Noise | Noise modulation for a rough, breathy edge |
+| | Key Follow | Less distortion for high notes, as on the original (keeps the top end clean) |
+| **Amplifier** | Attack, Decay, Sustain, Release, Vibrato Rate, Vibrato Depth | The amplitude envelope and a vibrato |
+| **Voice** | Tune, Fine, Glide Mode, Glide Time, Volume | |
+
+Macros: DCW, DCW Env, DCW Decay, Detune, L2 Level and Noise. Velocity controls the volume.
+
+Factory patches: Phase Brass, Phase Bass, Reso Sweep, Glass Piano, Square Organ, Ring Bell, Wire Pad and Pulse Lead.
