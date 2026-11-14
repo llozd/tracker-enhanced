@@ -8,6 +8,7 @@
 #include <cstring>
 
 #include "Profiler.h"
+#include "mtAudioEngine.h"
 #include "fx/insertChannels.h"
 
 namespace
@@ -87,13 +88,15 @@ void handleFx(char* argument, char* reply, size_t size)
         return;
     }
 
-    insertfx::Slot slot;
-    insertfx::setDefaults(slot, type);
-    for (int i = 3; i < count && i - 3 < insertfx::kParams; i++)
+    insertfx::Slot defaults;
+    insertfx::setDefaults(defaults, type);
+    strInsertSlot slot;
+    slot.type = type;
+    for (int i = 0; i < insertfx::kParams; i++)
     {
-        slot.params[i - 3] = static_cast<int16_t>(atoi(tokens[i]));
+        slot.params[i] = i + 3 < count ? static_cast<int16_t>(atoi(tokens[i + 3])) : defaults.params[i];
     }
-    if (!insertfx::setSlot(id, slotIdx, slot))
+    if (!engine.setInsertSlot(id, slotIdx, slot))
     {
         snprintf(reply, size, "err no free reverb (%d at most)", insertfx::kReverbPool);
         return;

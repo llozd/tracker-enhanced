@@ -19,7 +19,7 @@
 - [x] Reverb insert from the firmware's `Reverb`, a pool of 4 with refusal when full (host check: pool limit, stereo, tail ends in silence)
 
 ## Storage and UI (PR 3)
-- [ ] `strInsertSettings` in the project, file version bump and upgrade step
+- [x] Insert slots in the project (`strMtValues::insertSlot`), file version 19 and upgrade step, loaded on project open
 - [ ] Inserts page: slot list, effect picker, parameters, on desktop and Mini
 - [ ] Budget check with a popup when refused
 

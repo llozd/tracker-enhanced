@@ -925,6 +925,56 @@ void audioEngine::refreshDelayVolume()
 #endif
 }
 
+bool audioEngine::setInsertSlot(int channel, int slot, const strInsertSlot& settings)
+{
+    if (channel < 0 || channel >= kInsertChannels || slot < 0 || slot >= kInsertSlots)
+    {
+        return false;
+    }
+#if FEATURE_REALTIME_FX
+    insertfx::Slot fx;
+    fx.type = settings.type < insertfx::kTypeCount ? static_cast<insertfx::Type>(settings.type)
+                                                   : insertfx::kOff;
+    static_assert(kInsertParams == insertfx::kParams && kInsertSlots == insertfx::kSlots &&
+                  kInsertChannels == insertfx::kChannelCount);
+    memcpy(fx.params, settings.params, sizeof(fx.params));
+    if (!insertfx::setSlot(static_cast<insertfx::ChannelId>(channel), slot, fx))
+    {
+        return false;
+    }
+#endif
+    mtProject.values.insertSlot[channel][slot] = settings;
+    return true;
+}
+
+void audioEngine::refreshInserts()
+{
+#if FEATURE_REALTIME_FX
+    // Free every reverb first, so the order of the slots does not matter.
+    insertfx::Slot off;
+    insertfx::setDefaults(off, insertfx::kOff);
+    for (int channel = 0; channel < kInsertChannels; channel++)
+    {
+        for (int slot = 0; slot < kInsertSlots; slot++)
+        {
+            insertfx::setSlot(static_cast<insertfx::ChannelId>(channel), slot, off);
+        }
+    }
+#endif
+    for (int channel = 0; channel < kInsertChannels; channel++)
+    {
+        for (int slot = 0; slot < kInsertSlots; slot++)
+        {
+            strInsertSlot& stored = mtProject.values.insertSlot[channel][slot];
+            if (!setInsertSlot(channel, slot, stored))
+            {
+                stored = strInsertSlot{}; // no free reverb: the slot loads empty
+                setInsertSlot(channel, slot, stored);
+            }
+        }
+    }
+}
+
 void audioEngine::refreshAllSends()
 {
     refreshReverbVolume();

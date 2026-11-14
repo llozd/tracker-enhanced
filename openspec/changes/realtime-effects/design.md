@@ -46,8 +46,9 @@ tracks and sends mixer L/R -> [master insert: slot 1 -> 2 -> 3] -> limiter -> fi
 - First measurement step: the dev console's `fx` and `cpu` commands (`ENABLE_DEV_CONSOLE`) set inserts and read the audio load from the host, so costs are measured before the UI exists.
 
 ## Storage
-- A new `strInsertSettings` per channel (12: 8 tracks, 3 synth parts, master), with 3 slots of `{type, 16 x int16 params}`, about 1.2 KB in all, appended to `strMtValues` (`mtStructs.h`).
-- `PROJECT_FILE_VERSION` goes up by one, with an upgrade step in `mtFileManagerOldVersionRecovery.cpp` that sets every slot to Off.
+- `strInsertSlot insertSlot[12][3]` (`{type, reserved, 16 x int16 params}`, 1224 B) is appended to `strMtValues` (`mtStructs.h`), so `strMtProjectRemote` grows from 2304 to 3528 B.
+- `PROJECT_FILE_VERSION` 18 to 19. `recoveryProjectVersion18` sets every slot of an older project to Off.
+- `audioEngine::setInsertSlot` writes the project's slot and the engine's (refused, unchanged, when no reverb is free). `audioEngine::refreshInserts` loads every slot after a project load (`cProjectEditor::loadProjectValues`), freeing all reverbs first so slot order does not matter. A slot that cannot get a reverb loads empty.
 - Effect type IDs are append-only, because they are stored.
 - The Original reads and writes the same settings and ignores them (`FEATURE_REALTIME_FX` 0).
 
