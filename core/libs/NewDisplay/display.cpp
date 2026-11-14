@@ -75,6 +75,18 @@
 #include "images/synth_shaper_18x18_L4.h"
 #include "images/chip_med_108x40_L2.h"
 #include "images/chip_mini_nomark_80x28_L2.h"
+#include "images/mono_med_108x40_L2.h"
+#include "images/mono_mini_nomark_80x28_L2.h"
+#include "images/prism_med_108x40_L2.h"
+#include "images/prism_mini_nomark_80x28_L2.h"
+#include "images/grit_med_108x40_L2.h"
+#include "images/grit_mini_nomark_80x28_L2.h"
+#include "images/harm_med_108x40_L2.h"
+#include "images/harm_mini_nomark_80x28_L2.h"
+#include "images/phase_med_108x40_L2.h"
+#include "images/phase_mini_nomark_80x28_L2.h"
+#include "images/poly_med_108x40_L2.h"
+#include "images/poly_mini_nomark_80x28_L2.h"
 
 #endif
 
@@ -209,6 +221,19 @@ const strBitmap bitmaps[displayBitmapsCount] = {
     { synth_shaper_18x18_L4, 126900, 162, 18, 18, L4, 9 },
     { chip_mini_nomark_80x28_L2, 127100, 560, 80, 28, L2, 20 },
     { chip_med_108x40_L2, 127700, 1080, 108, 40, L2, 27 },
+    // Tracker Enhanced engines: 1700 bytes each from 129000 (RAM_G is free up to 150000)
+    { mono_mini_nomark_80x28_L2, 130700, 560, 80, 28, L2, 20 },
+    { mono_med_108x40_L2, 131300, 1080, 108, 40, L2, 27 },
+    { prism_mini_nomark_80x28_L2, 129000, 560, 80, 28, L2, 20 },
+    { prism_med_108x40_L2, 129600, 1080, 108, 40, L2, 27 },
+    { grit_mini_nomark_80x28_L2, 132400, 560, 80, 28, L2, 20 },
+    { grit_med_108x40_L2, 133000, 1080, 108, 40, L2, 27 },
+    { harm_mini_nomark_80x28_L2, 134100, 560, 80, 28, L2, 20 },
+    { harm_med_108x40_L2, 134700, 1080, 108, 40, L2, 27 },
+    { phase_mini_nomark_80x28_L2, 135800, 560, 80, 28, L2, 20 },
+    { phase_med_108x40_L2, 136400, 1080, 108, 40, L2, 27 },
+    { poly_mini_nomark_80x28_L2, 137500, 560, 80, 28, L2, 20 },
+    { poly_med_108x40_L2, 138100, 1080, 108, 40, L2, 27 },
 
 #endif
 };

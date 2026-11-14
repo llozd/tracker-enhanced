@@ -3,6 +3,12 @@
 
 #include "PolySynth/sdk/InstrumentTypeRegistry.h"
 #include "engines/ChiptuneSynthVoice.h"
+#include "engines/MonoSynthVoice.h"
+#include "engines/PrismSynthVoice.h"
+#include "engines/GritSynthVoice.h"
+#include "engines/HarmSynthVoice.h"
+#include "engines/PhaseSynthVoice.h"
+#include "engines/PolyAnalogSynthVoice.h"
 
 namespace polysynth
 {
@@ -33,6 +39,13 @@ void InstrumentTypeRegistry::registerInstrumentTypes(
     // Open-Source Custom Synth Engines
     registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kChiptuneSynth),
                                createChiptuneSynth());
+    registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kMonoSynth), createMonoSynth());
+    registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kPrismSynth), createPrismSynth());
+    registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kGritSynth), createGritSynth());
+    registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kHarmSynth), createHarmSynth());
+    registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kPhaseSynth), createPhaseSynth());
+    registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kPolyAnalogSynth),
+                               createPolyAnalogSynth());
 }
 
 } // namespace polysynth

@@ -65,7 +65,9 @@ jobs:
       - name: Build reference .ptfx Sample Editor plugins
         run: |
           make ptfx
-          printf "Copy the Effects/ folder to the root directory of your Polyend Tracker microSD card.\n" > editor-fx-sdk/build/README.txt
+          make patches
+          cp -r build/Patches editor-fx-sdk/build/
+          printf "Copy the Effects/ and Patches/ folders to the root directory of your Polyend Tracker microSD card.\n" > editor-fx-sdk/build/README.txt
 
       - name: Publish Firmware Size & Memory Summary
         if: always()
@@ -94,7 +96,7 @@ jobs:
             echo ""
             echo "> **Downloads (Bottom of Summary Page)**:"
             echo "> * **\`tracker-enhanced-firmware\`**: Ready-to-flash \`.ptf\` firmware files for **Original Tracker**, **Tracker+**, and **Tracker Mini**."
-            echo "> * **\`tracker-enhanced-effects\`**: Unzip and copy the included **\`Effects/\`** folder directly to the root of your Tracker's microSD card."
+            echo "> * **\`tracker-enhanced-effects\`**: Unzip and copy the included **\`Effects/\`** and **\`Patches/\`** folders directly to the root of your Tracker's microSD card."
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -118,7 +120,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           cd editor-fx-sdk/build
-          zip -r ../../build/TrackerEnhanced_Effects.zip Effects README.txt
+          zip -r ../../build/TrackerEnhanced_Effects.zip Effects Patches README.txt
 
       - name: Publish GitHub Release on Version Tag
         if: startsWith(github.ref, 'refs/tags/v')
