@@ -76,13 +76,21 @@ New realtime effects, available on individual tracks and on the master channel:
 
 CPU usage will be measured on hardware, and the number of simultaneous per-track effects may be limited accordingly.
 
-### 4. Playback and Interface Fixes
+### 4. New Synth Engines (planned)
+On Tracker+ and Mini, alongside the existing engines:
+* **Ported from [Pocket Rack](https://github.com/llozd/pocket-rack)**: PRISM (additive spectral), SH-101 style monosynth, MS800 style digital wave module and K5 style additive synthesis.
+* **New**: a CZ-style phase distortion synth and a Prophet-5 style analog polysynth.
+* **Randomise** on every synth engine, including the existing ones.
+
+See `pocket-rack-engines` and `synth-randomise`.
+
+### 5. Playback and Interface Fixes
 * **Legato rolls**: roll hits are gated for the full period, so rolls play as full-length, click-free hits instead of sounding gappy. See `legato-rolls`.
 * **Position on slices**: in Slice and Beat Slice modes, the Position effect scrubs within the played slice instead of the whole sample. See `position-fx-slices`.
 * **Effects on rows without a note**: Microtune and synth effects on an empty row use the track's last played instrument on MIDI and synth tracks, so a note can be bent later, including on its release. See `fx-only-row-instrument`.
 * **Held button release** (investigating): a held button (such as FX1) sometimes acts as released while turning the knob. A suspected cause is the key driver clearing buttons after an I2C error. See `button-hold-release`.
 
-### 5. Original Tracker Support (in progress)
+### 6. Original Tracker Support (in progress)
 The Original Tracker (`MK66`) is built again, with a reduced feature set. It gets the sequencer improvements: lines per beat (up to 16), legato rolls, Position on slices, and the MIDI part of effects on rows without a note. Realtime effects and other features with significant CPU or memory overhead will be compiled out. Projects will stay portable between devices. It has not been tested on hardware yet, and a hardware tester is still needed. See `original-tracker-support`.
 
 ---
