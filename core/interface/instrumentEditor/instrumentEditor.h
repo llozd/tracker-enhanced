@@ -414,6 +414,10 @@ class cInstrumentEditor : public ModuleBase
     void setSynthGain(int synthPartIdx, float value, bool show = true);
 
     bool browsePatchList();
+    // Shift + F7 / F8 on the synth parameter screen (openspec synth-randomise)
+    void showSynthShiftLabels(bool shifted);
+    void randomiseSynthPatch();
+    void restorePreviousSynthPatch();
     int loadPatchList();
     void revertPatch();
     void initCurrentPatch();

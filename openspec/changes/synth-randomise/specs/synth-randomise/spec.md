@@ -34,4 +34,4 @@ The parameter screen SHALL offer Previous, which restores the patch from before 
 
 #### Scenario: Nothing to restore
 - **WHEN** no randomise happened since the part's patch was loaded or its engine changed
-- **THEN** Previous is unavailable
+- **THEN** Previous changes nothing and shows "No previous patch"

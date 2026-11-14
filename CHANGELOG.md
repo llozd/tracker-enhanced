@@ -15,6 +15,7 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 * **HARM synth engine (Tracker+ and Mini)**: additive synthesis after the K5 (32 harmonics in four envelope groups, a spectral filter and a formant EQ), ported from Pocket Rack, with 12 factory patches.
 * **PHASE synth engine (Tracker+ and Mini)**: a CZ-style phase distortion synth with two lines, eight waves and DCW envelopes, written new, with 8 factory patches.
 * **POLY synth engine (Tracker+ and Mini)**: a Prophet-5 style analog polysynth with sync, Poly-Mod, a four-pole filter and per-voice drift, written new, with 8 factory patches.
+* **Synth randomise (Tracker+ and Mini)**: hold Shift on a synth part's parameter screen; F7 randomises the patch (any engine, mix and tuning kept, envelopes and cutoff kept in a playable range) and F8 restores the previous patch.
 
 ### Changed
 * Project files are version 19. Older projects open with every insert slot empty.
