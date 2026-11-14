@@ -950,7 +950,7 @@ int8_t cPatternEditor::getStepVol()
 // focusowanie trackow na kursorze, jesli jest poza ekranem
 void cPatternEditor::focusOnActual()
 {
-    int columnCounts = patternViewMode > 0 ? 8 : 4;
+    int columnCounts = visibleTrackColumns();
 
     if (trackerPattern.actualTrack >= trackerPattern.firstVisibleTrack + columnCounts)
     {
@@ -963,6 +963,46 @@ void cPatternEditor::focusOnActual()
 
     trackerPattern.firstVisibleTrack =
       clamp<int8_t>(trackerPattern.firstVisibleTrack, 0, kAllTracks - columnCounts);
+}
+
+void cPatternEditor::jumpTrackHalf(int8_t direction)
+{
+    constexpr int kHalf = kAllTracks / 2;
+    const int from = trackerPattern.actualTrack;
+    const int to = from + direction * kHalf;
+    patternShiftLayerUsed = true;
+    if ((direction > 0 && from >= kHalf) || (direction < 0 && from < kHalf) || to < 0 || to >= kAllTracks)
+    {
+        return;
+    }
+
+    // The view moves with the cursor, so the cursor keeps its place on screen.
+    const int columnCounts = visibleTrackColumns();
+    trackerPattern.actualTrack = to;
+    trackerPattern.firstVisibleTrack = clamp<int>(trackerPattern.firstVisibleTrack + direction * kHalf,
+                                                  0,
+                                                  kAllTracks - columnCounts);
+    focusOnActual();
+
+    trackerPattern.selectState = 1;
+    trackerPattern.selectColumn = 0;
+    isSelectingNow = 0;
+    patternViewChanged = 1; // releasing Pattern keeps the compact view
+
+    showFxInfo();
+    lightUpPadBoard();
+    display.refreshControl(patternControl);
+}
+
+void cPatternEditor::toggleAllTracksView()
+{
+    patternViewMode = patternViewMode == kPatternViewAllTracks ? 0 : kPatternViewAllTracks;
+    selectedParams[0] = 0;
+    selectedParams[1] = 0;
+    patternViewChanged = 1; // releasing Pattern keeps the view
+    focusOnActual();
+    display.setControlValue(patternControl, patternViewMode);
+    display.refreshControl(patternControl);
 }
 
 void cPatternEditor::moveCursorByStep()
@@ -2065,7 +2105,7 @@ void functEncoder(int16_t value)
     }
 
     // czy parametr widoczny jesli np. pokazywane tylko 2 parametry 8 trackow
-    if (PTE->patternViewMode > 0 && !(PTE->patternViewMode & (1 << PTE->editParam)))
+    if (!PTE->isParamShown(PTE->editParam))
     {
         return;
     }
@@ -2084,6 +2124,18 @@ static void functShift(uint8_t state)
     if (PTE->fillState)
     {
         return;
+    }
+
+    // Pattern + Shift layer: an arrow jumps track halves, Shift alone toggles the all tracks view.
+    const bool patternHeld = PTE->buttons->isButtonPressed(interfaceButtonPattern);
+    if (state == buttonPress && patternHeld)
+    {
+        PTE->patternShiftLayerUsed = false;
+    }
+    else if (state == buttonRelease && patternHeld && !PTE->patternShiftLayerUsed)
+    {
+        PTE->patternShiftLayerUsed = true;
+        PTE->toggleAllTracksView();
     }
 
     if (state == buttonPress)
@@ -2162,6 +2214,13 @@ static void functLeft()
         return;
     }
 
+    if (PTE->buttons->isButtonPressed(interfaceButtonPattern) &&
+        PTE->buttons->isButtonPressed(interfaceButtonShift))
+    {
+        PTE->jumpTrackHalf(-1);
+        return;
+    }
+
     if (PTE->buttons->isButtonPressed(interfaceButtonPattern))
     {
         if (sequencer.isPlay())
@@ -2209,6 +2268,13 @@ static void functRight()
             case 6: functUndoRedoOnLeftRight(1); return;
             default: break;
         }
+        return;
+    }
+
+    if (PTE->buttons->isButtonPressed(interfaceButtonPattern) &&
+        PTE->buttons->isButtonPressed(interfaceButtonShift))
+    {
+        PTE->jumpTrackHalf(1);
         return;
     }
 
@@ -2850,6 +2916,7 @@ static void functPattern(uint8_t state)
 {
     if (state == buttonPress)
     {
+        PTE->patternShiftLayerUsed = false;
         if (PTE->fillState == 1)
         {
             return;
@@ -4664,7 +4731,7 @@ static void functPads(uint8_t pad, uint8_t state, int16_t velo)
     }
 
     // zabezpeczenie przed modyfikowaniem nie widocznych parametrow
-    if (PTE->patternViewMode > 0 && !(PTE->patternViewMode & (1 << PTE->editParam)))
+    if (!PTE->isParamShown(PTE->editParam))
     {
         return;
     }

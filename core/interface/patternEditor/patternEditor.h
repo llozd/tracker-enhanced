@@ -53,6 +53,21 @@ class cPatternEditor : public ModuleBase
     void setKeyboardNamePatternFunctions(void (*confirmFunct)(void), bool autoNameEnabled);
 
     void focusOnActual();
+    // Pattern + Shift + Left/Right (openspec track-half-jump): the cursor 8 tracks left or right
+    void jumpTrackHalf(int8_t direction);
+    // Hold Pattern, tap Shift (openspec all-tracks-view): all 16 tracks with dots for values
+    void toggleAllTracksView();
+    int visibleTrackColumns() const
+    {
+        return patternViewMode == kPatternViewAllTracks ? kAllTracks : patternViewMode > 0 ? 8 : 4;
+    }
+    // Whether the view shows edit parameter param (0 note, 1 instrument, 2 FX1, 3 FX2)
+    bool isParamShown(int param) const
+    {
+        return patternViewMode == 0 || patternViewMode == kPatternViewAllTracks ||
+               (patternViewMode & (1 << param));
+    }
+    bool patternShiftLayerUsed = false; // an arrow was pressed while Pattern and Shift were held
     void moveCursorByStep();
     void moveCursorByStep(uint16_t);
     void moveCursorByStepParallel();

@@ -102,6 +102,9 @@ struct strTrackerPattern
     }
 };
 
+// patternViewMode / control value of the all tracks view (openspec all-tracks-view): 16 tracks, dots
+constexpr uint8_t kPatternViewAllTracks = 0x40;
+
 // ilosc znakow parametru
 const uint8_t param_length[4] = { 3, 2, 4, 4 };
 
@@ -144,6 +147,7 @@ class cTracker : public cDisplayControl
     void tracksNumbers();
 
     void notes();
+    void dots(); // the all tracks view
     void instruments();
     void fxes1();
     void fxes2();
