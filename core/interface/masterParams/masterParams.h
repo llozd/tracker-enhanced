@@ -5,6 +5,7 @@
 #include "mtKeyboardManager.h"
 
 #include "mtStructs.h"
+#include "platformFeatures.h"
 
 #undef MAX_SELECT_NODES
 #define MAX_SELECT_NODES 7
@@ -70,6 +71,21 @@ class cMasterParams : public ModuleBase
     void showLimiterThreshold();
     void showLimiterGainReduce();
     void showLimiterSidechain();
+#if FEATURE_REALTIME_FX
+    // Inserts (masterInserts.cpp): label 0 channel, 1 slot, 2 effect, 3 page, 4-7 parameters
+    void switchToInserts();
+    void setFramePlaces(uint8_t count, uint8_t start);
+    void showInsertsScreen();
+    void showInsertsValues();
+    void insertsSelect(uint8_t place);
+    void insertsMove(int8_t direction);
+    void insertsChange(int16_t value);
+    void insertsClear();
+    uint8_t insertsChannel = 0;
+    uint8_t insertsSlot = 0;
+    uint8_t insertsPage = 0;
+    uint8_t selectedPlaceInserts = 2;
+#endif
     // EQ
     void showEqualizerScreen();
     void showEqualizerBand(uint8_t n);
@@ -78,7 +94,8 @@ class cMasterParams : public ModuleBase
     {
         masterValues,
         mixer,
-        mixerDelayReverb
+        mixerDelayReverb,
+        inserts, // realtime-effects, FEATURE_REALTIME_FX only
     };
 
     displayMode displayType = displayMode::masterValues;

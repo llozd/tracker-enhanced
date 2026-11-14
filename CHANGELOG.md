@@ -7,7 +7,12 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 ## [Unreleased]
 
 ### Added
+* **Insert effects (Tracker+ and Mini)**: three insert slots on every sample track, synth part and the master, on the Master screen's new **Inserts** page. EQs (including a PQ1549-style parametric EQ), compressors (utility, limiter, glue, FET), drives, tape, tube, transformer, console, saturator, exciter, chorus, flanger, phaser and reverb. Saved with the project. See [`docs/realtime_effects.md`](docs/realtime_effects.md).
+* **Dev console**: `fx` and `cpu` commands to set inserts and read the audio load.
 * **MONO synth engine (Tracker+ and Mini)**: a one-oscillator monosynth after the SH-101, ported from Pocket Rack, with 8 factory patches in the release's `Patches/` folder. See [`docs/synth_engines.md`](docs/synth_engines.md).
+
+### Changed
+* Project files are version 19. Older projects open with every insert slot empty.
 
 ---
 

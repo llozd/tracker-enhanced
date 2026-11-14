@@ -1,5 +1,6 @@
 #include "interfaceMenuPopup.h"
 #include "core/interface.h"
+#include "platformFeatures.h"
 
 InterfaceMenuPopup mtMenuPopup;
 
@@ -20,8 +21,13 @@ const char* const kModuleNamesList[kMenuModulesCount] = { "Pattern",
 
 uint32_t instrumentParamOptions[2] = { 1, 2 };
 InterfaceMenuPopup::ModuleModes instrumentParamModes = { 2, instrumentParamOptions, { 2, 0 } };
+#if FEATURE_REALTIME_FX
+uint32_t masterOptions[4] = { (1 << 8), (2 << 8), (3 << 8), (4 << 8) };
+InterfaceMenuPopup::ModuleModes masterModes = { 4, masterOptions, { 4, 0 } };
+#else
 uint32_t masterOptions[3] = { (1 << 8), (2 << 8), (3 << 8) };
 InterfaceMenuPopup::ModuleModes masterModes = { 3, masterOptions, { 3, 0 } };
+#endif
 uint32_t performOptions[2] = { 1, 2 };
 InterfaceMenuPopup::ModuleModes performModes = { 2, performOptions, { 2, 0 } };
 
