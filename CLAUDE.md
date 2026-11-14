@@ -86,7 +86,8 @@ CI (`.github/workflows/build.yml`) runs `make version`, `make all` and `make ptf
 2. For any feature, add or update its OpenSpec record (`openspec/changes/<name>/`, with a **Status** and a **Platforms:** line in `proposal.md`) and the status table in `openspec/README.md`. Tick `tasks.md` items as you go. Follow the format of an existing record such as `legato-rolls`.
 3. User-visible changes also update the `README.md` feature list and `CHANGELOG.md`.
 4. Commits: lowercase, imperative, under 72 characters (for example `gate roll hits for the full period so rolls play legato`), one logical change each, no em dashes, no AI co-author trailers.
-5. Fill in `.github/PULL_REQUEST_TEMPLATE.md` (target devices, hardware testing table, how to test). Keep it concise, no em dashes.
+5. Push feature branches early and keep a draft PR open while working (`gh pr create --draft`, `gh pr ready` when done). `gh pr edit` fails on this repo (Projects classic deprecation); edit a PR body with `gh api -X PATCH repos/llozd/tracker-enhanced/pulls/<n> -F body=@file.md`.
+6. Fill in `.github/PULL_REQUEST_TEMPLATE.md` (target devices, hardware testing table, how to test). Keep it concise, no em dashes.
 
 ## Release
 
