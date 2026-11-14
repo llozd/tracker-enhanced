@@ -27,6 +27,7 @@ static void recoveryProjectVersion14();
 static void recoveryProjectVersion15();
 static void recoveryProjectVersion16();
 static void recoveryProjectVersion17();
+static void recoveryProjectVersion18();
 static void recoveryInstrumentVersion1();
 static void recoveryInstrumentVersion2();
 static void recoveryInstrumentVersion3();
@@ -60,6 +61,7 @@ mtVersionRecovery::mtVersionRecovery()
     recoveryProjectFunction[14] = recoveryProjectVersion15;
     recoveryProjectFunction[15] = recoveryProjectVersion16;
     recoveryProjectFunction[16] = recoveryProjectVersion17;
+    recoveryProjectFunction[17] = recoveryProjectVersion18;
 
     // INSTRUMENT
     recoveryInstrumentFunction[0] = recoveryInstrumentVersion1;
@@ -343,7 +345,7 @@ static void recoveryProjectVersion14()
 }
 
 static_assert(sizeof(strMtProjectRemote) ==
-              2304); // if assert hits it is most likely you need to do sth here
+              3528); // if assert hits it is most likely you need to do sth here
 static void recoveryProjectVersion15()
 {
     strMtProjectRemote* newProject = versionRecovery.getReadedProject();
@@ -385,6 +387,19 @@ void recoveryProjectVersion17()
 {
     strMtProjectRemote* receivedProject = versionRecovery.getReadedProject();
     receivedProject->values.linesPerBeatIndex = kDefaultLinesPerBeatIndex;
+}
+
+// Insert effects: every slot off.
+void recoveryProjectVersion18()
+{
+    strMtProjectRemote* receivedProject = versionRecovery.getReadedProject();
+    for (auto& channel : receivedProject->values.insertSlot)
+    {
+        for (auto& slot : channel)
+        {
+            slot = strInsertSlot{};
+        }
+    }
 }
 
 //*************************************************************************INSTRUMENT

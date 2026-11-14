@@ -68,6 +68,12 @@ class audioEngine
     void refreshReverbVolume();
     void refreshDelayVolume();
     void refreshAllSends();
+
+    // Insert effects (realtime-effects). channel: 0-7 tracks, 8-10 synth parts, 11 master.
+    // Sets the project's slot and the engine's; false (nothing changed) if no reverb is free.
+    bool setInsertSlot(int channel, int slot, const strInsertSlot& settings);
+    // Loads every slot of the project into the engine (after a project load).
+    void refreshInserts();
     void forceLineInStreamVolume(uint8_t value);
     void refreshLineInStreamVolume();
     void refreshLineInStreamDelaySend();

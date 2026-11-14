@@ -234,6 +234,9 @@ The port is a plain CDC-ACM serial port (baud rate is irrelevant). The host send
 | `storage on` / `storage off` | `@ok storage on\|off`, or `@err storage is still on\|off` | Enters or leaves **Config > USB > Storage** mode. Refused while the interface is not in its normal run state (for example during project load). |
 | `flash <name>` | `@ok flash pending`, then the device resets; or `@err ...` | Remounts the SD card, checks that `/Firmware/<name>` exists, then starts the same bootloader hand-off as **Config > Firmware > Firmware update**. `<name>` is a bare filename of at most `31` characters. |
 | `reboot` | `@ok reboot pending` | Resets the MCU (and makes a Tracker Mini start again without the power button). |
+| `cpu` | `@ok cpu avg <n> max <n> min <n>` | Audio load in percent of a block since the last `cpu` (the maximum resets on each read). |
+| `fx list` | `@ok OFF EQ3 PQ COMP ...` | Lists the insert effect types (realtime-effects). |
+| `fx <channel> <slot> <type> [params]` | `@ok fx t1 1 COMP` | Sets an insert slot: channel `t1`-`t8`, `s1`-`s3` or `m` (master), slot `1`-`3`, type by name or number (`off` clears it), then optional parameters in order (the rest keep their defaults). |
 | `help` | `@ok commands: ...` | Lists the commands. |
 
 Anything else answers `@err unknown command: ...`; an over-long line answers `@err line too long`.

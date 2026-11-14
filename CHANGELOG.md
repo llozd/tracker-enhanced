@@ -7,7 +7,12 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 ## [Unreleased]
 
 ### Added
+* **Insert effects (Tracker+ and Mini)**: three insert slots on every sample track, synth part and the master, on the Master screen's new **Inserts** page. EQs (including a PQ1549-style parametric EQ), compressors (utility, limiter, glue, FET), drives, tape, tube, transformer, console, saturator, exciter, chorus, flanger, phaser and reverb. Saved with the project. See [`docs/realtime_effects.md`](docs/realtime_effects.md).
+* **Dev console**: `fx` and `cpu` commands to set inserts and read the audio load.
 * **Jump between track halves**: in the pattern editor, hold Pattern and Shift and press Left/Right to move the cursor between tracks 1 to 8 and 9 to 16 (same row and column). The view moves with it.
+
+### Changed
+* Project files are version 19. Older projects open with every insert slot empty.
 
 ---
 
