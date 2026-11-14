@@ -90,6 +90,8 @@ enum enDisplayBitmaps
     kBitmapHARM,
     kBitmapMiniPHASE,
     kBitmapPHASE,
+    kBitmapMiniPOLY,
+    kBitmapPOLY,
 
 #endif
 

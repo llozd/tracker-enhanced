@@ -435,8 +435,73 @@ def phase_presets():
         yield name, PHASE_ID, v, phase_macros()
 
 
+# --- POLY (PolyAnalogSynthVoice.cpp, InstrumentTypeId::kPolyAnalogSynth) --------------------
+
+POLY_ID = 14
+POLY_PARAMS = [  # (name, default), in PolyParamId order
+    ("shape_a", 0), ("pw_a", 0.0), ("tune_a", 0.0), ("sync", 0), ("shape_b", 0), ("pw_b", 0.0), ("tune_b", 0.0),
+    ("fine_b", 6.0), ("low_freq_b", 0), ("key_track_b", 1), ("level_a", 1.0), ("level_b", 0.7), ("noise", 0.0),
+    ("pm_env", 0.0), ("pm_osc_b", 0.0), ("pm_freq_a", 0), ("pm_pw_a", 0), ("pm_filter", 0), ("cutoff", 0.65),
+    ("resonance", 0.15), ("env_amount", 0.35), ("key_track", 2), ("filter_attack", 0.003), ("filter_decay", 0.6),
+    ("filter_sustain", 0.3), ("filter_release", 0.4), ("attack", 0.003), ("decay", 0.6), ("sustain", 0.8),
+    ("release", 0.4), ("lfo_rate", 5.0), ("lfo_wave", 0), ("lfo_pitch", 0.0), ("lfo_pw", 0.0), ("lfo_filter", 0.0),
+    ("drift", 0.3), ("tune", 0.0), ("fine", 0.0), ("play_mode", 0), ("glide_time", 0.0), ("volume", 1.0),
+]
+POLY_INDEX = {name: i for i, (name, _) in enumerate(POLY_PARAMS)}
+A_SAW, A_PULSE, A_SAW_PULSE = range(3)
+B_SAW, B_TRI, B_PULSE, B_SAW_PULSE, B_TRI_PULSE = range(5)
+
+
+def poly_macros():
+    i = POLY_INDEX
+    return [
+        {"name": "Cutoff", "bipolar": True, "targets": [(i["cutoff"], 1.0)]},
+        {"name": "Resonance", "bipolar": True, "targets": [(i["resonance"], 1.0)]},
+        {"name": "Env Amount", "bipolar": True, "targets": [(i["env_amount"], 1.0)]},
+        {"name": "Poly-Mod", "bipolar": True, "targets": [(i["pm_env"], 0.8), (i["pm_osc_b"], 0.8)]},
+        {"name": "Mod Wheel", "targets": [(i["lfo_pitch"], 0.3), (i["lfo_filter"], 0.5)]},
+        {"name": "Release", "bipolar": True, "targets": [(i["release"], 0.8), (i["filter_release"], 0.8)]},
+        {"name": "", "targets": [(i["volume"], 1.0)]},
+        {"name": ""},
+    ]
+
+
+# New presets (POLY is not a port, and no factory programs are used): parameters that differ from the defaults
+POLY_PRESETS = [
+    ("WARM BRASS", dict(shape_b=B_SAW, fine_b=8, cutoff=0.45, resonance=0.1, env_amount=0.45, filter_attack=0.06,
+                        filter_decay=0.9, filter_sustain=0.55, attack=0.03, sustain=0.9, release=0.3)),
+    ("SYNC LEAD", dict(sync=1, tune_a=12, shape_b=B_SAW, level_b=0.0, pm_env=0.6, pm_freq_a=1, cutoff=0.7,
+                       env_amount=0.2, filter_decay=0.8, sustain=0.9, release=0.2, play_mode=2, glide_time=0.06)),
+    ("POLY STRINGS", dict(shape_a=A_SAW, shape_b=B_SAW, fine_b=11, cutoff=0.55, resonance=0.05, env_amount=0.15,
+                          filter_attack=0.8, filter_decay=1.5, filter_sustain=0.6, attack=0.6, sustain=1.0,
+                          release=1.2, lfo_rate=0.4, lfo_pw=0.1, drift=0.5)),
+    ("BELL MOD", dict(shape_a=A_SAW, shape_b=B_TRI, tune_b=19, fine_b=0, level_b=0.0, pm_osc_b=0.6, pm_freq_a=1,
+                      cutoff=0.8, env_amount=0.1, decay=2.5, sustain=0.0, release=1.5, filter_decay=2.0,
+                      filter_sustain=0.0)),
+    ("FAT BASS", dict(shape_a=A_SAW_PULSE, pw_a=0.3, shape_b=B_SAW, tune_b=-12, fine_b=4, cutoff=0.3,
+                      resonance=0.3, env_amount=0.45, filter_decay=0.35, filter_sustain=0.1, decay=0.5, sustain=0.7,
+                      release=0.12, key_track=1)),
+    ("PWM PAD", dict(shape_a=A_PULSE, pw_a=0.2, shape_b=B_PULSE, pw_b=0.3, fine_b=7, cutoff=0.5, env_amount=0.2,
+                     filter_attack=1.0, filter_decay=2.0, filter_sustain=0.5, attack=0.8, sustain=1.0, release=1.5,
+                     lfo_rate=0.6, lfo_pw=0.5, drift=0.4)),
+    ("FILTER PLUCK", dict(shape_b=B_PULSE, pw_b=0.25, fine_b=3, cutoff=0.2, resonance=0.45, env_amount=0.6,
+                          filter_decay=0.25, filter_sustain=0.0, decay=0.6, sustain=0.0, release=0.3)),
+    ("WOBBLE KEYS", dict(shape_a=A_SAW, shape_b=B_TRI, low_freq_b=1, tune_b=-12, level_b=0.0, pm_osc_b=0.35,
+                         pm_filter=1, cutoff=0.45, resonance=0.35, env_amount=0.2, decay=1.0, sustain=0.6,
+                         release=0.4)),
+]
+
+
+def poly_presets():
+    for name, changes in POLY_PRESETS:
+        v = [d for _, d in POLY_PARAMS]
+        for key, value in changes.items():
+            v[POLY_INDEX[key]] = value
+        yield name, POLY_ID, v, poly_macros()
+
+
 ENGINES = {"MONO": mono_presets, "PRISM": prism_presets, "GRIT": grit_presets, "HARM": harm_presets,
-           "PHASE": phase_presets}
+           "PHASE": phase_presets, "POLY": poly_presets}
 
 
 def file_name(name):

@@ -85,6 +85,8 @@
 #include "images/harm_mini_nomark_80x28_L2.h"
 #include "images/phase_med_108x40_L2.h"
 #include "images/phase_mini_nomark_80x28_L2.h"
+#include "images/poly_med_108x40_L2.h"
+#include "images/poly_mini_nomark_80x28_L2.h"
 
 #endif
 
@@ -230,6 +232,8 @@ const strBitmap bitmaps[displayBitmapsCount] = {
     { harm_med_108x40_L2, 134700, 1080, 108, 40, L2, 27 },
     { phase_mini_nomark_80x28_L2, 135800, 560, 80, 28, L2, 20 },
     { phase_med_108x40_L2, 136400, 1080, 108, 40, L2, 27 },
+    { poly_mini_nomark_80x28_L2, 137500, 560, 80, 28, L2, 20 },
+    { poly_med_108x40_L2, 138100, 1080, 108, 40, L2, 27 },
 
 #endif
 };

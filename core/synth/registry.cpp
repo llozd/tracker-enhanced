@@ -8,6 +8,7 @@
 #include "engines/GritSynthVoice.h"
 #include "engines/HarmSynthVoice.h"
 #include "engines/PhaseSynthVoice.h"
+#include "engines/PolyAnalogSynthVoice.h"
 
 namespace polysynth
 {
@@ -43,6 +44,8 @@ void InstrumentTypeRegistry::registerInstrumentTypes(
     registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kGritSynth), createGritSynth());
     registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kHarmSynth), createHarmSynth());
     registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kPhaseSynth), createPhaseSynth());
+    registry.addInstrumentType(static_cast<int>(InstrumentTypeId::kPolyAnalogSynth),
+                               createPolyAnalogSynth());
 }
 
 } // namespace polysynth
