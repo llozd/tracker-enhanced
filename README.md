@@ -10,7 +10,7 @@
 > * Effects on rows without a note
 > * Original Tracker build (reduced feature set)
 >
-> Extended MIDI CC control and the new effects are still planned. Every change, finished or planned, is recorded in [`openspec/`](openspec/README.md).
+> Extended MIDI CC control is still planned. Insert effects are in progress. Every change, finished or planned, is recorded in [`openspec/`](openspec/README.md).
 
 ---
 
@@ -67,14 +67,14 @@ Today each MIDI instrument has 6 CC slots and each step has 2 FX slots.
 * More CC assignments per MIDI instrument.
 * More than 2 CC messages on a single row.
 
-### 3. New Effects (per track and master) (planned)
-New realtime effects, available on individual tracks and on the master channel:
-* **Parametric EQ**, inspired by large-format broadcast console EQs.
-* **Saturation**, **exciter** and **noise / colouring**.
-* **Console / sound desk** style processing, simulating audio passing through different pieces of studio equipment.
-* **More compressors**: vintage, FET and glue styles.
+### 3. Insert Effects (Tracker+ and Mini)
+Three insert slots on every sample track, synth part and the master, set on the Master screen's **Inserts** page. See [`docs/realtime_effects.md`](docs/realtime_effects.md).
+* **EQ**: a four-band parametric EQ after the Calrec PQ1549, and a 3-band EQ.
+* **Dynamics**: compressor, limiter, glue (bus) compressor and FET compressor.
+* **Drive and colour**: overdrive, digital clip, bit crush, soft clip, diode drive, tape, tube, transformer, console, saturator and exciter.
+* **Motion and space**: chorus (makes mono synth parts stereo), flanger, phaser and reverb (up to 4 reverb inserts at once).
 
-CPU usage will be measured on hardware, and the number of simultaneous per-track effects may be limited accordingly.
+Not yet tested on hardware, and CPU limits are still to be measured.
 
 ### 4. New Synth Engines (planned)
 On Tracker+ and Mini, alongside the existing engines:
