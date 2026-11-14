@@ -7,6 +7,7 @@
 #include "PolySynth/Synth.h"
 #include "Synth.h"
 #include "config.h"
+#include "fx/insertChannels.h"
 #include <span>
 //#include "Audio.h"
 //#include "dspinst.h'
@@ -60,6 +61,14 @@ AUDIO_CORE_RAM void PolySynth::update(void)
 
         bool hasSends = part.patch != nullptr && part.patch->getMetadata().rendersAuxSends;
 
+        const bool rendersStereo = isStereo;
+#if FEATURE_REALTIME_FX
+        insertfx::Channel& inserts =
+          insertfx::channel(static_cast<insertfx::ChannelId>(insertfx::kSynth0 + partIdx));
+        // A widening insert (chorus, reverb) turns a mono part into a stereo one.
+        isStereo = isStereo || insertfx::widensStereo(inserts);
+#endif
+
         audio_block_t* blockPostFaderLeft = allocate();
         audio_block_t* blockPostFaderRight = isStereo ? allocate() : NULL;
         audio_block_t* blockSendsCommonOrSend1 = allocate();
@@ -99,6 +108,18 @@ AUDIO_CORE_RAM void PolySynth::update(void)
           std::span<polysynth::AudioBufferRef>(tempSendsBufArray),
           partIdx);
 
+#if FEATURE_REALTIME_FX
+        // Inserts run before the split, so the sends hear them.
+        if (isStereo && !rendersStereo)
+        {
+            tempBufSendsCommonRight = tempBufSendsCommonLeft;
+        }
+        insertfx::processChannel(inserts,
+                                 tempBufSendsCommonLeft.data(),
+                                 isStereo ? tempBufSendsCommonRight.data() : nullptr,
+                                 polysynth::kAudioBufferSize);
+#endif
+
         const bool reuseUnmodifiedMono = (!hasSends && !isStereo && gainDB[partIdx] == 0.0f);
         if (!reuseUnmodifiedMono)
         {
@@ -112,7 +133,7 @@ AUDIO_CORE_RAM void PolySynth::update(void)
         polysynth::AudioBufferRef tempBufRef = tempBufSendsCommonLeft;
 
         assert(hasSends ==
-               isStereo); // Assumption to simplify handling. The only one stereo and with internal
+               rendersStereo); // Assumption to simplify handling. The only one stereo and with internal
                           // synths is PERC, the other are mono and without sends. Refactor the
                           // handling if needed for new synth.
 

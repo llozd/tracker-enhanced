@@ -958,6 +958,18 @@ void cMasterParams::refreshReverbFrame()
     display.refreshControl(frameControl);
 }
 
+#if FEATURE_REALTIME_FX
+void cMasterParams::setFramePlaces(uint8_t count, uint8_t start)
+{
+    frameData.placesCount = count;
+    frameData.startPlace = start;
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        frameData.places[i] = &framesPlaces[i][0];
+    }
+}
+#endif
+
 void cMasterParams::refreshLimiterFrame()
 {
     if (selectedPlaceLimiter > frameData.placesCount - 1)

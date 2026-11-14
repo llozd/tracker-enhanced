@@ -16,11 +16,41 @@ AudioVoice::AudioVoice()
     {
         connections.push_back(new AudioConnection(&memoryPlayer[channel], &bitDepth[channel]));
         connections.push_back(new AudioConnection(&bitDepth[channel], &filter[channel]));
+#if FEATURE_REALTIME_FX
+        connections.push_back(new AudioConnection(&filter[channel], 0, &insert, channel));
+        connections.push_back(new AudioConnection(&insert, channel, &amplifier[channel], 0));
+#else
         connections.push_back(new AudioConnection(&filter[channel], &amplifier[channel]));
+#endif
         connections.push_back(new AudioConnection(&amplifier[channel], &panningAmplifier[channel]));
         connections.push_back(new AudioConnection(&amplifier[channel], &rms[channel]));
     }
 }
+
+AudioStream* AudioVoice::getPostFilter([[maybe_unused]] VoiceChannels channel)
+{
+#if FEATURE_REALTIME_FX
+    return &insert;
+#else
+    return &filter[channel];
+#endif
+}
+
+uint8_t AudioVoice::getPostFilterIndex(VoiceChannels channel)
+{
+#if FEATURE_REALTIME_FX
+    return channel;
+#else
+    return 0;
+#endif
+}
+
+#if FEATURE_REALTIME_FX
+AudioEffectInsert* AudioVoice::getInsert()
+{
+    return &insert;
+}
+#endif
 #endif
 
 #ifndef PLATFORM_IMX
