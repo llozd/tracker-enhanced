@@ -93,7 +93,11 @@ void handleFx(char* argument, char* reply, size_t size)
     {
         slot.params[i - 3] = static_cast<int16_t>(atoi(tokens[i]));
     }
-    insertfx::setSlot(id, slotIdx, slot);
+    if (!insertfx::setSlot(id, slotIdx, slot))
+    {
+        snprintf(reply, size, "err no free reverb (%d at most)", insertfx::kReverbPool);
+        return;
+    }
     snprintf(reply, size, "ok fx %s %d %s", tokens[0], slotIdx + 1, insertfx::describe(type).abbr);
 }
 #endif

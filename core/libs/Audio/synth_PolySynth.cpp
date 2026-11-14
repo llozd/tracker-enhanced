@@ -65,7 +65,7 @@ AUDIO_CORE_RAM void PolySynth::update(void)
 #if FEATURE_REALTIME_FX
         insertfx::Channel& inserts =
           insertfx::channel(static_cast<insertfx::ChannelId>(insertfx::kSynth0 + partIdx));
-        // A widening insert (chorus) turns a mono part into a stereo one.
+        // A widening insert (chorus, reverb) turns a mono part into a stereo one.
         isStereo = isStereo || insertfx::widensStereo(inserts);
 #endif
 

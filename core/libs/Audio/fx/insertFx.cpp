@@ -89,6 +89,8 @@ const Desc kDescs[kTypeCount] = {
     { "Diode Drive", "DIOD", kFamilyDrive, 4,
       { pct("DRIVE", 40), pct("TONE", 90), num("LEVEL", -12, 12, 0, "dB"), pct("MIX", 127) } },
     { "Exciter", "EXCT", kFamilyColour, 3, { pct("FREQ", 70), pct("AMOUNT", 50), pct("MIX", 64) } },
+    { "Reverb", "VERB", kFamilySpace, 5,
+      { pct("SIZE", 90), pct("DAMP", 40), pct("PREDLY", 0), pct("DIFFUS", 80), pct("MIX", 40) } },
 };
 
 using polysynth::sdk::fastPow2;
@@ -722,8 +724,10 @@ void setDefaults(Slot& slot, Type type)
 void reset(State& e)
 {
     float* delay = e.delay;
+    const uint8_t reverb = e.reverb;
     std::memset(&e, 0, sizeof(e));
     e.delay = delay;
+    e.reverb = reverb;
     e.gain = 1.0f;
     if (delay)
     {
@@ -733,7 +737,7 @@ void reset(State& e)
 
 void run(State& e, const Slot& slot, float* l, float* r, uint32_t n)
 {
-    if (slot.type == kOff || slot.type >= kTypeCount)
+    if (slot.type == kOff || slot.type == kReverb || slot.type >= kTypeCount)
         return;
     if (!e.ready || e.type != slot.type ||
         std::memcmp(e.p, slot.params, sizeof(int16_t) * describe(slot.type).count) != 0)

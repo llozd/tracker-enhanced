@@ -32,13 +32,13 @@ tracks and sends mixer L/R -> [master insert: slot 1 -> 2 -> 3] -> limiter -> fi
 - `x0x/fastmath.h` is replaced with this firmware's maths (`powf` and `expf` only in coefficient updates, never per sample).
 - `x0x/fastmath.h` is replaced. Coefficient updates use `std::` maths. Per-sample `powf`, `log2f` and `cosf` use `sdk::fastPow2`, `sdk::fastSine` and a fast `log2` (dynamics gain and asinh differ from Pocket Rack by about -42 dB, everything else by less than -63 dB).
 - Every slot owns a delay line of 2 x 1024 floats (8 KB) in `EXTERNAL_RAM`, used by the chorus and the flanger: 36 slots, 288 KB.
-- Reverb: `AudioEffectPolyverb` keeps its buffers in static arrays today. It is changed to take its buffers from the caller, so the send reverb keeps its own and each reverb insert takes 64 KB from a small reverb pool in `EXTERNAL_RAM`. The pool size is the reverb limit.
+- Reverb: the insert reverb is the firmware's own `Reverb` (`Polyverb/reverb.h`, MIT, Emilie Gillet), which already takes its buffers through `Init()`. A pool of 4 (`kReverbPool`) lives in `EXTERNAL_RAM` with 2 x 32 KB buffers each. Picking reverb for a slot takes an entry and `setSlot` refuses when none is free. Controls match the master reverb (size, damp, predelay, diffusion) plus a mix. A chorus or a reverb makes a mono synth part stereo.
 
 ## Memory (measured on Tracker+)
 - `EXTERNAL_RAM`: +329 KB (delay lines and states). About 3 MB left.
 - `SRAM_DTC`: +288 B (the insert objects).
 - Flash: +19.5 KB.
-- Reverb pool: 64 KB a reverb, on top.
+- Reverb pool: +263 KB of `EXTERNAL_RAM` for 4 reverbs.
 
 ## CPU
 - The Plus has 600 MHz, about 1.74 M cycles per 128-sample block. Each effect type gets a measured cost per block (cycle counter, on hardware, in a dev console build).

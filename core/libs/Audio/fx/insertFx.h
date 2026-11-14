@@ -36,6 +36,7 @@ enum Type : uint8_t
     kSaturate,
     kDiode,
     kExciter,
+    kReverb, // runs in insertChannels (pooled), not in run()
     kTypeCount
 };
 
@@ -47,6 +48,7 @@ enum Family : uint8_t
     kFamilyDrive,
     kFamilyColour,
     kFamilyMotion,
+    kFamilySpace,
     kFamilyCount
 };
 
@@ -106,6 +108,7 @@ struct State
     uint32_t count, writeIdx;
     float* delay; // 2 x kDelayLength floats, owned by the caller
     float param[kParams];
+    uint8_t reverb; // pool entry + 1, 0 for none (managed by insertChannels)
 };
 
 // Sets the slot to the type's default parameters.

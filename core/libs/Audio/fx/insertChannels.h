@@ -30,13 +30,16 @@ void initChannels();
 
 Channel& channel(ChannelId id);
 
+constexpr int kReverbPool = 4; // reverbs that can run at once (64 KB each)
+
 // UI side: replaces one slot (atomic with respect to the audio interrupt).
-void setSlot(ChannelId id, int slotIdx, const Slot& slot);
+// Returns false, leaving the slot as it was, when a reverb is asked for and the pool is empty.
+bool setSlot(ChannelId id, int slotIdx, const Slot& slot);
 const Slot& getSlot(ChannelId id, int slotIdx);
 
 bool hasActiveSlot(const Channel& ch);
 
-// True when a slot makes a mono input stereo (chorus), so the caller should feed it stereo.
+// True when a slot makes a mono input stereo (chorus, reverb), so the caller should feed it stereo.
 bool widensStereo(const Channel& ch);
 
 // Audio side: runs the channel's slots in place. r may be null for mono.

@@ -16,7 +16,7 @@
 - [x] Mono synth parts: stereo output when a chorus is in a slot
 
 ## Reverb (PR 2)
-- [ ] `AudioEffectPolyverb` takes its buffers from the caller; reverb pool and limit
+- [x] Reverb insert from the firmware's `Reverb`, a pool of 4 with refusal when full (host check: pool limit, stereo, tail ends in silence)
 
 ## Storage and UI (PR 3)
 - [ ] `strInsertSettings` in the project, file version bump and upgrade step
