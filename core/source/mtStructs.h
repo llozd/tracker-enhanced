@@ -41,7 +41,7 @@ const uint8_t PRODUCT_BETA = FW_VER_BETA;
 const char firmwareVersionLabelFormat[] = "%d.%d.%d " FW_EDITION_NAME;
 const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " beta %d";
 
-const uint8_t PROJECT_FILE_VERSION = 18;   // wersja struktury pliku projektu
+const uint8_t PROJECT_FILE_VERSION = 19;   // wersja struktury pliku projektu
 const uint8_t INSTRUMENT_FILE_VERSION = 9; // wersja struktury pliku instrumentu
 const uint8_t PATTERN_FILE_VERSION = 8;
 
@@ -117,6 +117,18 @@ static constexpr uint8_t kLinesPerBeatOptions[] = { 1, 2, 4, 8, 12, 16 };
 static constexpr uint8_t kLinesPerBeatOptionsCount = std::size(kLinesPerBeatOptions);
 static constexpr uint8_t kDefaultLinesPerBeatIndex = 2; // 4 LPB
 static constexpr uint8_t kSynthInstrumentsCount = 3;
+
+// Insert effect slots (realtime-effects): 8 sample tracks, 3 synth parts and the master.
+// type is an insertfx::Type (append-only). Stored on every device, used where FEATURE_REALTIME_FX is 1.
+static constexpr int kInsertChannels = 12;
+static constexpr int kInsertSlots = 3;
+static constexpr int kInsertParams = 16;
+struct strInsertSlot
+{
+    uint8_t type = 0;
+    uint8_t reserved = 0;
+    int16_t params[kInsertParams] = {};
+};
 static constexpr uint8_t kTotalInstrumentsCount =
 #ifdef FEATURE_SYNTH
   kSynthInstrumentsCount +
@@ -979,6 +991,7 @@ struct strMtValues
 
     uint8_t recorderGainUsb;
     uint8_t linesPerBeatIndex = kDefaultLinesPerBeatIndex;
+    strInsertSlot insertSlot[kInsertChannels][kInsertSlots];
     void setDefaultTrackName(int trackIdx);
 };
 
