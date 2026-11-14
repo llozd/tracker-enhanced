@@ -4,6 +4,17 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ---
 
+## [Unreleased]
+
+### Added
+* **Insert effects (Tracker+ and Mini)**: three insert slots on every sample track, synth part and the master, on the Master screen's new **Inserts** page. EQs (including a PQ1549-style parametric EQ), compressors (utility, limiter, glue, FET), drives, tape, tube, transformer, console, saturator, exciter, chorus, flanger, phaser and reverb. Saved with the project. See [`docs/realtime_effects.md`](docs/realtime_effects.md).
+* **Dev console**: `fx` and `cpu` commands to set inserts and read the audio load.
+
+### Changed
+* Project files are version 19. Older projects open with every insert slot empty.
+
+---
+
 ## [ENH 0.1.0 beta 1] - First Tracker Enhanced Beta
 
 > **Beta.** Tested on a Tracker+, not yet tested on the Original or Mini. Back up your microSD card before flashing. Projects saved with Tracker Enhanced will not open on stock or Community Edition firmware.
