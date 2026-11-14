@@ -1,6 +1,6 @@
 # Pocket Rack synth engines
 
-**Status: in progress**: MONO and PRISM implemented, untested on hardware
+**Status: in progress**: MONO, PRISM and GRIT implemented, untested on hardware
 
 **Platforms:** Plus and Mini only. Synth engines need `FEATURE_SYNTH`, which is off on the Original.
 
