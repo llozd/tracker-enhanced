@@ -267,6 +267,10 @@ void cMasterParams::start(uint32_t options)
         displayType = displayMode::mixer;
     else if (moduleMode == 3)
         displayType = displayMode::mixerDelayReverb;
+#if FEATURE_REALTIME_FX
+    else if (moduleMode == 4)
+        displayType = displayMode::inserts;
+#endif
 
     //--------------------------------------------------------------------
     // ustawienie funkcji
@@ -317,6 +321,12 @@ void cMasterParams::start(uint32_t options)
     {
         switchToMixerDelayReverb();
     }
+#if FEATURE_REALTIME_FX
+    else if (displayType == cMasterParams::displayMode::inserts)
+    {
+        switchToInserts();
+    }
+#endif
 
     displayTypeBeforeMasterPress = displayType;
     isDelayScreenBeforeMasterPress = isDelayScreen;
@@ -344,8 +354,13 @@ void cMasterParams::hideControlsUnderMiniMenu()
 
 uint8_t cMasterParams::getCurrentModeIdx()
 {
-    return displayType == displayMode::masterValues ? 0
-                                                    : (displayType == displayMode::mixer ? 1 : 2);
+    switch (displayType)
+    {
+        case displayMode::masterValues: return 0;
+        case displayMode::mixer: return 1;
+        case displayMode::mixerDelayReverb: return 2;
+        default: return 3;
+    }
 }
 
 void cMasterParams::setMasterScreenFunct()
@@ -452,6 +467,13 @@ static void functEncoder(int16_t value)
     if (MP->keyboardManager.getState())
     {
         MP->keyboardManager.confirmKey();
+        return;
+    }
+#endif
+#if FEATURE_REALTIME_FX
+    if (MP->displayType == cMasterParams::displayMode::inserts)
+    {
+        MP->insertsChange(value);
         return;
     }
 #endif
@@ -566,6 +588,13 @@ static void functEncoder(int16_t value)
 
 static void functLeft()
 {
+#if FEATURE_REALTIME_FX
+    if (MP->displayType == cMasterParams::displayMode::inserts)
+    {
+        MP->insertsMove(-1);
+        return;
+    }
+#endif
     if (MP->displayType == cMasterParams::displayMode::mixer)
     {
         return;
@@ -630,6 +659,13 @@ static void functLeft()
 
 static void functRight()
 {
+#if FEATURE_REALTIME_FX
+    if (MP->displayType == cMasterParams::displayMode::inserts)
+    {
+        MP->insertsMove(1);
+        return;
+    }
+#endif
     if (MP->displayType == cMasterParams::displayMode::mixer)
     {
         return;
@@ -694,6 +730,13 @@ static void functRight()
 
 static void functUp()
 {
+#if FEATURE_REALTIME_FX
+    if (MP->displayType == cMasterParams::displayMode::inserts)
+    {
+        MP->insertsChange(1);
+        return;
+    }
+#endif
     if (MP->displayType == cMasterParams::displayMode::mixer)
     {
         for (uint8_t track = 0; track < 8; track++)
@@ -799,6 +842,13 @@ static void functUp()
 
 static void functDown()
 {
+#if FEATURE_REALTIME_FX
+    if (MP->displayType == cMasterParams::displayMode::inserts)
+    {
+        MP->insertsChange(-1);
+        return;
+    }
+#endif
     if (MP->displayType == cMasterParams::displayMode::mixer)
     {
         for (uint8_t track = 0; track < 8; track++)
@@ -903,6 +953,13 @@ static void functDown()
 
 static void functDelete()
 {
+#if FEATURE_REALTIME_FX
+    if (MP->displayType == cMasterParams::displayMode::inserts)
+    {
+        MP->insertsClear();
+        return;
+    }
+#endif
     if (MP->displayType == cMasterParams::displayMode::mixer)
     {
         for (uint8_t track = 0; track < 8; track++)
@@ -1123,7 +1180,15 @@ void cMasterParams::switchScreen()
     {
         switchToMixer();
     }
+#if FEATURE_REALTIME_FX
     else if (displayType == displayMode::mixerDelayReverb)
+    {
+        switchToInserts();
+    }
+    else if (displayType == displayMode::inserts)
+#else
+    else if (displayType == displayMode::mixerDelayReverb)
+#endif
     {
         if (isDelayScreen)
             switchToDelayScreen();
@@ -1167,6 +1232,12 @@ void cMasterParams::returnToScreen()
     {
         switchToMixerDelayReverb();
     }
+#if FEATURE_REALTIME_FX
+    else if (displayTypeBeforeMasterPress == cMasterParams::displayMode::inserts)
+    {
+        switchToInserts();
+    }
+#endif
 }
 void cMasterParams::switchToMaster()
 {
