@@ -148,3 +148,32 @@ Waves: Saw, Square, Pulse, Double Sine, Saw-Pulse and the three resonance waves 
 Macros: DCW, DCW Env, DCW Decay, Detune, L2 Level and Noise. Velocity controls the volume.
 
 Factory patches: Phase Brass, Phase Bass, Reso Sweep, Glass Piano, Square Organ, Ring Bell, Wire Pad and Pulse Lead.
+
+---
+
+## POLY
+
+An analog polysynth voice in the manner of the Sequential Prophet-5. Written new for Tracker Enhanced from the instrument's published architecture, not ported, and without its factory programs. Two oscillators with sync, a mixer with noise, Poly-Mod, a four-pole low-pass with its own envelope, and an LFO. Each voice has its own small tuning error (Drift), like a real voice card. Up to 8 voices.
+
+| Section | Parameter | What it does |
+| :--- | :--- | :--- |
+| **Oscillators** | A Shape, A Pulse Width, A Tune | Oscillator A: saw, pulse or both |
+| | Sync | Oscillator A restarts with B (hard sync) |
+| | B Shape, B Pulse Width, B Tune, B Fine | Oscillator B: saw, triangle, pulse or two of them |
+| | B Low Freq | B runs as a slow modulator (about 2 Hz, set by B Tune) |
+| | B Keyboard | Off: B keeps its pitch whatever note is played |
+| **Mixer & Poly-Mod** | A Level, B Level, Noise | The mixer |
+| | PM Filt Env, PM Osc B | How much the filter envelope and oscillator B modulate... |
+| | PM > Freq A, PM > PW A, PM > Filter | ... oscillator A's pitch (up to 3 octaves), A's pulse width and the filter |
+| **Filter** | Cutoff, Resonance | A four-pole low-pass, 20 Hz to about 18 kHz; at the top it rings on its own |
+| | Env Amount | How far the filter envelope opens (or closes) it |
+| | Key Track | Off, Half or Full |
+| | Filt Attack, Decay, Sustain, Release | The filter envelope (also a Poly-Mod source) |
+| **Amp & LFO** | Attack, Decay, Sustain, Release | The amplifier envelope |
+| | LFO Rate, LFO Wave | Triangle, saw or square |
+| | LFO > Pitch, LFO > PW, LFO > Filter | Vibrato, pulse-width modulation and filter wobble |
+| **Voice** | Drift, Tune, Fine, Glide Mode, Glide Time, Volume | |
+
+Macros: Cutoff, Resonance, Env Amount, Poly-Mod, Mod Wheel (LFO to pitch and filter) and Release. Velocity controls the volume.
+
+Factory patches: Warm Brass, Sync Lead, Poly Strings, Bell Mod, Fat Bass, PWM Pad, Filter Pluck and Wobble Keys.

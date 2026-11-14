@@ -18,9 +18,10 @@
 
 ## New engines (one PR each, written without Pocket Rack's or CrispyZebra's code)
 - [x] PHASE: phase-distortion oscillators (8 waves as phase transfer functions blended by DCW), two lines with alternating waves and DCW envelopes, mix, ring and noise, key follow, 8 new factory patches (host check: stable on every wave and mode)
-- [ ] PROPHET: two oscillators, Poly-Mod, ladder filter, envelopes, LFO, init patch
+- [x] PROPHET (POLY): two oscillators with sync, mixer with noise, Poly-Mod (filter env and osc B to freq A, PW A, filter), four-pole low-pass with key track, filter and amp ADSRs, LFO, per-voice drift, 8 new factory patches (host check: stable with everything modulating)
+- [ ] POLY: CPU at 8 voices on hardware
 
 ## Checks
 - [ ] Project and `.patch` save and load for every new engine, and projects with existing engines unchanged
 - [ ] CPU and memory checked on Plus (and Mini)
-- [ ] README, CHANGELOG and `docs/synth_engines.md` for each engine (MONO, PRISM, GRIT, HARM, PHASE done)
+- [ ] README, CHANGELOG and `docs/synth_engines.md` for each engine (all six done)

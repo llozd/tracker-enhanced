@@ -15,7 +15,7 @@ Welcome to the official documentation for **Polyend Tracker Community Edition (C
 * **[Modular Sample Editor Effects - User & Architecture Guide (`docs/modular_effects_system.md`)](modular_effects_system.md)**
   * Overview of hot-loadable `.ptfx` Sample Editor effects and generators (`/Effects/*.ptfx`), bundled reference plugins, and hardware memory/cache architecture.
 * **[Tracker Enhanced Synth Engines (`docs/synth_engines.md`)](synth_engines.md)**
-  * The new synth engines (MONO, PRISM, GRIT, HARM and PHASE so far), their parameters and factory patches (Tracker+ and Mini).
+  * The new synth engines (MONO, PRISM, GRIT, HARM, PHASE and POLY), their parameters and factory patches (Tracker+ and Mini).
 * **[SD Card Image Viewer (`docs/image_viewer.md`)](image_viewer.md)**
   * How to prepare and view up to 48 baseline JPEGs (`800 × 390` px) per folder in `/Images/Reference/`, `/Images/Notes/`, and `/Images/Custom/` under `Config > Info`.
 
