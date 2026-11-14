@@ -77,6 +77,8 @@
 #include "images/chip_mini_nomark_80x28_L2.h"
 #include "images/mono_med_108x40_L2.h"
 #include "images/mono_mini_nomark_80x28_L2.h"
+#include "images/prism_med_108x40_L2.h"
+#include "images/prism_mini_nomark_80x28_L2.h"
 
 #endif
 
@@ -214,6 +216,8 @@ const strBitmap bitmaps[displayBitmapsCount] = {
     // Tracker Enhanced engines: 1700 bytes each from 129000 (RAM_G is free up to 150000)
     { mono_mini_nomark_80x28_L2, 130700, 560, 80, 28, L2, 20 },
     { mono_med_108x40_L2, 131300, 1080, 108, 40, L2, 27 },
+    { prism_mini_nomark_80x28_L2, 129000, 560, 80, 28, L2, 20 },
+    { prism_med_108x40_L2, 129600, 1080, 108, 40, L2, 27 },
 
 #endif
 };

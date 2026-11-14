@@ -82,6 +82,8 @@ enum enDisplayBitmaps
     kBitmapCHIP,
     kBitmapMiniMONO,
     kBitmapMONO,
+    kBitmapMiniPRISM,
+    kBitmapPRISM,
 
 #endif
 
