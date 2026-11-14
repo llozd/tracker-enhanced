@@ -60,3 +60,34 @@ Macros: Tilt, Comb, Sweep, Warp, Smear / Drift and Structure. Velocity controls 
 Each voice runs its own slow scans (Comb, Sweep, Smear), so chords move a little more freely than on Pocket Rack, where a part's voices share them.
 
 Factory patches: 40, from Glass Choir and Alien Bell to Time Stretch and Cluster Pluck.
+
+---
+
+## GRIT
+
+A digital wave module after the Cheetah MS800, ported from Pocket Rack. There is no filter, as on the original: the sound is a sequence of 8-bit companded single-cycle waves played without interpolation, so it aliases and grits as that ROM did. A tone steps through the waves (each step a wave and a level, held for a time and crossfaded into the next), then ends, loops or turns back. A second tone can be layered, transposed and detuned. Up to 8 voices.
+
+The 21 waves: SINE, TRI, SAW, SQR, P25, P12, ORGN, OCTV, FIFT, HOLW, BUZZ, AH, EE, BELL, SYNC, RESO, FOLD, RHRM, NOIS, DUST and STEP. They are drawn for this engine, not read from the original's ROM.
+
+| Section | Parameter | What it does |
+| :--- | :--- | :--- |
+| **Wave** | Wave | The first step's wave |
+| | Steps | How many steps the sequence has: 1 is a plain wave, up to 16 |
+| | Step Time | How long a step lasts, 1 ms to 10 s |
+| | Crossfade | The share of a step spent fading into the next: 0 is a hard switch |
+| | Jump | How many waves each step moves on, -10 to 10 |
+| | Loop | After the last step: End holds it, Loop starts again, Ping-Pong turns back |
+| **Sequence** | Level Step | Below 0 each step is quieter (6 dB a step at -100 %), above 0 each louder, up to the last at full level |
+| | Random | The chance that a step takes a random wave |
+| | Vel > Wave | Velocity moves the first wave on (up to 10 waves) |
+| | Grit | Holds samples, down to about 2.8 kHz |
+| | Bits | Drops bits below the original's 8 |
+| **Layer** | Layer | The second tone's level |
+| | Layer Wave, Layer Trans, Layer Detune | Its first wave against Wave, its transposition (±24) and detune (±50 cents) |
+| | Layer Time | Its step time, ×0.25 to ×4 |
+| **Envelope** | Attack, Decay, Sustain, Release, Vibrato Rate, Vibrato Depth | The amplitude envelope and a vibrato |
+| **Voice** | Tune, Fine, Glide Mode, Glide Time, Volume | |
+
+Macros: Wave, Step Time, Crossfade, Jump, Layer and Grit / Bits. Velocity controls the volume.
+
+Factory patches: Digi Saw, Grit Bass, Wave Choir, Seq Organ, Chip Arp, Dust Keys, Ping Pad, Alias Lead, Noise Sweep, Step Rhythm, Glass Scan and Random Bits.
