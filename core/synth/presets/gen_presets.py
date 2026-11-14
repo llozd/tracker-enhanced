@@ -370,7 +370,73 @@ def harm_presets():
         yield name, HARM_ID, v, harm_macros()
 
 
-ENGINES = {"MONO": mono_presets, "PRISM": prism_presets, "GRIT": grit_presets, "HARM": harm_presets}
+# --- PHASE (PhaseSynthVoice.cpp, InstrumentTypeId::kPhaseSynth) ----------------------------
+
+PHASE_ID = 13
+PHASE_PARAMS = [  # (name, default), in PhaseParamId order
+    ("wave_a1", 1), ("wave_b1", 0), ("dcw1", 0.2), ("dcw_env1", 0.6), ("dcw_attack1", 0.003), ("dcw_decay1", 0.6),
+    ("dcw_sustain1", 0.3), ("dcw_release1", 0.3), ("wave_a2", 2), ("wave_b2", 0), ("dcw2", 0.2), ("dcw_env2", 0.6),
+    ("dcw_attack2", 0.003), ("dcw_decay2", 0.6), ("dcw_sustain2", 0.3), ("dcw_release2", 0.3), ("line_mode", 0),
+    ("level2", 1.0), ("detune_semis", 0.0), ("detune_cents", 7.0), ("noise", 0.0), ("key_follow", 0.3),
+    ("attack", 0.003), ("decay", 0.5), ("sustain", 0.8), ("release", 0.3), ("vibrato_rate", 5.0),
+    ("vibrato_depth", 0.0), ("tune", 0.0), ("fine", 0.0), ("play_mode", 0), ("glide_time", 0.0), ("volume", 1.0),
+]
+PHASE_INDEX = {name: i for i, (name, _) in enumerate(PHASE_PARAMS)}
+SAW, SQUARE, PULSE, DOUBLE_SINE, SAW_PULSE, RESO_SAW, RESO_TRI, RESO_TRAP = range(1, 9)
+LINE1, LINE2, LINES_1_2, RING = range(4)
+
+
+def phase_macros():
+    i = PHASE_INDEX
+    return [
+        {"name": "DCW", "bipolar": True, "targets": [(i["dcw1"], 1.0), (i["dcw2"], 1.0)]},
+        {"name": "DCW Env", "bipolar": True, "targets": [(i["dcw_env1"], 1.0), (i["dcw_env2"], 1.0)]},
+        {"name": "DCW Decay", "bipolar": True, "targets": [(i["dcw_decay1"], 0.8), (i["dcw_decay2"], 0.8)]},
+        {"name": "Detune", "bipolar": True, "targets": [(i["detune_cents"], 1.0)]},
+        {"name": "L2 Level", "bipolar": True, "targets": [(i["level2"], 1.0)]},
+        {"name": "Noise", "targets": [(i["noise"], 1.0)]},
+        {"name": "", "targets": [(i["volume"], 1.0)]},
+        {"name": ""},
+    ]
+
+
+# New presets (PHASE is not a port): name -> the parameters that differ from the defaults
+PHASE_PRESETS = [
+    ("PHASE BRASS", dict(wave_a1=SAW, dcw1=0.1, dcw_env1=0.8, dcw_attack1=0.06, dcw_decay1=0.8, dcw_sustain1=0.55,
+                         attack=0.02, sustain=0.9, release=0.25)),
+    ("PHASE BASS", dict(wave_a1=SAW, wave_a2=SQUARE, line_mode=LINES_1_2, level2=0.6, detune_semis=-12, detune_cents=0,
+                        dcw1=0.15, dcw_env1=0.7, dcw_decay1=0.25, dcw_sustain1=0.1, dcw2=0.3, dcw_env2=0.4,
+                        dcw_decay2=0.3, dcw_sustain2=0.1, decay=0.6, sustain=0.6, release=0.1)),
+    ("RESO SWEEP", dict(wave_a1=RESO_SAW, dcw1=0.0, dcw_env1=1.0, dcw_attack1=1.5, dcw_decay1=2.5, dcw_sustain1=0.4,
+                        attack=0.3, sustain=1.0, release=1.2)),
+    ("GLASS PIANO", dict(wave_a1=DOUBLE_SINE, wave_a2=SAW_PULSE, line_mode=LINES_1_2, level2=0.4, detune_cents=4,
+                         dcw1=0.05, dcw_env1=0.6, dcw_decay1=0.9, dcw_sustain1=0.0, dcw2=0.0, dcw_env2=0.5,
+                         dcw_decay2=0.4, dcw_sustain2=0.0, decay=2.5, sustain=0.0, release=0.6, key_follow=0.6)),
+    ("SQUARE ORGAN", dict(wave_a1=SQUARE, dcw1=0.65, dcw_env1=0.0, attack=0.005, sustain=1.0, release=0.08,
+                          vibrato_rate=6.0, vibrato_depth=0.1)),
+    ("RING BELL", dict(wave_a1=DOUBLE_SINE, wave_a2=SAW, line_mode=RING, detune_semis=7, detune_cents=12,
+                       dcw1=0.3, dcw_env1=0.5, dcw_decay1=1.5, dcw_sustain1=0.0, dcw2=0.2, dcw_env2=0.3,
+                       decay=3.0, sustain=0.0, release=1.5)),
+    ("WIRE PAD", dict(wave_a1=RESO_TRI, wave_b1=SAW, wave_a2=RESO_TRAP, line_mode=LINES_1_2, level2=0.8,
+                      detune_cents=11, dcw1=0.25, dcw_env1=0.4, dcw_attack1=2.0, dcw_decay1=3.0, dcw_sustain1=0.5,
+                      dcw2=0.2, dcw_env2=0.5, dcw_attack2=3.0, dcw_decay2=3.0, dcw_sustain2=0.4,
+                      attack=1.2, sustain=1.0, release=2.0, vibrato_rate=0.3, vibrato_depth=0.08)),
+    ("PULSE LEAD", dict(wave_a1=PULSE, wave_b1=SAW, dcw1=0.35, dcw_env1=0.5, dcw_decay1=0.4, dcw_sustain1=0.4,
+                        play_mode=2, glide_time=0.08, sustain=0.9, release=0.15, vibrato_rate=5.5,
+                        vibrato_depth=0.15)),
+]
+
+
+def phase_presets():
+    for name, changes in PHASE_PRESETS:
+        v = [d for _, d in PHASE_PARAMS]
+        for key, value in changes.items():
+            v[PHASE_INDEX[key]] = value
+        yield name, PHASE_ID, v, phase_macros()
+
+
+ENGINES = {"MONO": mono_presets, "PRISM": prism_presets, "GRIT": grit_presets, "HARM": harm_presets,
+           "PHASE": phase_presets}
 
 
 def file_name(name):
