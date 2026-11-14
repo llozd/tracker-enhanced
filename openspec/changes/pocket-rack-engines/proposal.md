@@ -1,6 +1,6 @@
 # Pocket Rack synth engines
 
-**Status: planned**
+**Status: in progress**: MONO implemented, untested on hardware
 
 **Platforms:** Plus and Mini only. Synth engines need `FEATURE_SYNTH`, which is off on the Original.
 

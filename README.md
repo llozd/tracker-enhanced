@@ -78,7 +78,7 @@ CPU usage will be measured on hardware, and the number of simultaneous per-track
 
 ### 4. New Synth Engines (planned)
 On Tracker+ and Mini, alongside the existing engines:
-* **Ported from [Pocket Rack](https://github.com/llozd/pocket-rack)**: PRISM (additive spectral), SH-101 style monosynth, MS800 style digital wave module and K5 style additive synthesis.
+* **Ported from [Pocket Rack](https://github.com/llozd/pocket-rack)**: PRISM (additive spectral), MONO (an SH-101 style monosynth, available now, see [`docs/synth_engines.md`](docs/synth_engines.md)), MS800 style digital wave module and K5 style additive synthesis.
 * **New**: a CZ-style phase distortion synth and a Prophet-5 style analog polysynth.
 * **Randomise** on every synth engine, including the existing ones.
 

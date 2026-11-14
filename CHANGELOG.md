@@ -4,6 +4,13 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ---
 
+## [Unreleased]
+
+### Added
+* **MONO synth engine (Tracker+ and Mini)**: a one-oscillator monosynth after the SH-101, ported from Pocket Rack, with 8 factory patches in the release's `Patches/` folder. See [`docs/synth_engines.md`](docs/synth_engines.md).
+
+---
+
 ## [ENH 0.1.0 beta 1] - First Tracker Enhanced Beta
 
 > **Beta.** Tested on a Tracker+, not yet tested on the Original or Mini. Back up your microSD card before flashing. Projects saved with Tracker Enhanced will not open on stock or Community Edition firmware.
