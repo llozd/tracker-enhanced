@@ -80,7 +80,7 @@ CPU usage will be measured on hardware, and the number of simultaneous per-track
 On Tracker+ and Mini, alongside the existing engines:
 * **Ported from [Pocket Rack](https://github.com/llozd/pocket-rack)**: PRISM (additive spectral), MONO (an SH-101 style monosynth), GRIT (an MS800 style digital wave module) and HARM (K5 style additive synthesis), all available (see [`docs/synth_engines.md`](docs/synth_engines.md)).
 * **New**: PHASE, a CZ-style phase distortion synth, and POLY, a Prophet-5 style analog polysynth.
-* **Randomise** on every synth engine, including the existing ones.
+* **Randomise** (planned) on every synth engine, including the existing ones.
 
 See `pocket-rack-engines` and `synth-randomise`.
 
