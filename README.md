@@ -88,8 +88,8 @@ See `pocket-rack-engines` and `synth-randomise`.
 * **Legato rolls**: roll hits are gated for the full period, so rolls play as full-length, click-free hits instead of sounding gappy. See `legato-rolls`.
 * **Position on slices**: in Slice and Beat Slice modes, the Position effect scrubs within the played slice instead of the whole sample. See `position-fx-slices`.
 * **Effects on rows without a note**: Microtune and synth effects on an empty row use the track's last played instrument on MIDI and synth tracks, so a note can be bent later, including on its release. See `fx-only-row-instrument`.
-* **Jump between track halves** (planned): Pattern + Left/Right moves the cursor between tracks 1 to 8 and 9 to 16. Pattern + Up/Down still change the pattern. See `track-half-jump`.
-* **All tracks view** (planned): hold Pattern and press Shift to see all 16 tracks on one screen, with dots for notes and effects. See `all-tracks-view`.
+* **Jump between track halves** (planned): Pattern + Shift + Left/Right moves the cursor between tracks 1 to 8 and 9 to 16. See `track-half-jump`.
+* **All tracks view** (planned): hold Pattern and tap Shift to see all 16 tracks on one screen, with dots for notes and effects. See `all-tracks-view`.
 * **Held button release** (investigating): a held button (such as FX1) sometimes acts as released while turning the knob. A suspected cause is the key driver clearing buttons after an I2C error. See `button-hold-release`.
 
 ### 6. Original Tracker Support (in progress)

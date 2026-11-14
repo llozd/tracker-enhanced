@@ -4,7 +4,7 @@
 The pattern editor SHALL offer a view that shows all 16 tracks at once, with note, FX1 and FX2 cells per track shown as activity marks instead of values.
 
 #### Scenario: Open and close
-- **WHEN** the user holds Pattern and presses Shift
+- **WHEN** the user holds Pattern and presses and releases Shift, without pressing an arrow
 - **THEN** the pattern shows all 16 tracks
 - **AND WHEN** the user then taps Pattern
 - **THEN** the default view returns, with the cursor on the same track and row
