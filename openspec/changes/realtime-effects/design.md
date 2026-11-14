@@ -10,6 +10,8 @@ filter L/R -> [insert: slot 1 -> 2 -> 3] -> amplifier -> panning -> tracks mixer
 ```
 
 **Synth parts.** `PolySynth::update` (`core/libs/Audio/synth_PolySynth.cpp`, open source) renders each part to float buffers, then splits them into the dry output and the two sends. The part's inserts run on those float buffers before the split, so the sends hear them too.
+- Every engine except PERC renders mono, so their inserts run in mono: a chorus thickens a synth part but does not widen it. Making a mono part stereo when it has a widening insert is a follow-up.
+- PERC renders its own per-voice sends, which bypass the inserts.
 
 **Master.** Between the tracks-and-sends mixer and the limiter (`connectMixerToOutput`):
 
@@ -20,26 +22,28 @@ tracks and sends mixer L/R -> [master insert: slot 1 -> 2 -> 3] -> limiter -> fi
 ## The insert object
 - `AudioEffectInsert` (`core/libs/Audio/effect_insert.{h,cpp}`): an `AudioStream` with 2 inputs and 2 outputs. It converts the int16 blocks to float (+-1.0), runs its slots in order, and converts back with saturation.
 - All three slots empty: the blocks pass through untouched (no copy, no conversion).
-- Silent input: when both inputs are NULL and every slot's tail is done (reverb, delay lines, compressor release), it transmits nothing, so the rest of the graph keeps its idle path.
+- Silent input: the slots keep running on silence until the output reaches digital zero (every effect's tail has died out), then the insert sleeps and transmits nothing, so the rest of the graph keeps its idle path. Sound on the input wakes it.
 - Offline render (`AudioStream::renderMode`) runs the same code, so exports and stems include the inserts.
-- Parameter changes come from the UI thread as a pending set of values. The insert picks them up at the start of its next block, and recalculates coefficients there. Nothing is allocated in `update()`.
+- Settings: `insertfx::setSlot` (UI thread) writes a slot with the audio interrupt disabled. The kernels recompute coefficients in the audio block after a parameter changes. Nothing is allocated in `update()`.
+- Storage: `insertfx::Channel` (`core/libs/Audio/fx/insertChannels.{h,cpp}`) holds the 12 channels' slots and states in `EXTERNAL_RAM`. The objects in the graph (`AudioEffectInsert`, 8 voices and the master) only keep a channel id.
 
 ## Effect kernels
 - `core/libs/Audio/fx/` holds the kernels ported from `fxdsp.c`: float functions over a block of stereo samples, each with a type, 16 parameters (int16, with a descriptor table: name, range, format) and a state.
 - `x0x/fastmath.h` is replaced with this firmware's maths (`powf` and `expf` only in coefficient updates, never per sample).
-- The chorus (2 x 1024 floats) and flanger (2 x 512 floats) delay lines come from a pool in `EXTERNAL_RAM` (`__NOINIT(EXTERNAL_RAM)`), not from `SRAM_DTC` (about 17 KB free).
+- `x0x/fastmath.h` is replaced. Coefficient updates use `std::` maths. Per-sample `powf`, `log2f` and `cosf` use `sdk::fastPow2`, `sdk::fastSine` and a fast `log2` (dynamics gain and asinh differ from Pocket Rack by about -42 dB, everything else by less than -63 dB).
+- Every slot owns a delay line of 2 x 1024 floats (8 KB) in `EXTERNAL_RAM`, used by the chorus and the flanger: 36 slots, 288 KB.
 - Reverb: `AudioEffectPolyverb` keeps its buffers in static arrays today. It is changed to take its buffers from the caller, so the send reverb keeps its own and each reverb insert takes 64 KB from a small reverb pool in `EXTERNAL_RAM`. The pool size is the reverb limit.
 
-## Memory
-- Per slot: about 200 B of state (6 biquads, envelope followers, LFOs) for 36 slots (11 channels and the master, 3 each), in `EXTERNAL_RAM`.
-- Delay pool: one chorus or flanger delay line a slot would be 36 x 8 KB = 288 KB, so the pool is sized for the slots that can run at once.
-- Reverb pool: 64 KB a reverb.
-- Plus/Mini `EXTERNAL_RAM` is about 95 % used (about 3.3 MB free at 0.1.0b1), so the pools are sized from the measured free space.
+## Memory (measured on Tracker+)
+- `EXTERNAL_RAM`: +329 KB (delay lines and states). About 3 MB left.
+- `SRAM_DTC`: +288 B (the insert objects).
+- Flash: +19.5 KB.
+- Reverb pool: 64 KB a reverb, on top.
 
 ## CPU
 - The Plus has 600 MHz, about 1.74 M cycles per 128-sample block. Each effect type gets a measured cost per block (cycle counter, on hardware, in a dev console build).
 - Enabling an effect checks the sum of the active slots' costs against a budget that leaves headroom for voices and synths. Over budget: refused, with a popup.
-- First measurement step: a dev console command (`ENABLE_DEV_CONSOLE`) to set an insert from the host, so costs are measured before the UI exists.
+- First measurement step: the dev console's `fx` and `cpu` commands (`ENABLE_DEV_CONSOLE`) set inserts and read the audio load from the host, so costs are measured before the UI exists.
 
 ## Storage
 - A new `strInsertSettings` per channel (12: 8 tracks, 3 synth parts, master), with 3 slots of `{type, 16 x int16 params}`, about 1.2 KB in all, appended to `strMtValues` (`mtStructs.h`).
