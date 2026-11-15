@@ -23,7 +23,7 @@ MINI_POSTFIX     ?= $(EDITION_NAME)_$(MINI_VER_MAJOR).$(MINI_VER_MINOR).$(MINI_V
 
 .DEFAULT_GOAL := all
 
-.PHONY: all original plus mini ptfx patches clean version bump-patch bump-minor
+.PHONY: all original plus mini ptfx patches themes clean version bump-patch bump-minor
 
 all: original plus mini
 
@@ -106,6 +106,10 @@ ptfx:
 # Factory .patch files for the Tracker Enhanced synth engines -> build/Patches/<ENGINE>/
 patches:
 	@python3 "$(ROOT_DIR)/core/synth/presets/gen_presets.py" "$(OUT_DIR)"
+
+# Display themes -> build/Themes/
+themes:
+	@python3 "$(ROOT_DIR)/themes/gen_themes.py" "$(OUT_DIR)"
 
 clean:
 	$(MAKE) -C "$(CORE_DIR)" clean PLATFORM=MK66 PRODUCT=ORIGINAL

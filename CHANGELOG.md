@@ -18,6 +18,7 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 * **Synth randomise (Tracker+ and Mini)**: hold Shift on a synth part's parameter screen; F7 randomises the patch (any engine, mix and tuning kept, envelopes and cutoff kept in a playable range) and F8 restores the previous patch.
 * **Jump between track halves**: in the pattern editor, hold Pattern and Shift and press Left/Right to move the cursor between tracks 1 to 8 and 9 to 16 (same row and column). The view moves with it.
 * **All tracks view**: in the pattern editor, hold Pattern and tap Shift to see all 16 tracks on one screen, with a dot for each note and effect (a dash for note off, cut or fade). Editing works as usual, with the step's values on the bottom bar. Tap Pattern to go back.
+* **25 display themes** in the release's `Themes/` folder (Config > Display theme), from dark ones such as Midnight Teal, Deep Ocean and Neon Arcade to light ones such as Paper and Sepia.
 
 ### Changed
 * Project files are version 19. Older projects open with every insert slot empty.
