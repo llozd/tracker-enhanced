@@ -26,7 +26,7 @@ A one-oscillator monosynth after the Roland SH-101, ported from Pocket Rack. A s
 
 Macros: Cutoff, Resonance, Env Amount, Pulse Width, Sub / Noise and Decay / Release. Velocity controls the volume.
 
-Factory patches: Mono Bass, Sub Thump, Pulse Lead, Fat Saw Lead, Reso Zap, Noise Hit, String Pad and Hollow PWM.
+Factory patches (24): Mono Bass, Sub Thump, Pulse Lead, Fat Saw Lead, Reso Zap, Noise Hit, String Pad, Hollow Pwm, Acid Line, Squelch Bass, Deep Sub, Rubber Bass, Wobble Bass, Soft Lead, Scream Lead, Porta Lead, Pwm Strings, Laser Zap, Kick Blip, Noise Hat, Snare, Brass Stab, Arp Pluck, Random Bleeps.
 
 ---
 
@@ -90,7 +90,7 @@ The 21 waves: SINE, TRI, SAW, SQR, P25, P12, ORGN, OCTV, FIFT, HOLW, BUZZ, AH, E
 
 Macros: Wave, Step Time, Crossfade, Jump, Layer and Grit / Bits. Velocity controls the volume.
 
-Factory patches: Digi Saw, Grit Bass, Wave Choir, Seq Organ, Chip Arp, Dust Keys, Ping Pad, Alias Lead, Noise Sweep, Step Rhythm, Glass Scan and Random Bits.
+Factory patches (24): Digi Saw, Grit Bass, Wave Choir, Seq Organ, Chip Arp, Dust Keys, Ping Pad, Alias Lead, Noise Sweep, Step Rhythm, Glass Scan, Random Bits, Sine Bass, Drawbar Organ, Vox Choir, Bell Steps, Buzz Lead, Fold Scan, Sync Sweep, Reso Pad, Lo-Fi Keys, Dust Hats, Step Seq Bass, Random Arp.
 
 ---
 
@@ -122,7 +122,7 @@ The four harmonic groups are harmonics 1-2, 3-6, 7-14 and 15-32. The harmonic le
 
 Macros: Cutoff, Angle, Bloom / Decay, Formant, Odd / Even and Twin / Mod. Velocity controls the volume.
 
-Factory patches: Harm Brass, Digi Bell, Glass Pad, Hollow Reed, Vox Formant, Drawbar Organ, Pluck Harp, Band Sweep, Twin Strings, Additive Bass, Shimmer Pad and E Piano.
+Factory patches (24): Harm Brass, Digi Bell, Glass Pad, Hollow Reed, Vox Formant, Drawbar Organ, Pluck Harp, Band Sweep, Twin Strings, Additive Bass, Shimmer Pad, E Piano, Pipe Organ, Clarinet, Soft Flute, Choir Ah, Choir Ee, Glass Bell, String Swell, Filter Bass, Band Pad, Marimba, Bright Lead, Hollow Square.
 
 ---
 
@@ -147,7 +147,7 @@ Waves: Saw, Square, Pulse, Double Sine, Saw-Pulse and the three resonance waves 
 
 Macros: DCW, DCW Env, DCW Decay, Detune, L2 Level and Noise. Velocity controls the volume.
 
-Factory patches: Phase Brass, Phase Bass, Reso Sweep, Glass Piano, Square Organ, Ring Bell, Wire Pad and Pulse Lead.
+Factory patches (24): Phase Brass, Phase Bass, Reso Sweep, Glass Piano, Square Organ, Ring Bell, Wire Pad, Pulse Lead, Square Bass, Reso Bass, Synth Strings, Warm Pad, E-Piano, Clav, Bell Tree, Vocal Reso, Brass Swell, Harp, Trap Lead, Noise Sweep, Octave Lead, Perc Blip, Alt Wave Organ, Ring Drone.
 
 ---
 
@@ -176,4 +176,4 @@ An analog polysynth voice in the manner of the Sequential Prophet-5. Written new
 
 Macros: Cutoff, Resonance, Env Amount, Poly-Mod, Mod Wheel (LFO to pitch and filter) and Release. Velocity controls the volume.
 
-Factory patches: Warm Brass, Sync Lead, Poly Strings, Bell Mod, Fat Bass, PWM Pad, Filter Pluck and Wobble Keys.
+Factory patches (24): Warm Brass, Sync Lead, Poly Strings, Bell Mod, Fat Bass, Pwm Pad, Filter Pluck, Wobble Keys, Brass Section, Lush Pad, Sync Sweep Lead, Clav Funk, Pulse Organ, Sub Bass, Reso Pluck, Polymod Bell, Noise Sweep Fx, Vibrato Lead, Warm Keys, Sweep Strings, Unison Bass, Pwm Lead, Reso Sweep Pad, Perc Blip.
