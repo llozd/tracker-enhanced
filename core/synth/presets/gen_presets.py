@@ -500,8 +500,184 @@ def poly_presets():
         yield name, POLY_ID, v, poly_macros()
 
 
-ENGINES = {"MONO": mono_presets, "PRISM": prism_presets, "GRIT": grit_presets, "HARM": harm_presets,
-           "PHASE": phase_presets, "POLY": poly_presets}
+# --- More presets (new sounds, not from Pocket Rack): parameters that differ from the defaults ---
+
+
+def with_changes(params, index, changes):
+    v = [d for _, d in params]
+    for key, value in changes.items():
+        v[index[key]] = value
+    return v
+
+
+SAW_W, TRI_W, SQR_W = 2, 1, 3
+MONO_EXTRA = [
+    ("ACID LINE", dict(saw=0.9, sub=0.2, cutoff=0.25, resonance=0.8, env_amount=0.55, decay=0.25, sustain=0.0,
+                       release=0.08, play_mode=2, glide_time=0.06)),
+    ("SQUELCH BASS", dict(saw=0.0, pulse=0.8, pulse_width=0.3, sub=0.5, cutoff=0.2, resonance=0.7, env_amount=0.6,
+                          decay=0.18, sustain=0.1, release=0.05)),
+    ("DEEP SUB", dict(saw=0.0, pulse=0.3, sub=1.0, sub_mode=1, cutoff=0.3, resonance=0.1, env_amount=0.15,
+                      decay=0.5, sustain=0.8, release=0.1)),
+    ("RUBBER BASS", dict(saw=0.6, sub=0.6, cutoff=0.28, resonance=0.45, env_amount=0.45, decay=0.35, sustain=0.3,
+                         release=0.08, play_mode=2, glide_time=0.03)),
+    ("WOBBLE BASS", dict(saw=0.8, sub=0.6, cutoff=0.3, resonance=0.55, env_amount=0.1, lfo_wave=1, lfo_rate=3.0,
+                         lfo_filter=0.6, sustain=1.0, release=0.1)),
+    ("SOFT LEAD", dict(saw=0.0, pulse=0.7, pulse_width=0.15, sub=0.2, cutoff=0.6, resonance=0.15, env_amount=0.2,
+                       attack=0.02, sustain=0.85, release=0.25, lfo_rate=5.5, lfo_pitch=0.08)),
+    ("SCREAM LEAD", dict(saw=1.0, pulse=0.5, sub=0.2, cutoff=0.5, resonance=0.75, env_amount=0.4, decay=0.6,
+                         sustain=0.6, release=0.2, play_mode=2, glide_time=0.08, lfo_rate=6.0, lfo_pitch=0.06)),
+    ("PORTA LEAD", dict(saw=0.9, sub=0.3, cutoff=0.65, resonance=0.3, env_amount=0.25, sustain=0.9, release=0.2,
+                        glide_time=0.15)),
+    ("PWM STRINGS", dict(saw=0.0, pulse=0.9, pulse_width=0.4, sub=0.0, lfo_wave=0, lfo_rate=0.8, lfo_pw=0.5,
+                         cutoff=0.55, env_amount=0.1, attack=0.4, sustain=1.0, release=0.8)),
+    ("LASER ZAP", dict(saw=0.8, sub=0.0, cutoff=0.4, resonance=0.9, env_amount=1.0, decay=0.12, sustain=0.0,
+                       release=0.1)),
+    ("KICK BLIP", dict(saw=0.0, sub=1.0, sub_mode=0, cutoff=0.35, env_amount=0.8, key_track=0.0, decay=0.08,
+                       sustain=0.0, release=0.05)),
+    ("NOISE HAT", dict(saw=0.0, sub=0.0, noise=1.0, cutoff=0.95, resonance=0.2, env_amount=0.0, decay=0.06,
+                       sustain=0.0, release=0.04)),
+    ("SNARE", dict(saw=0.0, sub=0.0, pulse=0.4, noise=0.8, cutoff=0.75, env_amount=0.3, decay=0.14, sustain=0.0,
+                   release=0.08)),
+    ("BRASS STAB", dict(saw=0.9, pulse=0.4, sub=0.3, cutoff=0.4, resonance=0.15, env_amount=0.5, attack=0.03,
+                        decay=0.3, sustain=0.4, release=0.15)),
+    ("ARP PLUCK", dict(saw=0.0, pulse=0.8, pulse_width=0.2, sub=0.3, cutoff=0.35, resonance=0.35, env_amount=0.55,
+                       decay=0.2, sustain=0.0, release=0.1)),
+    ("RANDOM BLEEPS", dict(saw=0.5, pulse=0.5, sub=0.0, cutoff=0.45, resonance=0.6, lfo_wave=4, lfo_rate=7.0,
+                           lfo_filter=0.5, sustain=1.0, release=0.15)),
+]
+
+SINE, TRI, SAW_G, SQR, P25, P12, ORGN, OCTV, FIFT, HOLW, BUZZ, AH, EE, BELL, SYNC_G, RESO, FOLD, RHRM, NOIS, DUST, STEP_G = range(21)
+GRIT_EXTRA = [
+    ("SINE BASS", dict(wave=SINE, layer=0.5, layer_transpose=-12, decay=0.5, sustain=0.8, release=0.1)),
+    ("DRAWBAR ORGAN", dict(wave=ORGN, layer=0.6, layer_wave=1, layer_transpose=12, sustain=1.0, release=0.08)),
+    ("VOX CHOIR", dict(wave=AH, steps=2, step_time=0.6, crossfade=1.0, jump=1, loop=2, layer=0.5, layer_detune=10,
+                       attack=0.3, sustain=1.0, release=0.8, vibrato_depth=0.08)),
+    ("BELL STEPS", dict(wave=BELL, steps=3, step_time=0.15, crossfade=0.5, jump=2, loop=0, level_step=-0.3,
+                        decay=1.5, sustain=0.0, release=1.0)),
+    ("BUZZ LEAD", dict(wave=BUZZ, layer=0.5, layer_detune=15, grit=0.2, sustain=0.9, release=0.15,
+                       vibrato_depth=0.1)),
+    ("FOLD SCAN", dict(wave=FOLD, steps=6, step_time=0.25, crossfade=0.8, jump=1, loop=2, sustain=1.0, release=0.5)),
+    ("SYNC SWEEP", dict(wave=SYNC_G, steps=3, step_time=0.2, crossfade=1.0, jump=1, loop=2, attack=0.01,
+                        sustain=0.9)),
+    ("RESO PAD", dict(wave=RESO, steps=4, step_time=1.0, crossfade=1.0, jump=1, loop=2, layer=0.6, layer_detune=12,
+                      layer_time=0.5, attack=0.8, sustain=1.0, release=1.5)),
+    ("LO-FI KEYS", dict(wave=HOLW, grit=0.5, bits=0.4, decay=0.8, sustain=0.2, release=0.3)),
+    ("DUST HATS", dict(wave=DUST, grit=0.3, decay=0.08, sustain=0.0, release=0.05)),
+    ("STEP SEQ BASS", dict(wave=STEP_G, steps=4, step_time=0.12, jump=3, loop=1, layer=0.4, layer_transpose=-12,
+                           decay=0.6, sustain=0.6, release=0.1)),
+    ("RANDOM ARP", dict(wave=OCTV, steps=8, step_time=0.09, random=0.6, jump=1, loop=1, crossfade=0.0, sustain=1.0,
+                        release=0.1)),
+]
+
+HARM_EXTRA = [
+    ("PIPE ORGAN", dict(angle=1.4, octave=6.0, fifth=3.0, cutoff=1.0, attack=0.05, sustain=1.0, release=0.3)),
+    ("CLARINET", dict(angle=1.2, odd_even=0.8, cutoff=0.8, attack=0.06, sustain=1.0, release=0.2)),
+    ("SOFT FLUTE", dict(angle=2.0, cutoff=0.7, harmonic_mod=0.2, attack=0.1, sustain=1.0, release=0.3)),
+    ("CHOIR AH", dict(angle=0.8, formant_depth=0.9, formant_freq=-0.3, twin=0.4, harmonic_mod=0.3, attack=0.4,
+                      sustain=1.0, release=0.8)),
+    ("CHOIR EE", dict(angle=0.8, formant_depth=0.9, formant_freq=1.2, twin=0.4, attack=0.4, sustain=1.0,
+                      release=0.8)),
+    ("GLASS BELL", dict(angle=0.6, harmonic_decay=1.0, key_harmonics=0.3, decay=3.0, sustain=0.0, release=2.0)),
+    ("STRING SWELL", dict(angle=1.0, bloom=0.8, twin=0.5, cutoff=0.75, attack=0.6, sustain=1.0, release=1.2)),
+    ("FILTER BASS", dict(angle=0.9, cutoff=0.35, slope=0.8, env_amount=0.4, key_scale=0.5, decay=0.4, sustain=0.6,
+                         release=0.1)),
+    ("BAND PAD", dict(angle=0.4, cutoff=0.55, flat=0.0, slope=0.6, harmonic_mod=0.6, twin=0.3, attack=1.0,
+                      sustain=1.0, release=1.5)),
+    ("MARIMBA", dict(angle=1.4, odd_even=0.5, harmonic_decay=0.9, decay=0.6, sustain=0.0, release=0.4)),
+    ("BRIGHT LEAD", dict(angle=0.9, twin=0.25, cutoff=0.85, velocity_filter=0.5, sustain=0.9, release=0.2,
+                         play_mode=2, glide_time=0.05)),
+    ("HOLLOW SQUARE", dict(angle=1.0, odd_even=1.0, cutoff=0.8, sustain=0.9, release=0.2)),
+]
+
+PHASE_EXTRA = [
+    ("SQUARE BASS", dict(wave_a1=SQUARE, dcw1=0.1, dcw_env1=0.7, dcw_decay1=0.2, dcw_sustain1=0.1, decay=0.4,
+                         sustain=0.6, release=0.08)),
+    ("RESO BASS", dict(wave_a1=RESO_SAW, dcw1=0.0, dcw_env1=0.8, dcw_decay1=0.15, dcw_sustain1=0.1, decay=0.3,
+                       sustain=0.5, release=0.08)),
+    ("SYNTH STRINGS", dict(wave_a1=SAW, wave_a2=SAW, line_mode=LINES_1_2, detune_cents=9, dcw1=0.4, dcw_env1=0.2,
+                           dcw2=0.4, dcw_env2=0.2, attack=0.5, sustain=1.0, release=1.0)),
+    ("WARM PAD", dict(wave_a1=SAW, wave_a2=SQUARE, line_mode=LINES_1_2, detune_cents=10, dcw1=0.3, dcw_env1=0.3,
+                      dcw_attack1=1.5, dcw_decay1=2.0, dcw_sustain1=0.4, dcw2=0.3, dcw_env2=0.3, dcw_attack2=1.5,
+                      dcw_decay2=2.0, dcw_sustain2=0.4, attack=1.0, sustain=1.0, release=1.5)),
+    ("E-PIANO", dict(wave_a1=DOUBLE_SINE, wave_a2=SAW_PULSE, line_mode=LINES_1_2, level2=0.3, dcw1=0.0,
+                     dcw_env1=0.5, dcw_decay1=0.6, dcw_sustain1=0.0, dcw2=0.0, dcw_env2=0.4, dcw_decay2=0.3,
+                     dcw_sustain2=0.0, decay=2.0, sustain=0.2, release=0.5, key_follow=0.6)),
+    ("CLAV", dict(wave_a1=PULSE, dcw1=0.5, dcw_env1=0.4, dcw_decay1=0.2, dcw_sustain1=0.0, decay=0.5, sustain=0.0,
+                  release=0.1)),
+    ("BELL TREE", dict(wave_a1=DOUBLE_SINE, wave_a2=SAW, line_mode=RING, detune_semis=12, detune_cents=30,
+                       decay=2.5, sustain=0.0, release=1.5)),
+    ("VOCAL RESO", dict(wave_a1=RESO_TRI, dcw1=0.3, dcw_env1=0.4, dcw_attack1=0.5, dcw_decay1=1.5, attack=0.2,
+                        sustain=1.0, release=0.5, vibrato_depth=0.1)),
+    ("BRASS SWELL", dict(wave_a1=SAW, dcw1=0.05, dcw_env1=0.85, dcw_attack1=0.3, dcw_decay1=1.0, dcw_sustain1=0.5,
+                         attack=0.15, sustain=0.9, release=0.3)),
+    ("HARP", dict(wave_a1=SAW_PULSE, dcw1=0.0, dcw_env1=0.6, dcw_decay1=0.4, dcw_sustain1=0.0, decay=1.5,
+                  sustain=0.0, release=0.8)),
+    ("TRAP LEAD", dict(wave_a1=RESO_TRAP, dcw1=0.4, dcw_env1=0.3, sustain=0.9, release=0.2, play_mode=2,
+                       glide_time=0.07, vibrato_depth=0.12)),
+    ("NOISE SWEEP", dict(wave_a1=SAW, noise=0.7, dcw1=0.0, dcw_env1=1.0, dcw_attack1=2.0, dcw_decay1=2.0,
+                         dcw_sustain1=0.5, attack=1.0, sustain=1.0, release=1.5)),
+    ("OCTAVE LEAD", dict(wave_a1=SAW, wave_a2=SQUARE, line_mode=LINES_1_2, detune_semis=12, detune_cents=0,
+                         level2=0.6, sustain=0.9, release=0.2)),
+    ("PERC BLIP", dict(wave_a1=PULSE, dcw1=0.8, dcw_env1=-0.8, dcw_decay1=0.1, dcw_sustain1=0.0, decay=0.1,
+                       sustain=0.0, release=0.05)),
+    ("ALT WAVE ORGAN", dict(wave_a1=SAW, wave_b1=SQUARE, dcw1=0.6, dcw_env1=0.0, sustain=1.0, release=0.3)),
+    ("RING DRONE", dict(wave_a1=SAW, wave_a2=RESO_SAW, line_mode=RING, detune_semis=7, detune_cents=5, attack=1.5,
+                        sustain=1.0, release=2.0, vibrato_depth=0.05)),
+]
+
+POLY_EXTRA = [
+    ("BRASS SECTION", dict(fine_b=9, cutoff=0.5, env_amount=0.4, filter_attack=0.1, filter_decay=0.8,
+                           filter_sustain=0.5, attack=0.06, sustain=0.9, release=0.25)),
+    ("LUSH PAD", dict(fine_b=12, cutoff=0.5, resonance=0.1, env_amount=0.2, filter_attack=1.5, filter_decay=2.0,
+                      filter_sustain=0.6, attack=1.2, sustain=1.0, release=2.0, lfo_rate=0.3, lfo_pitch=0.03,
+                      drift=0.6)),
+    ("SYNC SWEEP LEAD", dict(sync=1, tune_a=7, level_b=0.0, pm_env=0.7, pm_freq_a=1, cutoff=0.75,
+                             filter_decay=1.2, filter_sustain=0.2, sustain=1.0, release=0.3, glide_time=0.05)),
+    ("CLAV FUNK", dict(shape_a=A_PULSE, pw_a=0.6, shape_b=B_PULSE, pw_b=0.7, level_b=0.4, cutoff=0.45,
+                       resonance=0.3, env_amount=0.5, filter_decay=0.15, filter_sustain=0.0, decay=0.3, sustain=0.0,
+                       release=0.08)),
+    ("PULSE ORGAN", dict(shape_a=A_PULSE, pw_a=0.0, shape_b=B_PULSE, tune_b=12, fine_b=0, level_b=0.8, cutoff=0.75,
+                         env_amount=0.0, attack=0.005, sustain=1.0, release=0.05)),
+    ("SUB BASS", dict(shape_b=B_TRI, tune_b=-12, level_b=1.0, cutoff=0.35, resonance=0.1, env_amount=0.25,
+                      filter_decay=0.3, filter_sustain=0.2, decay=0.4, sustain=0.8, release=0.08, key_track=1)),
+    ("RESO PLUCK", dict(cutoff=0.25, resonance=0.7, env_amount=0.5, filter_decay=0.2, filter_sustain=0.0,
+                        decay=0.4, sustain=0.0, release=0.2)),
+    ("POLYMOD BELL", dict(pm_osc_b=0.8, pm_freq_a=1, tune_b=24, level_b=0.0, cutoff=0.85, filter_sustain=0.0,
+                          decay=2.0, sustain=0.0, release=1.5)),
+    ("NOISE SWEEP FX", dict(level_a=0.0, level_b=0.0, noise=1.0, cutoff=0.3, resonance=0.6, env_amount=0.6,
+                            filter_attack=1.5, filter_decay=2.0, filter_sustain=0.2, attack=0.5, sustain=1.0,
+                            release=1.5)),
+    ("VIBRATO LEAD", dict(shape_a=A_SAW_PULSE, cutoff=0.65, resonance=0.2, env_amount=0.25, sustain=0.9,
+                          release=0.2, lfo_rate=5.5, lfo_pitch=0.05, play_mode=2, glide_time=0.06)),
+    ("WARM KEYS", dict(shape_b=B_TRI, level_b=0.6, cutoff=0.45, env_amount=0.35, filter_decay=0.8,
+                       filter_sustain=0.3, decay=1.2, sustain=0.4, release=0.4)),
+    ("SWEEP STRINGS", dict(fine_b=8, cutoff=0.4, env_amount=0.3, filter_attack=2.0, filter_decay=3.0,
+                           filter_sustain=0.7, attack=0.8, sustain=1.0, release=1.5, lfo_pw=0.2)),
+    ("UNISON BASS", dict(shape_a=A_SAW_PULSE, pw_a=0.4, tune_b=-12, fine_b=15, cutoff=0.32, resonance=0.35,
+                         env_amount=0.5, filter_decay=0.25, filter_sustain=0.15, decay=0.5, sustain=0.7,
+                         release=0.1)),
+    ("PWM LEAD", dict(shape_a=A_PULSE, pw_a=0.3, lfo_pw=0.5, lfo_rate=3.0, shape_b=B_PULSE, level_b=0.5, fine_b=6,
+                      cutoff=0.6, sustain=1.0, release=0.2)),
+    ("RESO SWEEP PAD", dict(lfo_wave=0, lfo_rate=0.15, lfo_filter=0.5, cutoff=0.45, resonance=0.55, attack=0.8,
+                            sustain=1.0, release=1.5)),
+    ("PERC BLIP", dict(shape_a=A_PULSE, level_b=0.0, cutoff=0.6, resonance=0.5, env_amount=0.5,
+                       filter_decay=0.06, filter_sustain=0.0, decay=0.1, sustain=0.0, release=0.05)),
+]
+
+
+def extra_presets(engine_id, params, index, extras, macros):
+    for name, changes in extras:
+        yield name, engine_id, with_changes(params, index, changes), macros()
+
+
+ENGINES = {
+    "MONO": lambda: (*mono_presets(), *extra_presets(MONO_ID, MONO_PARAMS, MONO_INDEX, MONO_EXTRA, mono_macros)),
+    "PRISM": prism_presets,
+    "GRIT": lambda: (*grit_presets(), *extra_presets(GRIT_ID, GRIT_PARAMS, GRIT_INDEX, GRIT_EXTRA, grit_macros)),
+    "HARM": lambda: (*harm_presets(), *extra_presets(HARM_ID, HARM_PARAMS, HARM_INDEX, HARM_EXTRA, harm_macros)),
+    "PHASE": lambda: (*phase_presets(), *extra_presets(PHASE_ID, PHASE_PARAMS, PHASE_INDEX, PHASE_EXTRA, phase_macros)),
+    "POLY": lambda: (*poly_presets(), *extra_presets(POLY_ID, POLY_PARAMS, POLY_INDEX, POLY_EXTRA, poly_macros)),
+}
 
 
 def file_name(name):
