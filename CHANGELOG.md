@@ -20,6 +20,7 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 * **All tracks view**: in the pattern editor, hold Pattern and tap Shift to see all 16 tracks on one screen, with a dot for each note and effect (a dash for note off, cut or fade). Editing works as usual, with the step's values on the bottom bar. Tap Pattern to go back.
 * **More factory patches**: MONO, GRIT, HARM, PHASE and POLY now have 24 each (160 in all with PRISM's 40), in the release's `Patches/` folder.
 * **25 display themes** in the release's `Themes/` folder (Config > Display theme), from dark ones such as Midnight Teal, Deep Ocean and Neon Arcade to light ones such as Paper and Sepia.
+* **Insert meters and EQ graphs**: the Inserts page shows the channel's input and output level, the compressors' gain reduction and each parameter's position, and the EQs draw their frequency response.
 
 ### Changed
 * Project files are version 19. Older projects open with every insert slot empty.

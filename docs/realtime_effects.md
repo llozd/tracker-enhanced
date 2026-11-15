@@ -18,6 +18,15 @@ Press **Master** to cycle through the Master screen's pages: **Master**, **Mixer
 
 Select a field with its button (or **Left** and **Right**), then turn the **encoder** or press **Up** and **Down** to change it. **Delete** on the Effect field clears the slot. On a parameter it restores that parameter's default.
 
+### Meters and graphs
+
+The bars above the fields show what the channel is doing:
+
+* **Channel** and **Slot** columns: the channel's input and output level (green, -48 dBFS to full scale). With every slot empty they show the channel's level.
+* **Effect** column, for the compressors and the limiter: the gain reduction (cyan, hanging down from the top, up to 24 dB).
+* **Parameter** columns: each parameter's position in its range.
+* **EQ 3 Band** and **EQ PQ 4 Band**: a graph of the EQ's frequency response (20 Hz to 20 kHz, ±18 dB, grid lines at 0, ±6 and ±12 dB) in place of the parameter bars. It follows the parameters as you turn them.
+
 ---
 
 ## Where the inserts sit

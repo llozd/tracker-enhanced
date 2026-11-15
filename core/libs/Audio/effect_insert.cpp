@@ -46,15 +46,25 @@ void AudioEffectInsert::update(void)
     if (!insertfx::hasActiveSlot(ch))
     {
         ch.sleeping = false;
+        int32_t peak = 0;
         for (int c = 0; c < 2; c++)
         {
             audio_block_t* block = receiveReadOnly(c);
             if (block)
             {
+                for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++)
+                {
+                    const int32_t v = block->data[i] < 0 ? -block->data[i] : block->data[i];
+                    peak = v > peak ? v : peak;
+                }
                 transmit(block, c);
                 release(block);
             }
         }
+        // the meters still show the channel's level with every slot empty
+        const float level = peak * kToFloat;
+        ch.inPeak = level > ch.inPeak ? level : ch.inPeak;
+        ch.outPeak = ch.inPeak;
         return;
     }
 

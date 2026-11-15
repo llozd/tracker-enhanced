@@ -4,6 +4,11 @@
 #include "Synth.h"
 #endif
 #include "util_math.h"
+#include "platformFeatures.h"
+#if FEATURE_REALTIME_FX
+#include "eqCurveControl.h"
+strEqCurve* insertsEqCurveData();
+#endif
 #include <cmath>
 #include <masterParams/masterParams.h>
 
@@ -248,6 +253,17 @@ void cMasterParams::initDisplayControls()
     saturationListProperties.data = &saturationListData;
     saturationListProperties.colors = nullptr;
     saturationList = display.createControl<cList>(&saturationListProperties);
+
+#if FEATURE_REALTIME_FX
+    strControlProperties eqCurveProperties;
+    eqCurveProperties.x = (800 / 8) * 3 + 2;
+    eqCurveProperties.y = 29;
+    eqCurveProperties.w = (800 / 8) * 5 - 5;
+    eqCurveProperties.h = 300;
+    eqCurveProperties.data = insertsEqCurveData();
+    eqCurveControl = display.createControl<cEqCurve>(&eqCurveProperties);
+    display.setControlHide(eqCurveControl);
+#endif
 }
 
 void cMasterParams::showMasterScreen()

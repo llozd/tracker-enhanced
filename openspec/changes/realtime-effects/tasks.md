@@ -22,6 +22,7 @@
 - [x] Insert slots in the project (`strMtValues::insertSlot`), file version 19 and upgrade step, loaded on project open
 - [x] Inserts page on the Master screen: channel, slot, effect picker, paged parameters, on desktop and Mini (Mini menu mode 4)
 - [x] Popup when a reverb is refused
+- [x] Meters on the Inserts page: input and output level, gain reduction for the dynamics, parameter position bars, and an EQ response graph (`cEqCurve`, `insertfx::responseDb`, host-checked against measured response within 0.004 dB)
 - [ ] CPU budget check with a popup, after measuring
 
 ## Finish

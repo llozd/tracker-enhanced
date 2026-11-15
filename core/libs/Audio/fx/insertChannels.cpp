@@ -3,6 +3,8 @@
 #if FEATURE_REALTIME_FX
 
 #include <cr_section_macros.h>
+#include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <new>
 
@@ -163,8 +165,38 @@ bool widensStereo(const Channel& ch)
     return false;
 }
 
+static float peakOf(const float* l, const float* r, uint32_t n)
+{
+    float peak = 0.0f;
+    for (uint32_t i = 0; i < n; i++)
+    {
+        peak = std::max(peak, std::fabs(l[i]));
+        if (r)
+            peak = std::max(peak, std::fabs(r[i]));
+    }
+    return peak;
+}
+
+void takeLevels(ChannelId id, float& in, float& out)
+{
+    Channel& ch = channel(id);
+    in = ch.inPeak;
+    out = ch.outPeak;
+    ch.inPeak = 0.0f;
+    ch.outPeak = 0.0f;
+}
+
+float gainReductionDb(ChannelId id, int slotIdx)
+{
+    const Channel& ch = channel(id);
+    if (slotIdx < 0 || slotIdx >= kSlots || !isDynamics(ch.slot[slotIdx].type))
+        return 0.0f;
+    return ch.state[slotIdx].gainReductionDb;
+}
+
 void processChannel(Channel& ch, float* l, float* r, uint32_t n)
 {
+    ch.inPeak = std::max(ch.inPeak, peakOf(l, r, n));
     for (int s = 0; s < kSlots; s++)
     {
         if (ch.slot[s].type == kReverb)
@@ -172,6 +204,7 @@ void processChannel(Channel& ch, float* l, float* r, uint32_t n)
         else
             run(ch.state[s], ch.slot[s], l, r, n);
     }
+    ch.outPeak = std::max(ch.outPeak, peakOf(l, r, n));
 }
 
 } // namespace insertfx

@@ -22,7 +22,8 @@ struct Channel
 {
     Slot slot[kSlots];
     State state[kSlots];
-    bool sleeping; // input silent and the tails have died out
+    bool sleeping;          // input silent and the tails have died out
+    float inPeak, outPeak;  // since the UI last read them (0..1 full scale)
 };
 
 // Clears every channel and hands out the delay lines. Call once before audio starts.
@@ -38,6 +39,11 @@ bool setSlot(ChannelId id, int slotIdx, const Slot& slot);
 const Slot& getSlot(ChannelId id, int slotIdx);
 
 bool hasActiveSlot(const Channel& ch);
+
+// UI side: the channel's input and output peaks since the last call (then cleared), and a dynamics
+// slot's gain reduction in dB (0 for other types).
+void takeLevels(ChannelId id, float& in, float& out);
+float gainReductionDb(ChannelId id, int slotIdx);
 
 // True when a slot makes a mono input stereo (chorus, reverb), so the caller should feed it stereo.
 bool widensStereo(const Channel& ch);
