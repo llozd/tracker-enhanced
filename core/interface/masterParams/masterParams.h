@@ -85,6 +85,9 @@ class cMasterParams : public ModuleBase
     uint8_t insertsSlot = 0;
     uint8_t insertsPage = 0;
     uint8_t selectedPlaceInserts = 2;
+    hControl eqCurveControl = -1;
+    void insertsRefreshMeters();  // from update(): levels and gain reduction on the bars
+    void hideInsertsControls();   // when leaving the page
 #endif
     // EQ
     void showEqualizerScreen();

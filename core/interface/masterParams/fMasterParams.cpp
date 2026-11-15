@@ -141,6 +141,12 @@ static elapsedMillis refreshTimer;
 
 void cMasterParams::update()
 {
+#if FEATURE_REALTIME_FX
+    if (displayType == displayMode::inserts && !keyboardManager.getState())
+    {
+        insertsRefreshMeters();
+    }
+#endif
 
     if (displayType == displayMode::mixer && !keyboardManager.getState())
     {
@@ -1175,6 +1181,9 @@ static void functSwitchModule(uint8_t button)
 void cMasterParams::switchScreen()
 {
     selectedPlace = 0;
+#if FEATURE_REALTIME_FX
+    hideInsertsControls();
+#endif
 
     if (displayType == displayMode::masterValues)
     {
@@ -1210,6 +1219,9 @@ void cMasterParams::switchScreen()
 void cMasterParams::returnToScreen()
 {
     selectedPlace = selectedPlaceBeforeMasterPress;
+#if FEATURE_REALTIME_FX
+    hideInsertsControls();
+#endif
 
     if (displayTypeBeforeMasterPress == displayMode::mixer)
     {

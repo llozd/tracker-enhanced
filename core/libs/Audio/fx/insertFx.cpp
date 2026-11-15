@@ -735,6 +735,38 @@ void reset(State& e)
     }
 }
 
+float responseDb(const Slot& slot, float hz)
+{
+    if (!isEq(slot.type))
+        return 0.0f;
+    State e{};
+    prepare(e, slot);
+    const int bands = slot.type == kPq ? 6 : 3;
+    uint32_t used = (1u << bands) - 1u;
+    if (bands == 6)
+    {
+        if (e.param[12] <= 0.0f)
+            used &= ~(1u << 4);
+        if (e.param[13] >= 127.0f)
+            used &= ~(1u << 5);
+    }
+    // |H(e^jw)| of the cascade: (b0 + b1 z^-1 + b2 z^-2) / (1 + a1 z^-1 + a2 z^-2)
+    const float w = kTwoPi * clampf(hz, 1.0f, kFs * 0.49f) / kFs;
+    const float c1 = std::cos(w), s1 = std::sin(w), c2 = std::cos(2.0f * w), s2 = std::sin(2.0f * w);
+    float db = slot.type == kPq ? e.param[14] : 0.0f;
+    for (int b = 0; b < bands; b++)
+    {
+        if (!((used >> b) & 1u))
+            continue;
+        const Biquad& q = e.q[b];
+        const float nr = q.b0 + q.b1 * c1 + q.b2 * c2, ni = -(q.b1 * s1 + q.b2 * s2);
+        const float dr = 1.0f + q.a1 * c1 + q.a2 * c2, di = -(q.a1 * s1 + q.a2 * s2);
+        const float mag2 = (nr * nr + ni * ni) / std::max(dr * dr + di * di, 1.0e-12f);
+        db += 10.0f * std::log10(std::max(mag2, 1.0e-12f));
+    }
+    return db;
+}
+
 void run(State& e, const Slot& slot, float* l, float* r, uint32_t n)
 {
     if (slot.type == kOff || slot.type == kReverb || slot.type >= kTypeCount)

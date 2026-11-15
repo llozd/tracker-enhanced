@@ -18,6 +18,7 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 * **Synth randomise (Tracker+ and Mini)**: hold Shift on a synth part's parameter screen; F7 randomises the patch (any engine, mix and tuning kept, envelopes and cutoff kept in a playable range) and F8 restores the previous patch.
 * **Jump between track halves**: in the pattern editor, hold Pattern and Shift and press Left/Right to move the cursor between tracks 1 to 8 and 9 to 16 (same row and column). The view moves with it.
 * **All tracks view**: in the pattern editor, hold Pattern and tap Shift to see all 16 tracks on one screen, with a dot for each note and effect (a dash for note off, cut or fade). Editing works as usual, with the step's values on the bottom bar. Tap Pattern to go back.
+* **Insert meters and EQ graphs**: the Inserts page shows the channel's input and output level, the compressors' gain reduction and each parameter's position, and the EQs draw their frequency response.
 
 ### Changed
 * Project files are version 19. Older projects open with every insert slot empty.

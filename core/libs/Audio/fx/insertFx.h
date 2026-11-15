@@ -120,6 +120,12 @@ void reset(State& state);
 // One block through one effect, in place (r may be null for mono).
 void run(State& state, const Slot& slot, float* l, float* r, uint32_t n);
 
+// For the UI: an EQ slot's frequency response in dB at hz (computed from the slot's parameters,
+// so it is right while the channel sleeps). 0 for other types.
+float responseDb(const Slot& slot, float hz);
+inline bool isEq(Type type) { return type == kEq3 || type == kPq; }
+inline bool isDynamics(Type type) { return type == kComp || type == kLimit || type == kGlue || type == kFet; }
+
 } // namespace insertfx
 
 #endif // FEATURE_REALTIME_FX
