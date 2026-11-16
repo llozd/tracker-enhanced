@@ -315,8 +315,11 @@ void cMasterParams::insertsSelect(uint8_t place)
 {
     if (place >= kPlaces)
         return;
+    // Only the frame moves; a full redraw here costs one screen swap per control
     selectedPlaceInserts = place;
-    showInsertsValues();
+    display.setControlValue(frameControl, selectedPlaceInserts);
+    display.refreshControl(frameControl);
+    display.synchronizeRefresh();
 }
 
 void cMasterParams::insertsMove(int8_t direction)
