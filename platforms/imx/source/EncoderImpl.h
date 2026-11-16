@@ -16,7 +16,7 @@ class EncoderImpl : Encoder
     static constexpr int kAccelerationLookupSize = 50;
     static constexpr int kAccelerationLevelMax = 5;
     static constexpr int kPulsesOnClick = 4;
-    static constexpr int kUpdateTimeMs = 100;
+    static constexpr int kUpdateTimeMs = 50;
     static constexpr int kResetPulsesTimeout = 2000;
     static const uint16_t accelerationLookupTable[kAccelerationLevelMax][kAccelerationLookupSize];
     int accelerate(int diff);
