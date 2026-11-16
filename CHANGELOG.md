@@ -24,6 +24,7 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ### Changed
 * Project files are version 19. Older projects open with every insert slot empty.
+* **More responsive encoder (Tracker+)**: the knob is read every 50 ms instead of every 100 ms, so turns show up sooner. Acceleration now needs a faster turn to kick in.
 
 ---
 
