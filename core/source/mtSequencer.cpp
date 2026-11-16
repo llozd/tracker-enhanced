@@ -1027,6 +1027,8 @@ AUDIO_CORE_RAM void Sequencer::play_microStep(int row)
         uint16_t period = stutterValToPeriod(playerRow.performanceStepRepeater);
         if (period)
         {
+            // Keep the 4 LPB musical length; a period of 1 would never match % == 1
+            period = std::max(2, scaleToLinesPerBeat(period));
             if ((playerRow.stepTimer % period) == 1)
             {
                 playerRow.stepToSend = playerRow.stepSent;
@@ -2300,6 +2302,11 @@ uint8_t Sequencer::getLinesPerBeat() const
     return kLinesPerBeatOptions[getLinesPerBeatIndex()];
 }
 
+int Sequencer::scaleToLinesPerBeat(int value) const
+{
+    return (value * getLinesPerBeat() + kStepsPerBeat / 2) / kStepsPerBeat;
+}
+
 int Sequencer::nanoTicksInClockPulse() const
 {
     return kTicksInStep * getLinesPerBeat() / kExternalClockPpqn;
@@ -3246,11 +3253,14 @@ void Sequencer::setPerformancePatternLength(int length)
 {
     player.performance.patternLength = length - 1;
 }
+// The values are 16th notes, so a setting keeps its musical length at any lines per beat
 void Sequencer::setPerformancePatternLengthFromFxVal(int8_t val)
 {
-    int16_t performancePatternLengthValues[] = { -1, 1, 2, 4, 8, 16, 32, 64, 128 };
+    const int16_t performancePatternLengthValues[] = { -1, 1, 2, 4, 8, 16, 32, 64, 128 };
+    const int16_t sixteenths = performancePatternLengthValues[val];
 
-    setPerformancePatternLength(performancePatternLengthValues[val]);
+    setPerformancePatternLength(
+      sixteenths < 0 ? -1 : clamp<int>(scaleToLinesPerBeat(sixteenths), 1, MAXSTEP + 1));
 }
 // laduje track do bufora i czeka na switch
 void Sequencer::setTrackToLoadOnSwitch(uint8_t track, uint8_t sourcePattern)
@@ -3493,7 +3503,7 @@ AUDIO_CORE_RAM bool Sequencer::isMetronomeTickRow(int row, int sixteenthsPerTick
 AUDIO_CORE_RAM int Sequencer::getMetronomeBarRows()
 {
     const int sixteenths = getMetronomeNumerator() * getMetronomeDenominator();
-    return std::max(1, (sixteenths * getLinesPerBeat() + kStepsPerBeat / 2) / kStepsPerBeat);
+    return std::max(1, scaleToLinesPerBeat(sixteenths));
 }
 
 void Sequencer::setMidiInVoiceMode(enMidiInVoiceMode mode)

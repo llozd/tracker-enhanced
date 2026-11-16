@@ -1,6 +1,6 @@
 # Lines per beat
 
-**Status: complete** (PRs #3 to #7). Built for Tracker+ and Mini; not yet tested on hardware.
+**Status: complete** (PRs #3 to #7). Tested on a Tracker+; not yet tested on the Mini or Original.
 
 **Platforms:** all, with the same 512-row pattern format everywhere. On the Original the pattern buffers are paid for by 1 MB less sample memory. The 16 LPB cap may need lowering there after hardware tests.
 

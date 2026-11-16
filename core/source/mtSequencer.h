@@ -643,6 +643,8 @@ class Sequencer
     // Tempo expressed in steps: BPM scaled so that tempo / 15 is the step rate in Hz.
     float getCurrentStepTempo();
     uint8_t getLinesPerBeat() const;
+    // Scales a length written for 4 lines per beat to the project's lines per beat, rounded
+    int scaleToLinesPerBeat(int value) const;
     uint8_t getLinesPerBeatIndex() const;
     float getExternalTempo() { return externalTempo; }
     uint32_t getSeqTimer();

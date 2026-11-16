@@ -55,6 +55,7 @@ Renoise-style control over how many pattern rows make up one beat. Stock firmwar
 * LPB selectable as **1, 2, 4, 8, 12 or 16** per project (12 gives triplet subdivisions) (**Project Settings > Lines per beat**). Changing it also sets the pattern divider to one beat.
 * A **global default** (**General > Default LPB**) is given to new projects.
 * Step FX (Roll, Arp, Micromove, Swing, Slide, Tempo) and envelope/LFO sync are measured in steps, so they speed up with LPB. The short delay sync stays tied to the beat.
+* **Performance mode keeps its timing at any LPB.** The Pattern Length values (1 to 128) and the Step Stutter divisions count 16th notes and are converted to rows, so they sound the same as at 4 LPB. At 16 LPB, a Pattern Length of 128 loops 512 rows.
 * MIDI clock out and in, and Song Position, follow the LPB.
 * **Patterns hold up to 512 rows** (128 before). When LPB changes, pattern **lengths scale with it**, so a 64 row pattern at 4 LPB becomes 256 rows at 16 LPB and keeps its duration. Note content is not moved or stretched, only the length changes. Scaling down rounds the length to the nearest row.
 * New patterns default to 32 rows at 4 LPB, scaled to the current LPB. The preset length values in the pattern editor scale the same way.

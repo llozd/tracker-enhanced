@@ -26,6 +26,9 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 * Project files are version 19. Older projects open with every insert slot empty.
 * **More responsive encoder (Tracker+)**: the knob is read every 50 ms instead of every 100 ms, so turns show up sooner. Acceleration now needs a faster turn to kick in.
 
+### Fixed
+* **Performance mode at other LPBs**: Pattern Length and Step Stutter now keep the same musical length at every lines per beat, as they did at 4 LPB. Before, they counted rows, so at 16 LPB they ran four times as fast and Pattern Length could only loop 2 bars.
+
 ---
 
 ## [ENH 0.1.0 beta 1] - First Tracker Enhanced Beta
