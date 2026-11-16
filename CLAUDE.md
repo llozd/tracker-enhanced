@@ -69,7 +69,7 @@ CI (`.github/workflows/build.yml`) runs `make version`, `make all` and `make ptf
 | `editor-fx-sdk/` | `.ptfx` plugin SDK, `ptfx_builder.py`, example effects |
 | `openspec/` | One record per feature: `changes/<name>/{proposal,design,tasks}.md` + `specs/*/spec.md`. Status table in `openspec/README.md` |
 | `docs/` | User and developer docs (synced to the GitHub wiki). **Read `docs/developer_guide.md` before touching memory, the UI module table, fonts or platform guards** |
-| `version.mk` | All version numbers. `*_VER_BETA := 255` means a full release |
+| `version.mk` | All version numbers. `*_VER_STAGE` is `alpha` or `beta`, `*_VER_PRE := 255` means a full release |
 
 ## Rules and gotchas
 
@@ -92,4 +92,4 @@ CI (`.github/workflows/build.yml`) runs `make version`, `make all` and `make ptf
 
 ## Release
 
-Edit `version.mk` (or `make bump-patch|bump-minor TARGET=all|plus|mini|original`). Pushing a `v*` tag makes CI publish a GitHub release. A tag with a suffix (`v0.1.0-beta.1`) becomes a pre-release.
+Edit `version.mk` (or `make bump-patch|bump-minor TARGET=all|plus|mini|original`). Pushing a `v*` tag makes CI publish a GitHub release. A tag with a suffix (`v0.1.0-alpha.3`, `v0.1.0-beta.1`) becomes a pre-release. Changing a version needs `make clean`, because the version defines are not tracked.

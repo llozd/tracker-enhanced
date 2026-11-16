@@ -39,7 +39,11 @@ const uint8_t PRODUCT_BETA = FW_VER_BETA;
 
 //=====================================================================
 const char firmwareVersionLabelFormat[] = "%d.%d.%d " FW_EDITION_NAME;
+#ifdef FW_VER_ALPHA
+const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " alpha %d";
+#else
 const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " beta %d";
+#endif
 
 const uint8_t PROJECT_FILE_VERSION = 19;   // wersja struktury pliku projektu
 const uint8_t INSTRUMENT_FILE_VERSION = 9; // wersja struktury pliku instrumentu
