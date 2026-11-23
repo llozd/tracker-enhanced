@@ -4,9 +4,9 @@ EDITION_NAME := ENH
 VER_ROOT_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 BUILD_TAG    ?= $(shell git -C "$(VER_ROOT_DIR)" rev-parse --short=7 HEAD 2>/dev/null || date +"%Y%m%d")
 
-# *_VER_STAGE: alpha or beta. *_VER_PRE: its number, or 255 for a full release.
-# A pre-release adds e.g. "a3" or "b1" to the .ptf name.
-pre_suffix = $(if $(filter 255,$(2)),,$(if $(filter alpha,$(1)),a,b)$(2))
+# *_VER_STAGE: alpha, beta or rc. *_VER_PRE: its number, or 255 for a full release.
+# A pre-release adds e.g. "a3", "b1" or "rc1" to the .ptf name.
+pre_suffix = $(if $(filter 255,$(2)),,$(if $(filter alpha,$(1)),a,$(if $(filter rc,$(1)),rc,b))$(2))
 
 # Original Tracker (MK66)
 ORIGINAL_VER_MAJOR := 0
@@ -29,8 +29,8 @@ MINI_VER_PATCH     := 0
 MINI_VER_STAGE     := beta
 MINI_VER_PRE       := 1
 
-$(foreach t,ORIGINAL PLUS MINI,$(if $(filter alpha beta,$($(t)_VER_STAGE)),,\
-  $(error $(t)_VER_STAGE must be alpha or beta, not "$($(t)_VER_STAGE)")))
+$(foreach t,ORIGINAL PLUS MINI,$(if $(filter alpha beta rc,$($(t)_VER_STAGE)),,\
+  $(error $(t)_VER_STAGE must be alpha, beta or rc, not "$($(t)_VER_STAGE)")))
 
 ifeq ($(PRODUCT), MINI)
   FW_VER_1    := $(MINI_VER_MAJOR)
@@ -57,7 +57,8 @@ FW_VERSION_DEFINES := -DFW_EDITION_NAME=\"$(EDITION_NAME)\" \
                       -DFW_VER_MINOR=$(FW_VER_2) \
                       -DFW_VER_PATCH=$(FW_VER_3) \
                       -DFW_VER_BETA=$(FW_PRE) \
-                      $(if $(filter alpha,$(FW_STAGE)),-DFW_VER_ALPHA)
+                      $(if $(filter alpha,$(FW_STAGE)),-DFW_VER_ALPHA) \
+                      $(if $(filter rc,$(FW_STAGE)),-DFW_VER_RC)
 
 BUILD_ID_STR           := $(BUILD_TAG)
 DEFAULT_TARGET_POSTFIX := $(EDITION_NAME)_$(FW_VER_1).$(FW_VER_2).$(FW_VER_3)$(call pre_suffix,$(FW_STAGE),$(FW_PRE))

@@ -158,7 +158,7 @@ make bump-patch TARGET=all        # or TARGET=plus | TARGET=mini
 make bump-minor TARGET=all        # or TARGET=plus | TARGET=mini
 ```
 
-`*_VER_STAGE` (`alpha` or `beta`) and `*_VER_PRE` mark a pre-release: any `*_VER_PRE` other than `255` adds `a<n>` or `b<n>` to the `.ptf` name (e.g. `TrackerPlus_ENH_0.1.0a3.ptf`) and shows `alpha <n>` or `beta <n>` on the device. Set `*_VER_PRE` to `255` for a full release. Pushing a tag with a suffix, such as `v0.1.0-alpha.3` or `v0.1.0-beta.1`, publishes a GitHub pre-release.
+`*_VER_STAGE` (`alpha`, `beta` or `rc`) and `*_VER_PRE` mark a pre-release: any `*_VER_PRE` other than `255` adds `a<n>`, `b<n>` or `rc<n>` to the `.ptf` name (e.g. `TrackerPlus_ENH_0.1.0a3.ptf`) and shows `alpha <n>`, `beta <n>` or `rc <n>` on the device. Set `*_VER_PRE` to `255` for a full release. Pushing a tag with a suffix, such as `v0.1.0-alpha.3`, `v0.1.0-beta.1` or `v0.1.0-rc.1`, publishes a GitHub pre-release.
 
 For a one-off local build, override them on the command line (run `make clean` first, version changes are not tracked): `make plus PLUS_VER_STAGE=alpha PLUS_VER_PRE=3`.
 

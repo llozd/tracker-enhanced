@@ -41,6 +41,8 @@ const uint8_t PRODUCT_BETA = FW_VER_BETA;
 const char firmwareVersionLabelFormat[] = "%d.%d.%d " FW_EDITION_NAME;
 #ifdef FW_VER_ALPHA
 const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " alpha %d";
+#elif defined(FW_VER_RC)
+const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " rc %d";
 #else
 const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " beta %d";
 #endif
