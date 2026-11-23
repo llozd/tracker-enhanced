@@ -37,7 +37,17 @@ AUDIO_CORE_RAM void AudioMixer<mixerSize>::update(void)
 
     for (int channel = 0; channel < mixerSize; channel++)
     {
-        if (nullptr == out)
+        if (multiplier[channel] == 0 && previousMultiplier[channel] == 0)
+        {
+            // Silenced input: drop it, so a mixer with every input silenced sends nothing and
+            // what follows can sleep (bus-channels routing works by gain).
+            in = receiveReadOnly(channel);
+            if (nullptr != in)
+            {
+                release(in);
+            }
+        }
+        else if (nullptr == out)
         {
             out = receiveWritable(channel);
             if (out)
@@ -77,4 +87,5 @@ template class AudioMixer<10>;
 template class AudioMixer<18>;
 template class AudioMixer<11>;
 template class AudioMixer<21>;
+template class AudioMixer<15>;
 #endif

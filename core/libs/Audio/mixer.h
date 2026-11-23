@@ -64,6 +64,16 @@ class AudioMixer : public AudioStream
         multiplier[channel] = gain * kUnityGain;
     }
 
+    // Like gain(), without the ramp from the previous gain. For setting up before audio starts.
+    void gainImmediate(unsigned int channel, float value)
+    {
+        gain(channel, value);
+        if (channel < mixerSize)
+        {
+            previousMultiplier[channel] = multiplier[channel];
+        }
+    }
+
     void setSaturationType(SaturationType type) { saturationType = type; }
 
   private:
