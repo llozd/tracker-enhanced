@@ -12,21 +12,21 @@ pre_suffix = $(if $(filter 255,$(2)),,$(if $(filter alpha,$(1)),a,$(if $(filter 
 ORIGINAL_VER_MAJOR := 0
 ORIGINAL_VER_MINOR := 1
 ORIGINAL_VER_PATCH := 0
-ORIGINAL_VER_STAGE := beta
+ORIGINAL_VER_STAGE := rc
 ORIGINAL_VER_PRE   := 1
 
 # Tracker+ (IMX)
 PLUS_VER_MAJOR     := 0
 PLUS_VER_MINOR     := 1
 PLUS_VER_PATCH     := 0
-PLUS_VER_STAGE     := beta
+PLUS_VER_STAGE     := rc
 PLUS_VER_PRE       := 1
 
 # Tracker Mini (IMX)
 MINI_VER_MAJOR     := 0
 MINI_VER_MINOR     := 1
 MINI_VER_PATCH     := 0
-MINI_VER_STAGE     := beta
+MINI_VER_STAGE     := rc
 MINI_VER_PRE       := 1
 
 $(foreach t,ORIGINAL PLUS MINI,$(if $(filter alpha beta rc,$($(t)_VER_STAGE)),,\

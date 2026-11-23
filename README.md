@@ -2,15 +2,18 @@
 
 **Tracker Enhanced** is a community firmware for the **Polyend Tracker+**, **Polyend Tracker Mini** and, with a reduced feature set, the **Original Polyend Tracker**, built on top of the open-source [Polyend Tracker Community Edition](https://github.com/polyend/tracker-ce). It adds finer sequencing resolution, deeper MIDI CC control and more audio processing, taking some of the ideas that make [Renoise](https://www.renoise.com/) good for detailed tracking.
 
-> **Status: beta.** The first beta, [0.1.0 beta 1](https://github.com/llozd/tracker-enhanced/releases), has been tested on a Tracker+. It has not been tested on the Original or Mini yet. It includes:
+> **Status: release candidate.** [0.1.0 rc 1](https://github.com/llozd/tracker-enhanced/releases) adds insert effects, six synth engines and more to beta 1 (see [`CHANGELOG.md`](CHANGELOG.md)). Most of what is new since beta 1 is not yet tested on hardware. It includes:
 > * Lines per beat (1, 2, 4, 8, 12 or 16)
 > * Row number beat shading
 > * Legato rolls
 > * Position on slices
 > * Effects on rows without a note
+> * Insert effects (Tracker+ and Mini)
+> * Six new synth engines and synth randomise (Tracker+ and Mini)
+> * All tracks view and jumping between track halves
 > * Original Tracker build (reduced feature set)
 >
-> Extended MIDI CC control is still planned. Insert effects are in progress. Every change, finished or planned, is recorded in [`openspec/`](openspec/README.md).
+> Extended MIDI CC control is still planned. Every change, finished or planned, is recorded in [`openspec/`](openspec/README.md).
 
 ---
 
@@ -133,9 +136,9 @@ From the repository root:
 make all
 
 # Or build a single target:
-make original   # -> build/PolyendTracker_ENH_0.1.0b1.ptf
-make plus       # -> build/TrackerPlus_ENH_0.1.0b1.ptf
-make mini       # -> build/TrackerMini_ENH_0.1.0b1.ptf
+make original   # -> build/PolyendTracker_ENH_0.1.0rc1.ptf
+make plus       # -> build/TrackerPlus_ENH_0.1.0rc1.ptf
+make mini       # -> build/TrackerMini_ENH_0.1.0rc1.ptf
 
 # Build reference .ptfx Sample Editor effects into editor-fx-sdk/build/Effects/:
 make ptfx
