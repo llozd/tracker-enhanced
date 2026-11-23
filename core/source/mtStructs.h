@@ -47,7 +47,7 @@ const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " rc %
 const char firmwareVersionLabelFormatBeta[] = "%d.%d.%d " FW_EDITION_NAME " beta %d";
 #endif
 
-const uint8_t PROJECT_FILE_VERSION = 19;   // wersja struktury pliku projektu
+const uint8_t PROJECT_FILE_VERSION = 20;   // wersja struktury pliku projektu
 const uint8_t INSTRUMENT_FILE_VERSION = 9; // wersja struktury pliku instrumentu
 const uint8_t PATTERN_FILE_VERSION = 8;
 
@@ -135,6 +135,15 @@ struct strInsertSlot
     uint8_t reserved = 0;
     int16_t params[kInsertParams] = {};
 };
+
+// Buses (bus-channels): tracks and synth parts go to the master or to one of 4 buses, each with
+// insert slots and a volume. Insert channel ids 12-15 are the buses.
+static constexpr int kBusCount = 4;
+static constexpr int kBusSources = kInsertChannels - 1; // 8 sample tracks and 3 synth parts
+static constexpr int kAllInsertChannels = kInsertChannels + kBusCount;
+static constexpr uint8_t kOutputMaster = 0; // channelOutput: 0 master, 1-4 bus 1-4
+static constexpr uint8_t kBusVolumeMax = 100;
+static constexpr uint8_t kBusVolumeDefault = 50; // 0 dB (ampLogValues)
 static constexpr uint8_t kTotalInstrumentsCount =
 #ifdef FEATURE_SYNTH
   kSynthInstrumentsCount +
@@ -998,7 +1007,19 @@ struct strMtValues
     uint8_t recorderGainUsb;
     uint8_t linesPerBeatIndex = kDefaultLinesPerBeatIndex;
     strInsertSlot insertSlot[kInsertChannels][kInsertSlots];
+    uint8_t channelOutput[kBusSources];
+    uint8_t busVolume[kBusCount];
+    strInsertSlot busInsertSlot[kBusCount][kInsertSlots];
+
     void setDefaultTrackName(int trackIdx);
+    // Every source to the master, buses at 0 dB with empty slots.
+    void setDefaultBuses();
+    // channel: 0-11 as insertSlot, 12-15 the buses.
+    strInsertSlot& insertSlotOf(int channel, int slot)
+    {
+        return channel < kInsertChannels ? insertSlot[channel][slot]
+                                         : busInsertSlot[channel - kInsertChannels][slot];
+    }
 };
 
 //----------------------------------------------------------------------------------

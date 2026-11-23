@@ -28,6 +28,7 @@ static void recoveryProjectVersion15();
 static void recoveryProjectVersion16();
 static void recoveryProjectVersion17();
 static void recoveryProjectVersion18();
+static void recoveryProjectVersion19();
 static void recoveryInstrumentVersion1();
 static void recoveryInstrumentVersion2();
 static void recoveryInstrumentVersion3();
@@ -62,6 +63,7 @@ mtVersionRecovery::mtVersionRecovery()
     recoveryProjectFunction[15] = recoveryProjectVersion16;
     recoveryProjectFunction[16] = recoveryProjectVersion17;
     recoveryProjectFunction[17] = recoveryProjectVersion18;
+    recoveryProjectFunction[18] = recoveryProjectVersion19;
 
     // INSTRUMENT
     recoveryInstrumentFunction[0] = recoveryInstrumentVersion1;
@@ -345,7 +347,7 @@ static void recoveryProjectVersion14()
 }
 
 static_assert(sizeof(strMtProjectRemote) ==
-              3528); // if assert hits it is most likely you need to do sth here
+              3952); // if assert hits it is most likely you need to do sth here
 static void recoveryProjectVersion15()
 {
     strMtProjectRemote* newProject = versionRecovery.getReadedProject();
@@ -400,6 +402,12 @@ void recoveryProjectVersion18()
             slot = strInsertSlot{};
         }
     }
+}
+
+// Buses: every track and synth part to the master, buses empty.
+void recoveryProjectVersion19()
+{
+    versionRecovery.getReadedProject()->values.setDefaultBuses();
 }
 
 //*************************************************************************INSTRUMENT

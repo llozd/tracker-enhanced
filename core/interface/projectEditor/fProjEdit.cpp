@@ -455,6 +455,18 @@ uint8_t cProjectEditor::loadProjectValues()
     if (mtProject.values.patternLength > 255)
         mtProject.values.patternLength = 32;
     //----------------------------------------------------------------------------------------------------
+    // buses
+    for (uint8_t& output : mtProject.values.channelOutput)
+    {
+        if (output > kBusCount)
+            output = kOutputMaster;
+    }
+    for (uint8_t& volume : mtProject.values.busVolume)
+    {
+        if (volume > kBusVolumeMax)
+            volume = kBusVolumeDefault;
+    }
+    //----------------------------------------------------------------------------------------------------
     // midi instruments
     for (uint8_t channel = 0; channel < 16; channel++)
     {
