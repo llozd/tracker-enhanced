@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (C) 2026 llozd. Ported from Pocket Rack's tools/gen_ms800_waves.py for GRIT (GritSynthVoice.cpp).
+# Copyright (C) 2026 llozd. GRIT's wave tables (GritSynthVoice.cpp).
 """GRIT's single-cycle waves (after the MS800): 21 cycles of 256 samples, stored as 8-bit mu-law codes like the
 original's companded ROM, and the table that expands a code. The waves are drawn here, not taken from the
 instrument (its wave ROM has not been read out): basic shapes, harmonic stacks, formants and noises."""

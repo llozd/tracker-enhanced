@@ -1,8 +1,7 @@
 #pragma once
 
-// Building blocks for the engines ported from Pocket Rack (openspec pocket-rack-engines):
-// an ADSR, an LFO, glide and noise. Pocket Rack takes these from the part; on the Tracker each
-// engine carries its own. Everything runs per sample or per block, with no allocation.
+// Building blocks for the Tracker Enhanced engines (openspec synth-engines): an ADSR, an LFO,
+// glide and noise. Each engine carries its own. Everything runs per sample or per block, with no allocation.
 
 #include "PolySynth/sdk/SynthVoiceSDK.h"
 

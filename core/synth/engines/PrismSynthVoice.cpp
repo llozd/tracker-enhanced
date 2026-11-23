@@ -1,9 +1,9 @@
 // PRISM: an additive spectral synth where the spectrum itself is the instrument
-// (openspec pocket-rack-engines). Ported from Pocket Rack's eng_prism.c (llozd).
+// (openspec synth-engines).
 // 24 sine partials a voice. Their frequencies and amplitudes are worked out once a block from
 // the spectrum controls; the voice runs their phases, drift, freeze and decay.
-// In Pocket Rack the spectrum and its slow scans (comb, sweep, smear) are shared by a part's
-// voices; here each voice computes its own, so the scans of two voices are not in step.
+// Each voice computes its own spectrum and slow scans (comb, sweep, smear), so the scans of two
+// voices are not in step.
 
 #include "config.h"
 #ifdef FEATURE_SYNTH

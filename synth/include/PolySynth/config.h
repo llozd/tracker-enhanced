@@ -40,7 +40,7 @@ enum class InstrumentTypeId
     kDrumSynth,
     kShapingSynth,
     kChiptuneSynth,
-    // Tracker Enhanced engines (openspec pocket-rack-engines). Stored in projects and patches:
+    // Tracker Enhanced engines (openspec synth-engines). Stored in projects and patches:
     // all six are reserved here so their numbers do not depend on the order they are added in.
     kPrismSynth,
     kMonoSynth,

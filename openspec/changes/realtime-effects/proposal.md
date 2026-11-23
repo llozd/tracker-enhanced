@@ -31,8 +31,7 @@ Reverb is the most expensive in memory (about 64 KB a reverb) and CPU, so only a
 CPU is measured on hardware. When an effect would exceed the budget, it is refused and the user is told.
 
 ## Sources
-- Every effect except the reverb is ported from Pocket Rack's `firmware/src/fxdsp.c`, which only llozd wrote (checked in git history), relicensed under this repository's `LICENSE`. Pocket Rack's `x0x/fastmath.h` (not llozd's) is not ported.
-- The reverb insert reuses this firmware's own reverb (`AudioEffectPolyverb`). Pocket Rack's reverb is not llozd's code and is not used.
+- The reverb insert reuses this firmware's own reverb (`AudioEffectPolyverb`).
 
 ## Out of scope
 Offline `.ptfx` Sample Editor effects, which are separate.

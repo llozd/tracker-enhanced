@@ -1,5 +1,5 @@
-// GRIT: a digital wave module after the Cheetah MS800 (openspec pocket-rack-engines).
-// Ported from Pocket Rack's eng_ms800.c (llozd). No filter, as on the original: 8-bit companded
+// GRIT: a digital wave module after the Cheetah MS800 (openspec synth-engines).
+// No filter, as on the original: 8-bit companded
 // single-cycle waves played without interpolation, so they alias and grit. A tone steps through
 // the waves (each step a wave and a level, held for a time and crossfaded into the next), then
 // ends, loops or turns back. A second tone can be layered, transposed and detuned.

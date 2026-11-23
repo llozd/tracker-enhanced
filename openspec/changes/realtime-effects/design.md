@@ -28,9 +28,8 @@ tracks and sends mixer L/R -> [master insert: slot 1 -> 2 -> 3] -> limiter -> fi
 - Storage: `insertfx::Channel` (`core/libs/Audio/fx/insertChannels.{h,cpp}`) holds the 12 channels' slots and states in `EXTERNAL_RAM`. The objects in the graph (`AudioEffectInsert`, 8 voices and the master) only keep a channel id.
 
 ## Effect kernels
-- `core/libs/Audio/fx/` holds the kernels ported from `fxdsp.c`: float functions over a block of stereo samples, each with a type, 16 parameters (int16, with a descriptor table: name, range, format) and a state.
-- `x0x/fastmath.h` is replaced with this firmware's maths (`powf` and `expf` only in coefficient updates, never per sample).
-- `x0x/fastmath.h` is replaced. Coefficient updates use `std::` maths. Per-sample `powf`, `log2f` and `cosf` use `sdk::fastPow2`, `sdk::fastSine` and a fast `log2` (dynamics gain and asinh differ from Pocket Rack by about -42 dB, everything else by less than -63 dB).
+- `core/libs/Audio/fx/` holds the kernels: float functions over a block of stereo samples, each with a type, 16 parameters (int16, with a descriptor table: name, range, format) and a state.
+- Coefficient updates use `std::` maths. Per-sample `powf`, `log2f` and `cosf` use `sdk::fastPow2`, `sdk::fastSine` and a fast `log2`.
 - Every slot owns a delay line of 2 x 1024 floats (8 KB) in `EXTERNAL_RAM`, used by the chorus and the flanger: 36 slots, 288 KB.
 - Reverb: the insert reverb is the firmware's own `Reverb` (`Polyverb/reverb.h`, MIT, Emilie Gillet), which already takes its buffers through `Init()`. A pool of 4 (`kReverbPool`) lives in `EXTERNAL_RAM` with 2 x 32 KB buffers each. Picking reverb for a slot takes an entry and `setSlot` refuses when none is free. Controls match the master reverb (size, damp, predelay, diffusion) plus a mix. A chorus or a reverb makes a mono synth part stereo.
 

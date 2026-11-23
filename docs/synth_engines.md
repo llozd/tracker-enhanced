@@ -8,7 +8,7 @@ Factory patches come in the release's `Patches/` folder: copy it to the root of 
 
 ## MONO
 
-A one-oscillator monosynth after the Roland SH-101, ported from Pocket Rack. A saw, a pulse with variable width, a sub oscillator and noise are mixed into a resonant four-pole low-pass. One envelope drives both the filter and the amplifier, as on the original. Up to 4 voices: set the part's Polyphony to 1 for the classic mono behaviour, with Glide Mode Legato for slides.
+A one-oscillator monosynth after the Roland SH-101. A saw, a pulse with variable width, a sub oscillator and noise are mixed into a resonant four-pole low-pass. One envelope drives both the filter and the amplifier, as on the original. Up to 4 voices: set the part's Polyphony to 1 for the classic mono behaviour, with Glide Mode Legato for slides.
 
 | Section | Parameter | What it does |
 | :--- | :--- | :--- |
@@ -32,7 +32,7 @@ Factory patches (24): Mono Bass, Sub Thump, Pulse Lead, Fat Saw Lead, Reso Zap, 
 
 ## PRISM
 
-An additive spectral synth, ported from Pocket Rack: the spectrum itself is the instrument. Each voice has 24 sine partials whose spacing and loudness come from the controls below, recomputed every few milliseconds, so the sound moves on its own. Up to 4 voices. Partials near the top of the audio band fade out, so nothing aliases, and the level stays the same however many partials sound.
+An additive spectral synth: the spectrum itself is the instrument. Each voice has 24 sine partials whose spacing and loudness come from the controls below, recomputed every few milliseconds, so the sound moves on its own. Up to 4 voices. Partials near the top of the audio band fade out, so nothing aliases, and the level stays the same however many partials sound.
 
 | Section | Parameter | What it does |
 | :--- | :--- | :--- |
@@ -57,7 +57,7 @@ An additive spectral synth, ported from Pocket Rack: the spectrum itself is the 
 
 Macros: Tilt, Comb, Sweep, Warp, Smear / Drift and Structure. Velocity controls the volume.
 
-Each voice runs its own slow scans (Comb, Sweep, Smear), so chords move a little more freely than on Pocket Rack, where a part's voices share them.
+Each voice runs its own slow scans (Comb, Sweep, Smear), so chords move a little more freely than if a part's voices shared them.
 
 Factory patches: 40, from Glass Choir and Alien Bell to Time Stretch and Cluster Pluck.
 
@@ -65,7 +65,7 @@ Factory patches: 40, from Glass Choir and Alien Bell to Time Stretch and Cluster
 
 ## GRIT
 
-A digital wave module after the Cheetah MS800, ported from Pocket Rack. There is no filter, as on the original: the sound is a sequence of 8-bit companded single-cycle waves played without interpolation, so it aliases and grits as that ROM did. A tone steps through the waves (each step a wave and a level, held for a time and crossfaded into the next), then ends, loops or turns back. A second tone can be layered, transposed and detuned. Up to 8 voices.
+A digital wave module after the Cheetah MS800. There is no filter, as on the original: the sound is a sequence of 8-bit companded single-cycle waves played without interpolation, so it aliases and grits as that ROM did. A tone steps through the waves (each step a wave and a level, held for a time and crossfaded into the next), then ends, loops or turns back. A second tone can be layered, transposed and detuned. Up to 8 voices.
 
 The 21 waves: SINE, TRI, SAW, SQR, P25, P12, ORGN, OCTV, FIFT, HOLW, BUZZ, AH, EE, BELL, SYNC, RESO, FOLD, RHRM, NOIS, DUST and STEP. They are drawn for this engine, not read from the original's ROM.
 
@@ -96,7 +96,7 @@ Factory patches (24): Digi Saw, Grit Bass, Wave Choir, Seq Organ, Chip Arp, Dust
 
 ## HARM
 
-Additive synthesis after the Kawai K5 and K5m, ported from Pocket Rack. Each voice has 32 sine harmonics, shaped in three stages as on the original: the harmonic levels (each harmonic on one of four envelopes), a spectral filter applied by frequency, and a formant EQ. The original sets 63 levels and four six-stage envelopes by hand; here a few controls draw them. Up to 4 voices.
+Additive synthesis after the Kawai K5 and K5m. Each voice has 32 sine harmonics, shaped in three stages as on the original: the harmonic levels (each harmonic on one of four envelopes), a spectral filter applied by frequency, and a formant EQ. The original sets 63 levels and four six-stage envelopes by hand; here a few controls draw them. Up to 4 voices.
 
 The four harmonic groups are harmonics 1-2, 3-6, 7-14 and 15-32. The harmonic levels and the formant EQ are balanced for loudness; the filter is not, so it takes level away as it closes. Harmonics near the top of the audio band fade out, so nothing aliases.
 
@@ -128,7 +128,7 @@ Factory patches (24): Harm Brass, Digi Bell, Glass Pad, Hollow Reed, Vox Formant
 
 ## PHASE
 
-A phase distortion synth in the manner of Casio's CZ series. Written new for Tracker Enhanced from the published description of phase distortion, not ported. Each oscillator reads a cosine through a bent phase: **DCW** sets how far it bends, from a pure sine at 0 to the full wave shape at 100 %. Two lines, each with two waves that alternate cycle by cycle, their own DCW envelope and a level; the second line can be detuned, mixed or ring modulated. Up to 8 voices.
+A phase distortion synth in the manner of Casio's CZ series. Each oscillator reads a cosine through a bent phase: **DCW** sets how far it bends, from a pure sine at 0 to the full wave shape at 100 %. Two lines, each with two waves that alternate cycle by cycle, their own DCW envelope and a level; the second line can be detuned, mixed or ring modulated. Up to 8 voices.
 
 Waves: Saw, Square, Pulse, Double Sine, Saw-Pulse and the three resonance waves (Reso Saw, Reso Tri, Reso Trap), whose resonant peak rises with DCW. Wave B can be Off (Wave A every cycle).
 
@@ -153,7 +153,7 @@ Factory patches (24): Phase Brass, Phase Bass, Reso Sweep, Glass Piano, Square O
 
 ## POLY
 
-An analog polysynth voice in the manner of the Sequential Prophet-5. Written new for Tracker Enhanced from the instrument's published architecture, not ported, and without its factory programs. Two oscillators with sync, a mixer with noise, Poly-Mod, a four-pole low-pass with its own envelope, and an LFO. Each voice has its own small tuning error (Drift), like a real voice card. Up to 8 voices.
+An analog polysynth voice in the manner of the Sequential Prophet-5. Two oscillators with sync, a mixer with noise, Poly-Mod, a four-pole low-pass with its own envelope, and an LFO. Each voice has its own small tuning error (Drift), like a real voice card. Up to 8 voices.
 
 | Section | Parameter | What it does |
 | :--- | :--- | :--- |

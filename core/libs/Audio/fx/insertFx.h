@@ -1,7 +1,7 @@
 #ifndef LIBS_AUDIO_FX_INSERTFX_H_
 #define LIBS_AUDIO_FX_INSERTFX_H_
 
-// Insert effect kernels (openspec realtime-effects). Ported from Pocket Rack's fxdsp.c (llozd).
+// Insert effect kernels (openspec realtime-effects).
 
 #include "platformFeatures.h"
 
