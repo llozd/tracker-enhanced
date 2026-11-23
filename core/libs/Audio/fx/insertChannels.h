@@ -10,12 +10,15 @@
 namespace insertfx
 {
 
+constexpr int kBusCount = 4; // bus-channels
+
 enum ChannelId : uint8_t
 {
     kTrack0 = 0, // 8 sample tracks
     kSynth0 = 8, // 3 synth parts
     kMaster = 11,
-    kChannelCount
+    kBus0 = 12, // 4 buses (bus-channels)
+    kChannelCount = kBus0 + kBusCount
 };
 
 struct Channel
