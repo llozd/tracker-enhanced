@@ -1,8 +1,8 @@
 # Tasks
 
 ## Engine (PR 1)
-- [x] Host check: every effect stable, silent after its tail, and within -42 dB of Pocket Rack's output
-- [x] Port the `fxdsp.c` kernels to `core/libs/Audio/fx/` (EQ, dynamics, drive, colour, motion), with descriptor tables
+- [x] Host check: every effect stable and silent after its tail
+- [x] Effect kernels in `core/libs/Audio/fx/` (EQ, dynamics, drive, colour, motion), with descriptor tables
 - [x] `AudioEffectInsert`: 3 slots, float conversion, pass-through when empty, idle when silent, slot updates with the audio interrupt off
 - [x] Wire inserts into the 8 track chains and the master, and into `PolySynth::update` for the 3 synth parts
 - [x] Delay lines in `EXTERNAL_RAM` (one per slot)

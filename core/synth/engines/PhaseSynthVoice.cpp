@@ -1,7 +1,6 @@
-// PHASE: a phase distortion synth in the manner of the Casio CZ series (openspec pocket-rack-engines).
-// Written for this firmware from the published description of phase distortion (the CZ manuals
-// and the patent's principle: a cosine read through a bent phase, the bend set by DCW). It uses no
-// code from Pocket Rack's PHASE engine or CrispyZebra.
+// PHASE: a phase distortion synth in the manner of the Casio CZ series (openspec synth-engines).
+// Written from the published description of phase distortion (the CZ manuals and the patent's
+// principle: a cosine read through a bent phase, the bend set by DCW).
 //
 // Each wave is a phase transfer function T(phase) for full distortion. The oscillator reads
 // cos(2 pi (phase + DCW (T(phase) - phase))), so DCW 0 is always a pure sine and DCW 1 the full

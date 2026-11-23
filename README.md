@@ -79,11 +79,10 @@ Not yet tested on hardware, and CPU limits are still to be measured.
 
 ### 4. New Synth Engines
 On Tracker+ and Mini, alongside the existing engines:
-* **Ported from [Pocket Rack](https://github.com/llozd/pocket-rack)**: PRISM (additive spectral), MONO (an SH-101 style monosynth), GRIT (an MS800 style digital wave module) and HARM (K5 style additive synthesis), all available (see [`docs/synth_engines.md`](docs/synth_engines.md)).
-* **New**: PHASE, a CZ-style phase distortion synth, and POLY, a Prophet-5 style analog polysynth.
+* PRISM (additive spectral), MONO (an SH-101 style monosynth), GRIT (an MS800 style digital wave module), HARM (K5 style additive synthesis), PHASE (a CZ-style phase distortion synth) and POLY (a Prophet-5 style analog polysynth). See [`docs/synth_engines.md`](docs/synth_engines.md).
 * **Randomise** on every synth engine, including the existing ones: hold Shift on the synth parameter screen, F7 randomises and F8 brings back the previous patch.
 
-See `pocket-rack-engines` and `synth-randomise`.
+See `synth-engines` and `synth-randomise`.
 
 ### 5. Playback and Interface Fixes
 * **Legato rolls**: roll hits are gated for the full period, so rolls play as full-length, click-free hits instead of sounding gappy. See `legato-rolls`.

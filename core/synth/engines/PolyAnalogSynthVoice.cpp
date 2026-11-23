@@ -1,9 +1,8 @@
-// POLY: an analog polysynth voice in the manner of the Sequential Prophet-5 (openspec pocket-rack-engines).
-// Written for this firmware from the instrument's published architecture (its manuals and the
+// POLY: an analog polysynth voice in the manner of the Sequential Prophet-5 (openspec synth-engines).
+// Written from the instrument's published architecture (its manuals and the
 // widely documented signal flow): two oscillators with sync, a mixer with noise, Poly-Mod (the
 // filter envelope and oscillator B modulating oscillator A's pitch and width and the filter), a
-// four-pole low-pass, filter and amplifier envelopes, and an LFO. It uses no code from Pocket
-// Rack's Prophet engine, and no factory programs.
+// four-pole low-pass, filter and amplifier envelopes, and an LFO. No factory programs.
 
 #include "config.h"
 #ifdef FEATURE_SYNTH

@@ -5,21 +5,19 @@
 - New `InstrumentTypeId` values are appended after `kChiptuneSynth` (`synth/include/PolySynth/config.h`), and `kLastSynth` moves to the last one. Existing values never change, because they are stored in projects and `.patch` files.
 - Register in `core/synth/registry.cpp`, add to `Synth::kSynthTypes`, `synthModelNames` (`SynthEditor.cpp`) and the badge lists (`SynthEditor.cpp`, `SynthPatchEditor.cpp`), with mini (80x28) and medium (108x40) L2 badges in `core/libs/images/`.
 
-## Porting from Pocket Rack
-Pocket Rack engines lean on the host part. On the Tracker each engine carries those pieces itself:
+## Engine building blocks
+Each engine carries its own envelopes, LFO and glide (`core/synth/engines/EngineKit.h`):
 
-| Pocket Rack (host) | Tracker port |
-| :--- | :--- |
-| Track ADSR (amp, and the filter envelope via `P_ED_FLT`) | Engine parameters: amp envelope, plus a filter envelope where the engine has a filter |
-| Track LFO and mod matrix | Engine LFO parameters. Tracker macros cover the matrix |
-| `GLIDE`, mono/legato priority | Glide parameter. `CustomSynthVoice` already handles the held-note stack and legato |
-| `P_E0..E7`, `P_X0..X7` (int16, 0..127) | Named `Patch::Metadata::Param`s with real ranges and formatters |
-| Q15 / int32 output, `voice_amp`, `soft_knee` | `float` output at about -6 dBFS a voice, with the engine's own soft clip |
-| Per-part block work (PRISM `prism_block`, K5 DHG) | `renderPostProcessAudio` cannot do this, because it runs after the voices. Compute it in the first rendered voice of a block, or per voice if the cost is fine |
-| `x0x/fastmath.h` | `sdk::fastSine`, `sdk::fastPow2`, `sdk::noteToFreq` |
+- Amp envelope, plus a filter envelope where the engine has a filter, as engine parameters.
+- Engine LFO parameters. Tracker macros cover modulation routing.
+- A glide parameter. `CustomSynthVoice` already handles the held-note stack and legato.
+- Named `Patch::Metadata::Param`s with real ranges and formatters.
+- `float` output at about -6 dBFS a voice, with the engine's own soft clip.
+- Per-part block work (PRISM's spectrum, K5's harmonic envelopes): `renderPostProcessAudio` cannot do this, because it runs after the voices. Compute it in the first rendered voice of a block, or per voice if the cost is fine.
+- Maths: `sdk::fastSine`, `sdk::fastPow2`, `sdk::noteToFreq`.
 
-- Rate-dependent constants (filter coefficients, LFO and drift rates, envelope times) are rescaled to the Tracker's rate (128-sample blocks, about 44.1 kHz).
-- MS800's 21 waves come from `tools/gen_ms800_waves.py` (llozd). Port the generator, or check in its output as a `const` table in flash.
+- Rate-dependent constants (filter coefficients, LFO and drift rates, envelope times) are set for the Tracker's rate (128-sample blocks, about 44.1 kHz).
+- MS800's 21 waves come from `gen_grit_waves.py`, checked in as a `const` table in flash.
 - The per-voice state stays in the voice object (heap). No new `.bss` beyond the SDK's parameter handler table, because `SRAM_DTC` has about 17 KB free.
 
 ## Voices

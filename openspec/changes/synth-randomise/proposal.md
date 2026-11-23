@@ -5,10 +5,10 @@
 **Platforms:** Plus and Mini only. Synth engines need `FEATURE_SYNTH`, which is off on the Original.
 
 ## Why
-Finding a starting sound by hand is slow. Pocket Rack has a Randomise action on every engine. The Tracker's synths should have one too.
+Finding a starting sound by hand is slow. A Randomise action on every engine gives a quick starting point.
 
 ## What changes
-- A randomise action in the synth patch editor, for every engine: the factory engines (ACD, FAT, VAP, WTFM, PERC, DIRT), CHIP and the `pocket-rack-engines` engines.
+- A randomise action in the synth patch editor, for every engine: the factory engines (ACD, FAT, VAP, WTFM, PERC, DIRT), CHIP and the `synth-engines` engines.
 - It sets each sound parameter of the part's patch to a random value in its range.
 - Level, pan, sends, tuning, voice count and play mode are kept. Macro assignments and sample or wavetable slots are kept.
 - The result is always playable. Parameters that could make a patch silent or stuck (for example a near-zero amp level or sustain, or a very long attack) are kept in a safe range.

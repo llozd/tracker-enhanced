@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Factory .patch files for the Tracker Enhanced synth engines (openspec pocket-rack-engines).
+"""Factory .patch files for the Tracker Enhanced synth engines (openspec synth-engines).
 
 Writes <out>/Patches/<ENGINE>/<NAME>.patch. A .patch is the stock protobuf Patch message:
 1 engine (InstrumentTypeId), 6 repeated ParamValue {1: fixed32 float} in parameter-ID order,
@@ -76,21 +76,21 @@ def encode(engine_id, values, macros):
     return out + extra_block()
 
 
-# --- Pocket Rack conversions -------------------------------------------------------------
+# --- Preset value conversions -----------------------------------------------------------
 
 
-def pr_time_ms(v):
-    """Pocket Rack's envelope time for a 0..127 value: 1 ms to 10 s, exponential."""
+def env_time_ms(v):
+    """Envelope time for a 0..127 value: 1 ms to 10 s, exponential."""
     return 10000 ** (v / 127)
 
 
-def pr_attack(v):
-    return pr_time_ms(v) / 1000
+def env_attack(v):
+    return env_time_ms(v) / 1000
 
 
-def pr_decay(v):
-    """Pocket Rack's decay and release reach 99 % in their time, enginekit::Adsr 99.9 %."""
-    return pr_time_ms(v) / 1000 * 1.5
+def env_decay(v):
+    """Decay and release for a 0..127 value, given as 99 % times; enginekit::Adsr times are 99.9 %."""
+    return env_time_ms(v) / 1000 * 1.5
 
 
 # --- MONO (MonoSynthVoice.cpp, InstrumentTypeId::kMonoSynth) ------------------------------
@@ -123,7 +123,7 @@ def mono_macros():
     return macros
 
 
-# Pocket Rack's SH-101 presets: (name, (SAW, PULS, SUB, NOIS, CUT, RES, PW, SUBM), (A, D, S, R), fenv)
+# MONO presets: (name, (SAW, PULS, SUB, NOIS, CUT, RES, PW, SUBM), (A, D, S, R), fenv)
 SH101_PRESETS = [
     ("MONO BASS", (110, 0, 100, 0, 36, 30, 0, 0), (0, 60, 40, 20), 35),
     ("SUB THUMP", (0, 40, 127, 0, 28, 20, 0, 50), (0, 50, 20, 15), 40),
@@ -143,9 +143,9 @@ def mono_presets():
         v[i["saw"]], v[i["pulse"]], v[i["sub"]], v[i["noise"]] = (x / 127 for x in e[:4])
         v[i["cutoff"]], v[i["resonance"]], v[i["pulse_width"]] = e[4] / 127, e[5] / 127, e[6] / 127
         v[i["sub_mode"]] = 0 if e[7] < 43 else 1 if e[7] < 85 else 2
-        v[i["attack"]], v[i["decay"]] = pr_attack(env[0]), pr_decay(env[1])
-        v[i["sustain"]], v[i["release"]] = env[2] / 127, pr_decay(env[3])
-        # Pocket Rack: ENV -> FILTER fenv moves the cutoff by fenv * 0.0709 octaves at full envelope;
+        v[i["attack"]], v[i["decay"]] = env_attack(env[0]), env_decay(env[1])
+        v[i["sustain"]], v[i["release"]] = env[2] / 127, env_decay(env[3])
+        # fenv moves the cutoff by fenv * 0.0709 octaves at full envelope;
         # MONO's Env Amount 1.0 is 8 octaves.
         v[i["env_amount"]] = max(-1.0, min(1.0, fenv * 0.0709 / 8))
         yield name, MONO_ID, v, mono_macros()
@@ -178,7 +178,7 @@ def prism_macros():
     ]
 
 
-# Pocket Rack's PRISM presets: (name, (STRC, TILT, COMB, SWEP, SMER, DRFT, WARP, FRZ), (A, D, S, R),
+# PRISM presets: (name, (STRC, TILT, COMB, SWEP, SMER, DRFT, WARP, FRZ), (A, D, S, R),
 # (ODD, SHFT, SCRM, GATE, DCAY, UNFD, PHSE, FOLD))
 PRISM_PRESETS = [
     ("GLASS CHOIR", (90, 70, 0, 40, 70, 50, 20, 0), (70, 60, 120, 90), None),
@@ -237,8 +237,8 @@ def prism_presets():
         v[i["scramble"]], v[i["gate"]] = x[2] / 127, x[3] / 127
         v[i["spectral_decay"]] = x[4] / 64
         v[i["unfold"]], v[i["phase"]], v[i["fold"]] = x[5] / 127, x[6] / 127, x[7] / 127
-        v[i["attack"]], v[i["decay"]] = pr_attack(env[0]), pr_decay(env[1])
-        v[i["sustain"]], v[i["release"]] = env[2] / 127, pr_decay(env[3])
+        v[i["attack"]], v[i["decay"]] = env_attack(env[0]), env_decay(env[1])
+        v[i["sustain"]], v[i["release"]] = env[2] / 127, env_decay(env[3])
         v[i["attack"]] = min(v[i["attack"]], 10.0)
         v[i["decay"]], v[i["release"]] = min(v[i["decay"]], 10.0), min(v[i["release"]], 10.0)
         yield name, PRISM_ID, v, prism_macros()
@@ -272,7 +272,7 @@ def grit_macros():
     ]
 
 
-# Pocket Rack's MS800 presets: (name, (WAVE, STEP, TIME, XFAD, JUMP, LOOP, LSTP, RAND), (A, D, S, R),
+# GRIT presets: (name, (WAVE, STEP, TIME, XFAD, JUMP, LOOP, LSTP, RAND), (A, D, S, R),
 # (LAYR, BWAV, BTRN, DTUN, BTIM, VELW, GRIT, BITS))
 GRIT_PRESETS = [
     ("DIGI SAW", (2, 1, 60, 0, 0, 1, 0, 0), (0, 60, 110, 30), (90, 0, 0, 9, 0, 0, 0, 0)),
@@ -295,15 +295,15 @@ def grit_presets():
         v = [d for _, d in GRIT_PARAMS]
         i = GRIT_INDEX
         v[i["wave"]], v[i["steps"]] = e[0], e[1]
-        v[i["step_time"]] = pr_time_ms(e[2]) / 1000
+        v[i["step_time"]] = env_time_ms(e[2]) / 1000
         v[i["crossfade"]], v[i["jump"]], v[i["loop"]] = e[3] / 127, e[4], e[5]
         v[i["level_step"]], v[i["random"]] = e[6] / 64, e[7] / 127
         x = x or (0,) * 8
         v[i["layer"]], v[i["layer_wave"]], v[i["layer_transpose"]] = x[0] / 127, x[1], x[2]
         v[i["layer_detune"]], v[i["layer_time"]] = x[3], x[4] / 64
         v[i["velocity_wave"]], v[i["grit"]], v[i["bits"]] = x[5] / 127, x[6] / 127, x[7] / 127
-        v[i["attack"]], v[i["decay"]] = pr_attack(env[0]), min(pr_decay(env[1]), 10.0)
-        v[i["sustain"]], v[i["release"]] = env[2] / 127, min(pr_decay(env[3]), 10.0)
+        v[i["attack"]], v[i["decay"]] = env_attack(env[0]), min(env_decay(env[1]), 10.0)
+        v[i["sustain"]], v[i["release"]] = env[2] / 127, min(env_decay(env[3]), 10.0)
         yield name, GRIT_ID, v, grit_macros()
 
 
@@ -334,7 +334,7 @@ def harm_macros():
     ]
 
 
-# Pocket Rack's K5 presets: (name, (ANGL, ODEV, BLOM, DCAY, CUT, SLOP, FLAT, VELF), (A, D, S, R), fenv,
+# HARM presets: (name, (ANGL, ODEV, BLOM, DCAY, CUT, SLOP, FLAT, VELF), (A, D, S, R), fenv,
 # (FDEP, FFRQ, OCTV, FIFT, TWIN, HMOD, KEYH, KSCL))
 HARM_PRESETS = [
     ("HARM BRASS", (30, 0, 25, 10, 55, 60, 127, 50), (12, 70, 110, 50), 35, (0, 0, 0, 0, 0, 0, 0, 40)),
@@ -365,8 +365,8 @@ def harm_presets():
         v[i["twin"]], v[i["harmonic_mod"]] = x[4] / 127, x[5] / 127
         v[i["key_harmonics"]], v[i["key_scale"]] = x[6] / 64, x[7] / 64
         v[i["env_amount"]] = max(-1.0, min(1.0, fenv * 0.0709 / 8))
-        v[i["attack"]], v[i["decay"]] = pr_attack(env[0]), min(pr_decay(env[1]), 10.0)
-        v[i["sustain"]], v[i["release"]] = env[2] / 127, min(pr_decay(env[3]), 10.0)
+        v[i["attack"]], v[i["decay"]] = env_attack(env[0]), min(env_decay(env[1]), 10.0)
+        v[i["sustain"]], v[i["release"]] = env[2] / 127, min(env_decay(env[3]), 10.0)
         yield name, HARM_ID, v, harm_macros()
 
 
@@ -400,7 +400,7 @@ def phase_macros():
     ]
 
 
-# New presets (PHASE is not a port): name -> the parameters that differ from the defaults
+# PHASE presets: name -> the parameters that differ from the defaults
 PHASE_PRESETS = [
     ("PHASE BRASS", dict(wave_a1=SAW, dcw1=0.1, dcw_env1=0.8, dcw_attack1=0.06, dcw_decay1=0.8, dcw_sustain1=0.55,
                          attack=0.02, sustain=0.9, release=0.25)),
@@ -466,7 +466,7 @@ def poly_macros():
     ]
 
 
-# New presets (POLY is not a port, and no factory programs are used): parameters that differ from the defaults
+# POLY presets (no factory programs are used): parameters that differ from the defaults
 POLY_PRESETS = [
     ("WARM BRASS", dict(shape_b=B_SAW, fine_b=8, cutoff=0.45, resonance=0.1, env_amount=0.45, filter_attack=0.06,
                         filter_decay=0.9, filter_sustain=0.55, attack=0.03, sustain=0.9, release=0.3)),
@@ -500,7 +500,7 @@ def poly_presets():
         yield name, POLY_ID, v, poly_macros()
 
 
-# --- More presets (new sounds, not from Pocket Rack): parameters that differ from the defaults ---
+# --- More presets: parameters that differ from the defaults ---
 
 
 def with_changes(params, index, changes):

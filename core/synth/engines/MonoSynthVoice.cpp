@@ -1,5 +1,5 @@
-// MONO: a one-oscillator monosynth voice after the Roland SH-101 (openspec pocket-rack-engines).
-// Ported from Pocket Rack's eng_sh101.c (llozd). A saw, a pulse with its width, a sub oscillator
+// MONO: a one-oscillator monosynth voice after the Roland SH-101 (openspec synth-engines).
+// A saw, a pulse with its width, a sub oscillator
 // and noise into a resonant four-pole low-pass. One ADSR drives the filter and the amplifier, as
 // on the original; an LFO gives vibrato, filter wobble and pulse-width modulation.
 

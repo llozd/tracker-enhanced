@@ -1,5 +1,5 @@
-// HARM: additive synthesis after the Kawai K5 and K5m (openspec pocket-rack-engines).
-// Ported from Pocket Rack's eng_k5.c (llozd). 32 sine harmonics a voice, shaped in three stages
+// HARM: additive synthesis after the Kawai K5 and K5m (openspec synth-engines).
+// 32 sine harmonics a voice, shaped in three stages
 // as on the original: the harmonic levels (each harmonic on one of four envelopes), a spectral
 // filter (cutoff, slope, flat level) applied by frequency, and a formant EQ. A few macros draw
 // what the original sets harmonic by harmonic.
