@@ -77,6 +77,7 @@ Three insert slots on every sample track, synth part and the master, set on the 
 * **Dynamics**: compressor, limiter, glue (bus) compressor and FET compressor.
 * **Drive and colour**: overdrive, digital clip, bit crush, soft clip, diode drive, tape, tube, transformer, console, saturator and exciter.
 * **Motion and space**: chorus (makes mono synth parts stereo), flanger, phaser and reverb (up to 4 reverb inserts at once).
+* **Buses**: send any track or synth part to one of 4 buses, each with its own 3 insert slots and volume, to share an EQ or compressor across several channels.
 
 Not yet tested on hardware, and CPU limits are still to be measured.
 

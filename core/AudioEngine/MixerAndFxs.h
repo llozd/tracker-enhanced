@@ -1,6 +1,7 @@
 #ifndef AUDIOENGINE_MIXERANDFXS_H_
 #define AUDIOENGINE_MIXERANDFXS_H_
 #include "Audio.h"
+#include "effect_insert.h"
 
 enum struct MixerAndFxChannelType
 {
@@ -39,10 +40,22 @@ class MixerAndFxs
     static constexpr int kTrackAndSendsMixerInputs =
       kTrackMixerOutputsCount + kExternalInputsCount + FxType::kFxCount;
     static constexpr int kTracksAndSynthVoices = voicesCount + kSynthParts;
+#if FEATURE_REALTIME_FX
+    static constexpr int kBusCount = insertfx::kBusCount;
+#else
+    static constexpr int kBusCount = 0;
+#endif
+    // The tracks mixer takes the tracks and synth parts, then the buses' returns.
+    static constexpr int kTracksMixerInputs = kTracksAndSynthVoices + kBusCount;
 
     MixerAndFxs();
     AudioMixer<kSendsInputsCount>* getPreFxMixer(FxType type);
-    AudioMixer<kTracksAndSynthVoices>* getTracksMixer(MixerAndFxChannelType channel);
+    AudioMixer<kTracksMixerInputs>* getTracksMixer(MixerAndFxChannelType channel);
+#if FEATURE_REALTIME_FX
+    // bus-channels: each bus sums the same inputs as the tracks mixer, then runs its insert.
+    AudioMixer<kTracksAndSynthVoices>* getBusMixer(int bus, MixerAndFxChannelType channel);
+    AudioEffectInsert* getBusInsert(int bus);
+#endif
     AudioMixer<kTrackAndSendsMixerInputs>* getTracksAndSendsMixer(MixerAndFxChannelType channel);
     AudioEffectShortDelay* getDelay();
     AudioEffectPolyverb* getPolyverb();
@@ -55,8 +68,13 @@ class MixerAndFxs
 
   private:
     AudioMixer<kSendsInputsCount> preFxMixer[FxType::kFxCount];
+#if FEATURE_REALTIME_FX
+    // declared before the tracks mixer so they update first in each block
     AudioMixer<kTracksAndSynthVoices>
-      tracksAndSynthMixer[(int)MixerAndFxChannelType::kChannelCount];
+      busMixer[kBusCount][(int)MixerAndFxChannelType::kChannelCount];
+    AudioEffectInsert busInsert[kBusCount];
+#endif
+    AudioMixer<kTracksMixerInputs> tracksAndSynthMixer[(int)MixerAndFxChannelType::kChannelCount];
     AudioMixer<kTrackAndSendsMixerInputs>
       tracksAndSendsMixer[(int)MixerAndFxChannelType::kChannelCount];
 

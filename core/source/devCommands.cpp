@@ -14,7 +14,7 @@
 namespace
 {
 #if FEATURE_REALTIME_FX
-// t1..t8, s1..s3 or m
+// t1..t8, s1..s3, b1..b4 or m
 bool parseChannel(const char* s, insertfx::ChannelId& id)
 {
     const int n = atoi(s + 1);
@@ -29,6 +29,11 @@ bool parseChannel(const char* s, insertfx::ChannelId& id)
             if (n < 1 || n > 3)
                 return false;
             id = static_cast<insertfx::ChannelId>(insertfx::kSynth0 + n - 1);
+            return true;
+        case 'b':
+            if (n < 1 || n > insertfx::kBusCount)
+                return false;
+            id = static_cast<insertfx::ChannelId>(insertfx::kBus0 + n - 1);
             return true;
         case 'm': id = insertfx::kMaster; return true;
         default: return false;
@@ -84,7 +89,9 @@ void handleFx(char* argument, char* reply, size_t size)
     if (count < 3 || !parseChannel(tokens[0], id) || slotIdx < 0 ||
         slotIdx >= insertfx::kSlots || !parseType(tokens[2], type))
     {
-        snprintf(reply, size, "err usage: fx list | fx t1-t8|s1-s3|m <slot 1-3> <type> [params]");
+        snprintf(reply,
+                 size,
+                 "err usage: fx list | fx t1-t8|s1-s3|b1-b4|m <slot 1-3> <type> [params]");
         return;
     }
 

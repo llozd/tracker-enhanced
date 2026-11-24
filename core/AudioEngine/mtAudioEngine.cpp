@@ -377,6 +377,11 @@ void audioEngine::connectVoiceToMixer(AudioVoice* voice, MixerAndFxs<kVoices>* m
                           0,
                           mixerAndFxs->getTracksMixer(MixerAndFxChannelType::kRight),
                           idx));
+#if FEATURE_REALTIME_FX
+    connectToBuses(voice->getPanningAmplifier(AudioVoice::VoiceChannels::kLeft),
+                   voice->getPanningAmplifier(AudioVoice::VoiceChannels::kRight),
+                   idx);
+#endif
 
     connections.push_back(
       new AudioConnection(voice->getPostFilter(AudioVoice::VoiceChannels::kLeft),
@@ -545,6 +550,19 @@ void audioEngine::connectInputToOutput(AudioInput* input, AudioOutput* output)
 }
 #endif
 
+#if FEATURE_REALTIME_FX
+void audioEngine::connectToBuses(AudioStream* left, AudioStream* right, int input)
+{
+    for (int bus = 0; bus < MixerAndFxs<kVoices>::kBusCount; bus++)
+    {
+        connections.push_back(new AudioConnection(
+          left, 0, mixerAndFxs.getBusMixer(bus, MixerAndFxChannelType::kLeft), input));
+        connections.push_back(new AudioConnection(
+          right, 0, mixerAndFxs.getBusMixer(bus, MixerAndFxChannelType::kRight), input));
+    }
+}
+#endif
+
 void audioEngine::connectMixerToOutput(MixerAndFxs<kVoices>* mixerAndFxs, AudioOutput* output)
 {
 #if FEATURE_REALTIME_FX
@@ -642,6 +660,11 @@ void audioEngine::connectSynthToMixer(MixerAndFxs<kVoices>* mixerAndFxs, SynthVo
           0,
           mixerAndFxs->getTracksMixer(MixerAndFxChannelType::kRight),
           kVoices + synthChannel));
+#if FEATURE_REALTIME_FX
+        connectToBuses(synth->getPanningAmplifier(synthChannel, SynthVoice::Channels::kLeft),
+                       synth->getPanningAmplifier(synthChannel, SynthVoice::Channels::kRight),
+                       kVoices + synthChannel);
+#endif
 
         connections.push_back(
           new AudioConnection(synth->getPolySynth(), // UI shows only mono
@@ -927,7 +950,7 @@ void audioEngine::refreshDelayVolume()
 
 bool audioEngine::setInsertSlot(int channel, int slot, const strInsertSlot& settings)
 {
-    if (channel < 0 || channel >= kInsertChannels || slot < 0 || slot >= kInsertSlots)
+    if (channel < 0 || channel >= kAllInsertChannels || slot < 0 || slot >= kInsertSlots)
     {
         return false;
     }
@@ -936,15 +959,54 @@ bool audioEngine::setInsertSlot(int channel, int slot, const strInsertSlot& sett
     fx.type = settings.type < insertfx::kTypeCount ? static_cast<insertfx::Type>(settings.type)
                                                    : insertfx::kOff;
     static_assert(kInsertParams == insertfx::kParams && kInsertSlots == insertfx::kSlots &&
-                  kInsertChannels == insertfx::kChannelCount);
+                  kAllInsertChannels == insertfx::kChannelCount &&
+                  kInsertChannels == insertfx::kBus0 && kBusCount == insertfx::kBusCount);
     memcpy(fx.params, settings.params, sizeof(fx.params));
     if (!insertfx::setSlot(static_cast<insertfx::ChannelId>(channel), slot, fx))
     {
         return false;
     }
 #endif
-    mtProject.values.insertSlot[channel][slot] = settings;
+    mtProject.values.insertSlotOf(channel, slot) = settings;
     return true;
+}
+
+void audioEngine::setChannelOutput(int source, uint8_t output)
+{
+    if (source < 0 || source >= kBusSources || output > kBusCount)
+    {
+        return;
+    }
+    mtProject.values.channelOutput[source] = output;
+#if FEATURE_REALTIME_FX
+    static_assert(kBusSources == MixerAndFxs<kVoices>::kTracksAndSynthVoices);
+    // All gains change in the same block; each mixer ramps its own over the block.
+    DISABLE_AUDIO_INTERRUPTS();
+    for (int channel = 0; channel < (int)MixerAndFxChannelType::kChannelCount; channel++)
+    {
+        const auto type = static_cast<MixerAndFxChannelType>(channel);
+        mixerAndFxs.getTracksMixer(type)->gain(source, output == kOutputMaster ? 1.0f : 0.0f);
+        for (int bus = 0; bus < kBusCount; bus++)
+        {
+            mixerAndFxs.getBusMixer(bus, type)->gain(source, output == bus + 1 ? 1.0f : 0.0f);
+        }
+    }
+    ENABLE_AUDIO_INTERRUPTS();
+#endif
+}
+
+void audioEngine::setBusVolume(int bus, uint8_t volume)
+{
+    if (bus < 0 || bus >= kBusCount || volume > kBusVolumeMax)
+    {
+        return;
+    }
+    mtProject.values.busVolume[bus] = volume;
+#if FEATURE_REALTIME_FX
+    const int input = MixerAndFxs<kVoices>::kTracksAndSynthVoices + bus;
+    mixerAndFxs.getTracksMixer(MixerAndFxChannelType::kLeft)->gain(input, ampLogValues[volume]);
+    mixerAndFxs.getTracksMixer(MixerAndFxChannelType::kRight)->gain(input, ampLogValues[volume]);
+#endif
 }
 
 void audioEngine::refreshInserts()
@@ -953,7 +1015,7 @@ void audioEngine::refreshInserts()
     // Free every reverb first, so the order of the slots does not matter.
     insertfx::Slot off;
     insertfx::setDefaults(off, insertfx::kOff);
-    for (int channel = 0; channel < kInsertChannels; channel++)
+    for (int channel = 0; channel < kAllInsertChannels; channel++)
     {
         for (int slot = 0; slot < kInsertSlots; slot++)
         {
@@ -961,17 +1023,25 @@ void audioEngine::refreshInserts()
         }
     }
 #endif
-    for (int channel = 0; channel < kInsertChannels; channel++)
+    for (int channel = 0; channel < kAllInsertChannels; channel++)
     {
         for (int slot = 0; slot < kInsertSlots; slot++)
         {
-            strInsertSlot& stored = mtProject.values.insertSlot[channel][slot];
+            strInsertSlot& stored = mtProject.values.insertSlotOf(channel, slot);
             if (!setInsertSlot(channel, slot, stored))
             {
                 stored = strInsertSlot{}; // no free reverb: the slot loads empty
                 setInsertSlot(channel, slot, stored);
             }
         }
+    }
+    for (int source = 0; source < kBusSources; source++)
+    {
+        setChannelOutput(source, mtProject.values.channelOutput[source]);
+    }
+    for (int bus = 0; bus < kBusCount; bus++)
+    {
+        setBusVolume(bus, mtProject.values.busVolume[bus]);
     }
 }
 

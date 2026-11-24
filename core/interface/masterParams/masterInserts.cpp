@@ -70,15 +70,152 @@ int pickerIndexOf(uint8_t type)
     return 0;
 }
 
+// Channel picker order: tracks, synth parts, buses, then the master (insert channel ids).
+constexpr uint8_t kChannelOrder[kAllInsertChannels] = {
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, insertfx::kBus0, insertfx::kBus0 + 1, insertfx::kBus0 + 2,
+    insertfx::kBus0 + 3, insertfx::kMaster
+};
+static_assert(insertfx::kBusCount == 4 && kAllInsertChannels == insertfx::kChannelCount);
+
+int channelOrderIndexOf(uint8_t ch)
+{
+    for (int i = 0; i < kAllInsertChannels; i++)
+    {
+        if (kChannelOrder[i] == ch)
+            return i;
+    }
+    return 0;
+}
+
+bool isBus(uint8_t ch)
+{
+    return ch >= insertfx::kBus0;
+}
+
+bool isBusSource(uint8_t ch)
+{
+    return ch < kBusSources;
+}
+
+// bus-channels: after the effect slots, an "Out" slot holds the routing: a track or synth part's
+// output, or a bus's volume. The master has none.
+bool hasOutSlot(uint8_t ch)
+{
+    return isBusSource(ch) || isBus(ch);
+}
+
+int slotCount(uint8_t ch)
+{
+    return kInsertSlots + (hasOutSlot(ch) ? 1 : 0);
+}
+
 const char* channelName(uint8_t ch, char* buf, size_t size)
 {
     if (ch < kSampleTracks)
         snprintf(buf, size, "Track %d", ch + 1);
-    else if (ch < kInsertChannels - 1)
+    else if (ch < insertfx::kMaster)
         snprintf(buf, size, "Synth %d", ch - kSampleTracks + 1);
+    else if (isBus(ch))
+        snprintf(buf, size, "Bus %d", ch - insertfx::kBus0 + 1);
     else
         snprintf(buf, size, "Master");
     return buf;
+}
+
+const char* outputName(uint8_t output, char* buf, size_t size)
+{
+    if (output == kOutputMaster)
+        snprintf(buf, size, "Master");
+    else
+        snprintf(buf, size, "Bus %d", output);
+    return buf;
+}
+
+// As ampLogValues: 50 is 0 dB, 0.48 dB a step.
+void formatBusVolume(uint8_t volume, char* buf, size_t size)
+{
+    if (volume == 0)
+        snprintf(buf, size, "-inf dB");
+    else
+        snprintf(buf, size, "%+.1f dB", (volume - kBusVolumeDefault) * 0.48f);
+}
+
+int busSourceCount(uint8_t ch)
+{
+    int n = 0;
+    for (uint8_t output : mtProject.values.channelOutput)
+    {
+        if (output == ch - insertfx::kBus0 + 1)
+            n++;
+    }
+    return n;
+}
+
+// The Out slot has no effect: it reads as an empty slot.
+const strInsertSlot& slotAt(uint8_t ch, uint8_t slot)
+{
+    static const strInsertSlot kNoEffect{};
+    return slot < kInsertSlots ? mtProject.values.insertSlotOf(ch, slot) : kNoEffect;
+}
+
+// The Out slot's controls: Output on a track or synth part; Volume and Inputs on a bus.
+void outSlotText(uint8_t ch, int control, char* label, char* value, size_t size)
+{
+    snprintf(label, size, " "); // an empty place shows a space, like an unused parameter
+    snprintf(value, size, " ");
+    if (isBusSource(ch) && control == 0)
+    {
+        snprintf(label, size, "Output");
+        outputName(mtProject.values.channelOutput[ch], value, size);
+    }
+    else if (isBus(ch) && control == 0)
+    {
+        snprintf(label, size, "Volume");
+        formatBusVolume(mtProject.values.busVolume[ch - insertfx::kBus0], value, size);
+    }
+    else if (isBus(ch) && control == 1)
+    {
+        snprintf(label, size, "Inputs");
+        snprintf(value, size, "%d", busSourceCount(ch));
+    }
+}
+
+// Changes an Out slot control by value (encoder steps). Returns false when nothing changed.
+bool changeOutSlot(uint8_t ch, int control, int16_t value)
+{
+    if (isBusSource(ch) && control == 0)
+    {
+        const int output = mtProject.values.channelOutput[ch] + (value > 0 ? 1 : -1);
+        if (output < kOutputMaster || output > kBusCount)
+            return false;
+        engine.setChannelOutput(ch, static_cast<uint8_t>(output));
+        return true;
+    }
+    if (isBus(ch) && control == 0)
+    {
+        const int bus = ch - insertfx::kBus0;
+        const int volume =
+          std::clamp(mtProject.values.busVolume[bus] + value, 0, int{ kBusVolumeMax });
+        engine.setBusVolume(bus, static_cast<uint8_t>(volume));
+        return true;
+    }
+    return false;
+}
+
+// Delete on an Out slot control: back to the master, or a bus back to 0 dB.
+bool resetOutSlot(uint8_t ch, int control)
+{
+    if (isBusSource(ch) && control == 0)
+    {
+        engine.setChannelOutput(ch, kOutputMaster);
+        return true;
+    }
+    if (isBus(ch) && control == 0)
+    {
+        engine.setBusVolume(ch - insertfx::kBus0, kBusVolumeDefault);
+        return true;
+    }
+    return false;
 }
 
 int pageCount(const insertfx::Desc& d)
@@ -167,7 +304,8 @@ void cMasterParams::showInsertsScreen()
 
 void cMasterParams::showInsertsValues()
 {
-    const strInsertSlot& slot = mtProject.values.insertSlot[insertsChannel][insertsSlot];
+    const bool outSlot = insertsSlot >= kInsertSlots;
+    const strInsertSlot& slot = slotAt(insertsChannel, insertsSlot);
     const insertfx::Desc& d = insertfx::describe(static_cast<insertfx::Type>(slot.type));
     const int pages = pageCount(d);
     if (insertsPage >= pages)
@@ -176,9 +314,12 @@ void cMasterParams::showInsertsValues()
     snprintf(labelText[kPlaceChannel], sizeof(labelText[0]), "Channel");
     channelName(insertsChannel, valueText[kPlaceChannel], sizeof(valueText[0]));
     snprintf(labelText[kPlaceSlot], sizeof(labelText[0]), "Slot");
-    snprintf(valueText[kPlaceSlot], sizeof(valueText[0]), "%d", insertsSlot + 1);
+    if (outSlot)
+        snprintf(valueText[kPlaceSlot], sizeof(valueText[0]), "Out");
+    else
+        snprintf(valueText[kPlaceSlot], sizeof(valueText[0]), "%d", insertsSlot + 1);
     snprintf(labelText[kPlaceEffect], sizeof(labelText[0]), "Effect");
-    snprintf(valueText[kPlaceEffect], sizeof(valueText[0]), "%s", d.name);
+    snprintf(valueText[kPlaceEffect], sizeof(valueText[0]), "%s", outSlot ? "-" : d.name);
     snprintf(labelText[kPlacePage], sizeof(labelText[0]), "Page");
     snprintf(valueText[kPlacePage], sizeof(valueText[0]), "%d/%d", insertsPage + 1, pages);
 
@@ -187,7 +328,11 @@ void cMasterParams::showInsertsValues()
         const int param = insertsPage * kParamsPerPage + i;
         char* lt = labelText[kPlaceFirstParam + i];
         char* vt = valueText[kPlaceFirstParam + i];
-        if (param < d.count)
+        if (outSlot)
+        {
+            outSlotText(insertsChannel, i, lt, vt, sizeof(valueText[0]));
+        }
+        else if (param < d.count)
         {
             snprintf(lt, sizeof(labelText[0]), "%s", d.p[param].label);
             formatValue(d.p[param], slot.params[param], vt, sizeof(valueText[0]));
@@ -220,13 +365,21 @@ void cMasterParams::showInsertsValues()
             show = dynamics;
         else if (i >= kPlaceFirstParam)
             show = !eq && insertsPage * kParamsPerPage + (i - kPlaceFirstParam) < d.count;
+        const bool volumeBar = outSlot && isBus(insertsChannel) && i == kPlaceFirstParam;
+        show = show || volumeBar;
         display.setControlStyle(barControl[i],
                                 (i == kPlaceEffect ? controlStyleReverse_0_100 : controlStyleValue_0_100) |
                                   controlStyleBackground | shadow | gradient);
         barData[i].value = i <= kPlaceSlot   ? display.getTheme().green
                            : i == kPlaceEffect ? display.getTheme().cyan
                                                : display.getTheme().white;
-        if (i >= kPlaceFirstParam && show)
+        if (volumeBar)
+        {
+            display.setControlValue(barControl[i],
+                                    mtProject.values.busVolume[insertsChannel - insertfx::kBus0] *
+                                      100 / kBusVolumeMax);
+        }
+        else if (i >= kPlaceFirstParam && show)
         {
             const int param = insertsPage * kParamsPerPage + (i - kPlaceFirstParam);
             const insertfx::ParamDesc& p = d.p[param];
@@ -292,7 +445,7 @@ void cMasterParams::insertsRefreshMeters()
     display.setControlValue(barControl[kPlaceSlot], static_cast<int>(outMeter));
     display.refreshControl(barControl[kPlaceSlot]);
 
-    const strInsertSlot& slot = mtProject.values.insertSlot[insertsChannel][insertsSlot];
+    const strInsertSlot& slot = slotAt(insertsChannel, insertsSlot);
     if (insertfx::isDynamics(static_cast<insertfx::Type>(slot.type)))
     {
         const float gr = insertfx::gainReductionDb(id, insertsSlot);
@@ -331,29 +484,34 @@ void cMasterParams::insertsMove(int8_t direction)
 
 void cMasterParams::insertsChange(int16_t value)
 {
-    strInsertSlot slot = mtProject.values.insertSlot[insertsChannel][insertsSlot];
+    const bool outSlot = insertsSlot >= kInsertSlots;
+    strInsertSlot slot = slotAt(insertsChannel, insertsSlot);
     const insertfx::Desc& d = insertfx::describe(static_cast<insertfx::Type>(slot.type));
 
     switch (selectedPlaceInserts)
     {
         case kPlaceChannel:
         {
-            const int ch = insertsChannel + (value > 0 ? 1 : -1);
-            if (ch >= 0 && ch < kInsertChannels)
-                insertsChannel = static_cast<uint8_t>(ch);
+            const int idx = channelOrderIndexOf(insertsChannel) + (value > 0 ? 1 : -1);
+            if (idx >= 0 && idx < kAllInsertChannels)
+                insertsChannel = kChannelOrder[idx];
+            if (insertsSlot >= slotCount(insertsChannel))
+                insertsSlot = kInsertSlots - 1; // the master has no Out slot
             insertsPage = 0;
             break;
         }
         case kPlaceSlot:
         {
             const int s = insertsSlot + (value > 0 ? 1 : -1);
-            if (s >= 0 && s < kInsertSlots)
+            if (s >= 0 && s < slotCount(insertsChannel))
                 insertsSlot = static_cast<uint8_t>(s);
             insertsPage = 0;
             break;
         }
         case kPlaceEffect:
         {
+            if (outSlot)
+                return;
             int idx = pickerIndexOf(slot.type) + (value > 0 ? 1 : -1);
             if (idx < 0 || idx >= insertfx::kTypeCount)
                 break;
@@ -381,6 +539,13 @@ void cMasterParams::insertsChange(int16_t value)
         }
         default:
         {
+            if (outSlot)
+            {
+                if (!changeOutSlot(insertsChannel, selectedPlaceInserts - kPlaceFirstParam, value))
+                    return;
+                newFileManager.setProjectStructChanged();
+                break;
+            }
             const int param = insertsPage * kParamsPerPage + (selectedPlaceInserts - kPlaceFirstParam);
             if (param >= d.count)
                 return;
@@ -399,10 +564,21 @@ void cMasterParams::insertsChange(int16_t value)
     display.synchronizeRefresh();
 }
 
-// Delete: on the effect, clears the slot; on a parameter, restores its default.
+// Delete: on the effect, clears the slot; on a parameter, restores its default; on an Out slot
+// control, routes back to the master or sets the bus to 0 dB.
 void cMasterParams::insertsClear()
 {
-    strInsertSlot slot = mtProject.values.insertSlot[insertsChannel][insertsSlot];
+    if (insertsSlot >= kInsertSlots)
+    {
+        if (selectedPlaceInserts < kPlaceFirstParam ||
+            !resetOutSlot(insertsChannel, selectedPlaceInserts - kPlaceFirstParam))
+            return;
+        newFileManager.setProjectStructChanged();
+        showInsertsValues();
+        display.synchronizeRefresh();
+        return;
+    }
+    strInsertSlot slot = mtProject.values.insertSlotOf(insertsChannel, insertsSlot);
     if (selectedPlaceInserts == kPlaceEffect)
     {
         slot = strInsertSlot{};

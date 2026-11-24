@@ -380,6 +380,7 @@ void cFileManager::getDefaultValues(struct strMtValues* source)
 
     memset(source->synthPart, 0, sizeof(source->synthPart));
     source->recorderGainUsb = 0;
+    source->setDefaultBuses();
 }
 
 void cFileManager::getCurrentProjectPathWithName(char* path, int maxLen)

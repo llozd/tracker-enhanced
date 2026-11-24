@@ -1,6 +1,6 @@
 # Realtime Insert Effects (Tracker+ and Tracker Mini)
 
-Every audio channel has **3 insert effect slots**: the 8 sample tracks, the 3 synth parts and the master. Effects run live while you play and are saved with the project. MIDI tracks have no audio, so they have no inserts. The Original Tracker does not have inserts.
+Every audio channel has **3 insert effect slots**: the 8 sample tracks, the 3 synth parts, the 4 buses and the master. Effects run live while you play and are saved with the project. MIDI tracks have no audio, so they have no inserts. The Original Tracker does not have inserts.
 
 ---
 
@@ -10,8 +10,8 @@ Press **Master** to cycle through the Master screen's pages: **Master**, **Mixer
 
 | Field | Button | What it does |
 | :--- | :---: | :--- |
-| **Channel** | F1 | Track 1 to 8, Synth 1 to 3, or Master |
-| **Slot** | F2 | Slot 1, 2 or 3 of that channel. Slots run in order: slot 1 feeds slot 2, which feeds slot 3 |
+| **Channel** | F1 | Track 1 to 8, Synth 1 to 3, Bus 1 to 4, or Master |
+| **Slot** | F2 | Slot 1, 2 or 3 of that channel. Slots run in order: slot 1 feeds slot 2, which feeds slot 3. Tracks, synth parts and buses also have an **Out** slot after slot 3 (see [Buses](#buses)) |
 | **Effect** | F3 | The effect in the slot, or Off |
 | **Page** | F4 | Which group of 4 parameters the last four fields show |
 | **Parameters** | F5 to F8 | The effect's parameters, 4 per page |
@@ -29,11 +29,24 @@ The bars above the fields show what the channel is doing:
 
 ---
 
+## Buses
+
+The 4 buses group channels, so they can share effects. For example, to put one EQ and one compressor on tracks 1 to 4, send those tracks to Bus 1 and put the effects on Bus 1.
+
+* **Send a channel to a bus**: pick the track or synth part as the Channel, turn Slot past 3 to **Out**, then set **Output** (F5) to Master or Bus 1 to 4. Delete on Output sends it back to Master.
+* **Bus level**: pick the bus as the Channel and go to its **Out** slot. **Volume** (F5) runs from silent to +24 dB, 0 dB by default (Delete resets it). **Inputs** (F6) shows how many channels go to the bus.
+* A channel sent to a bus is taken after its own inserts, volume and pan, and plays only through the bus. The bus then goes to the master mix, before the master inserts.
+* Delay and reverb sends stay on the channel, so they are not affected by the bus's effects.
+* Stems and multi-channel USB audio take each track from before the bus. A song export of the master includes the buses.
+
+---
+
 ## Where the inserts sit
 
 * **Sample tracks**: after the track's filter, before its volume and pan. The track's delay and reverb sends hear the effect.
 * **Synth parts**: before the part's sends, so the sends hear the effect. A chorus or reverb makes a mono synth part stereo.
-* **Master**: on the whole mix (tracks, sends and inputs), before the limiter.
+* **Buses**: on the sum of the channels sent to the bus, before the bus volume.
+* **Master**: on the whole mix (tracks, buses, sends and inputs), before the limiter.
 
 ---
 
@@ -71,10 +84,10 @@ The drives and colour effects keep quiet signals at the same level and add chara
 
 * **Reverb**: up to 4 reverb inserts at once (each needs 64 KB of memory). Picking a fifth shows **No free reverb**. The master reverb send is separate and always available.
 * **CPU**: many effects on every channel can use a lot of processing power. If audio starts to break up, remove some effects.
-* Empty slots cost nothing, and a channel's effects stop working once its input is silent and their tails have died out.
+* Empty slots cost nothing, and a channel's effects stop working once its input is silent and their tails have died out. A bus with nothing sent to it costs nothing.
 
 ---
 
 ## Projects
 
-Insert settings are saved with the project. Projects made before inserts existed open with every slot empty. Projects with inserts open on the Original Tracker too, which keeps the settings but does not play the effects.
+Insert settings, bus outputs and bus volumes are saved with the project. Projects made before inserts existed open with every slot empty, and projects made before buses existed open with every channel sent to the master. Projects with inserts open on the Original Tracker too, which keeps the settings but does not play the effects.

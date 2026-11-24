@@ -29,6 +29,27 @@ MixerAndFxs<voicesCount>::MixerAndFxs()
         connections.push_back(
           new AudioConnection(&tracksAndSynthMixer[channel], 0, &dryMixRMS[channel], 0));
     }
+
+#if FEATURE_REALTIME_FX
+    for (int bus = 0; bus < kBusCount; bus++)
+    {
+        busInsert[bus].attach(static_cast<insertfx::ChannelId>(insertfx::kBus0 + bus));
+        for (int channel = 0; channel < (int)MixerAndFxChannelType::kChannelCount; channel++)
+        {
+            // Nothing is routed to a bus until the project says so.
+            for (int input = 0; input < kTracksAndSynthVoices; input++)
+            {
+                busMixer[bus][channel].gainImmediate(input, 0.0f);
+            }
+            connections.push_back(
+              new AudioConnection(&busMixer[bus][channel], 0, &busInsert[bus], channel));
+            connections.push_back(new AudioConnection(&busInsert[bus],
+                                                      channel,
+                                                      &tracksAndSynthMixer[channel],
+                                                      kTracksAndSynthVoices + bus));
+        }
+    }
+#endif
 }
 
 template<int voicesCount>
@@ -39,11 +60,26 @@ AudioMixer<MixerAndFxs<voicesCount>::kSendsInputsCount>* MixerAndFxs<voicesCount
 }
 
 template<int voicesCount>
-AudioMixer<MixerAndFxs<voicesCount>::kTracksAndSynthVoices>*
+AudioMixer<MixerAndFxs<voicesCount>::kTracksMixerInputs>*
 MixerAndFxs<voicesCount>::getTracksMixer(MixerAndFxChannelType channel)
 {
     return &tracksAndSynthMixer[(int)channel];
 }
+
+#if FEATURE_REALTIME_FX
+template<int voicesCount>
+AudioMixer<MixerAndFxs<voicesCount>::kTracksAndSynthVoices>*
+MixerAndFxs<voicesCount>::getBusMixer(int bus, MixerAndFxChannelType channel)
+{
+    return &busMixer[bus][(int)channel];
+}
+
+template<int voicesCount>
+AudioEffectInsert* MixerAndFxs<voicesCount>::getBusInsert(int bus)
+{
+    return &busInsert[bus];
+}
+#endif
 
 template<int voicesCount>
 AudioMixer<MixerAndFxs<voicesCount>::kTrackAndSendsMixerInputs>*

@@ -51,6 +51,10 @@ class audioEngine
     void connectVoiceToOutput(AudioVoice* voice, AudioOutput* output, int idx);
     void connectInputToOutput(AudioInput* input, AudioOutput* output);
     void connectMixerToOutput(MixerAndFxs<kVoices>* mixerAndFxs, AudioOutput* output);
+#if FEATURE_REALTIME_FX
+    // Feeds a track or synth part (input: its tracks mixer input) to every bus mixer.
+    void connectToBuses(AudioStream* left, AudioStream* right, int input);
+#endif
 #ifdef FEATURE_SYNTH
     void connectSynthToMixer(MixerAndFxs<kVoices>* mixerAndFxs, SynthVoice* synth);
     void connectSynthToExportQueue(SynthVoice* synth, ExportQueues* exportQueues);
@@ -69,10 +73,14 @@ class audioEngine
     void refreshDelayVolume();
     void refreshAllSends();
 
-    // Insert effects (realtime-effects). channel: 0-7 tracks, 8-10 synth parts, 11 master.
-    // Sets the project's slot and the engine's; false (nothing changed) if no reverb is free.
+    // Insert effects (realtime-effects). channel: 0-7 tracks, 8-10 synth parts, 11 master,
+    // 12-15 buses. Sets the project's slot and the engine's; false (nothing changed) if no reverb
+    // is free.
     bool setInsertSlot(int channel, int slot, const strInsertSlot& settings);
-    // Loads every slot of the project into the engine (after a project load).
+    // Buses (bus-channels). source: 0-7 tracks, 8-10 synth parts. output: kOutputMaster or 1-4.
+    void setChannelOutput(int source, uint8_t output);
+    void setBusVolume(int bus, uint8_t volume); // 0-kBusVolumeMax, as ampLogValues
+    // Loads every slot, output and bus volume of the project into the engine (after a load).
     void refreshInserts();
     void forceLineInStreamVolume(uint8_t value);
     void refreshLineInStreamVolume();
