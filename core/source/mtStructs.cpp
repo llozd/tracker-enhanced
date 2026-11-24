@@ -14,6 +14,17 @@ void strMtValues::setDefaultTrackName(int trackIdx)
     }
 }
 
+void strMtValues::setDefaultInserts()
+{
+    for (auto& channel : insertSlot)
+    {
+        for (strInsertSlot& slot : channel)
+        {
+            slot = strInsertSlot{};
+        }
+    }
+}
+
 void strMtValues::setDefaultBuses()
 {
     for (uint8_t& output : channelOutput)

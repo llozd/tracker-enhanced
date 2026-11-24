@@ -1012,6 +1012,8 @@ struct strMtValues
     strInsertSlot busInsertSlot[kBusCount][kInsertSlots];
 
     void setDefaultTrackName(int trackIdx);
+    // Every insert slot of the tracks, synth parts and master empty.
+    void setDefaultInserts();
     // Every source to the master, buses at 0 dB with empty slots.
     void setDefaultBuses();
     // channel: 0-11 as insertSlot, 12-15 the buses.

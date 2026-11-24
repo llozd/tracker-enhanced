@@ -10,6 +10,9 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 * **Buses (Tracker+ and Mini)**: 4 buses, each with 3 insert slots and a volume. Send any sample track or synth part to a bus from its **Out** slot on the Inserts page, to share effects such as an EQ and a compressor across channels. See [`docs/realtime_effects.md`](docs/realtime_effects.md#buses).
 * **Dev console**: `fx` takes `b1` to `b4` for the buses.
 
+### Fixed
+* **New projects (Tracker+ and Mini)**: a new project starts with every insert slot empty, instead of keeping the effects of the project open before it.
+
 ### Changed
 * Project files are version 20. Older projects open with every channel sent to the master.
 

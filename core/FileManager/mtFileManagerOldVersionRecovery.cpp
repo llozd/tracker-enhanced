@@ -394,14 +394,7 @@ void recoveryProjectVersion17()
 // Insert effects: every slot off.
 void recoveryProjectVersion18()
 {
-    strMtProjectRemote* receivedProject = versionRecovery.getReadedProject();
-    for (auto& channel : receivedProject->values.insertSlot)
-    {
-        for (auto& slot : channel)
-        {
-            slot = strInsertSlot{};
-        }
-    }
+    versionRecovery.getReadedProject()->values.setDefaultInserts();
 }
 
 // Buses: every track and synth part to the master, buses empty.
