@@ -4,6 +4,17 @@ All notable changes to the **Polyend Tracker Community Edition (CE)** firmware a
 
 ---
 
+## [Unreleased]
+
+### Added
+* **Buses (Tracker+ and Mini)**: 4 buses, each with 3 insert slots and a volume. Send any sample track or synth part to a bus from its **Out** slot on the Inserts page, to share effects such as an EQ and a compressor across channels. See [`docs/realtime_effects.md`](docs/realtime_effects.md#buses).
+* **Dev console**: `fx` takes `b1` to `b4` for the buses.
+
+### Changed
+* Project files are version 20. Older projects open with every channel sent to the master.
+
+---
+
 ## [ENH 0.1.0 rc 1] - First Tracker Enhanced Release Candidate
 
 > **Release candidate.** Most of what is new since beta 1 is not yet tested on hardware. Back up your microSD card before flashing. Projects saved with Tracker Enhanced will not open on stock or Community Edition firmware.
